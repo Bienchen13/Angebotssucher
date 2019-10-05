@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Wählen Sie Ihre Edeka-Filiale aus."
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/searchMarketField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:layout_toLeftOf="@id/searchMarketButton"
+            android:hint="Ort eingeben"
+            android:textSize="@dimen/default_font_size" />
+
+        <Button
+            android:id="@+id/searchMarketButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:layout_alignParentRight="true"
+            android:text="Suchen"
+            android:textSize="@dimen/default_font_size" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/select_market_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:textSize="@dimen/default_font_size"
+        />
+
+    <ListView
+        android:id="@+id/listview_select_market_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/default_margin"
+        android:layout_marginStart="@dimen/default_margin"
+        android:divider="@color/colorDivider"
+        android:dividerHeight="@dimen/default_margin" />
+
+</LinearLayout>

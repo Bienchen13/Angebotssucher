@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Angebote</string>
+
+    <string name="sample_title">Kinder schokolade oder Yogurette</string>
+    <string name="sample_description">Die ideale Zwischenmahlzeit</string>
+
+    <string name="cab_add">Hinzufügen</string>
+    <string name="cab_delete">Löschen</string>
+    <string name="cab_fav">Favorite</string>
+</resources>
