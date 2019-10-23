@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#E1F3D2"
+    >
+
+    <ImageView
+        android:id="@+id/popup_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/popup_margin"
+        />
+
+    <TextView
+        android:id="@+id/titel_popup_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="@dimen/popup_margin"
+        android:text="Titel"
+        android:textSize="@dimen/offer_text_font_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/description_popup_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_text_font_size"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginRight="@dimen/popup_margin"
+        android:layout_marginLeft="@dimen/popup_margin"
+        android:layout_marginBottom="@dimen/popup_margin"
+        android:text="Test Pop-Up" />
+
+</LinearLayout>

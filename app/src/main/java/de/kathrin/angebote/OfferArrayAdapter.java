@@ -44,13 +44,14 @@ public class OfferArrayAdapter extends ArrayAdapter {
         // Get view objects from view hierarchy
         TextView tvTitle = rowView.findViewById(R.id.item_title);
         TextView tvPrice = rowView.findViewById(R.id.item_price);
-        TextView tvDescription = rowView.findViewById(R.id.item_description);
+        //TextView tvDescription = rowView.findViewById(R.id.item_description);
 
         // Fill view object with contents from current object
-        tvTitle.setText(currentOffer.getTitle().replace("\n", " "));
+        //tvTitle.setText(currentOffer.getTitle().replace("\n", " "));
+        tvTitle.setText(currentOffer.getTitle());
         String price = String.format("%02.2f", currentOffer.getPrice()) + "€";
         tvPrice.setText(price);
-        tvDescription.setText(currentOffer.getDescription());
+        //tvDescription.setText(currentOffer.getDescription());
 
         return rowView;
     }

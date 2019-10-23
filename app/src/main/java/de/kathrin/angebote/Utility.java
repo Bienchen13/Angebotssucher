@@ -35,43 +35,9 @@ public class Utility {
     static final String TEXTFILE_ENDING = ".txt";
     static final String DEFAULT_MARKET_FILE = "default_market.txt";
 
-
-    public static String requestOffersFromServer(Market market) {
-        Log.v(LOG_TAG, "Request Offers from Server.");
-
-        //String marketID = "192547";
-        String marketID = market.getMarketID();
-        String url = URL_EDEKA_OFFERS + "marketId=" + marketID + "&limit=89899";
-
-        Log.v(LOG_TAG, "Url: " + url);
-
-        return requestFromServer(url, "GET", null);
-    }
-
-    public static String requestMarketsFromServer(String city) {
-        Log.v(LOG_TAG, "Request Markets from Server.");
-
-        try {
-            city = URLEncoder.encode(city, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        String data = "indent=off" +
-                "&hl=false" +
-                "&rows=400" +
-                "&q=((indexName%3Ab2cMarktDBIndex++AND+kanalKuerzel_tlcm%3Aedeka+AND+" +
-                "((freigabeVonDatum_longField_l%3A%5B0+TO+1569362399999%5D+AND+" +
-                "freigabeBisDatum_longField_l%3A%5B1569276000000+TO+*%5D)+AND+NOT+" +
-                "(datumAppHiddenVon_longField_l%3A%5B0+TO+1569362399999%5D+AND+" +
-                "datumAppHiddenBis_longField_l%3A%5B1569276000000+TO+*%5D))+AND+" +
-                "ort_tlc%3A" + city.toLowerCase() + "" +
-                "))&fl=marktID_tlc%2Cplz_tlc%2Cort_tlc%2Cstrasse_tlc%2Cname_tlc";
-
-        Log.v(LOG_TAG, "Data: " + data);
-
-        return requestFromServer(URL_EDEKA_MARKETS, "POST", data);
-    }
+    /*
+     * Utility functions for handling Server Requests
+     */
 
     private static String requestFromServer (String requestUrl, String requestMethod, String encodedData) {
 
@@ -149,50 +115,28 @@ public class Utility {
         return stringBuilder.toString();
     }
 
-    public static OfferList createOfferListFromJSONString(String jsonString) {
+    /*
+     * Utility functions for handling File Access
+     */
 
-        OfferList offerList = new OfferList();
-        List<Offer> receivedOffersList = new ArrayList<>();
-
+    private static void saveStringInFile(Context context, String string, String filename) {
+        FileOutputStream fileOutputStream = null;
         try {
-            JSONObject jsonObj = new JSONObject(jsonString);
-
-            long availableFrom = jsonObj.getLong("gueltig_von");
-            long availableUntil = jsonObj.getLong("gueltig_bis");
-
-            offerList.setAvailableFrom(new Date(availableFrom));
-            offerList.setAvailableUntil(new Date(availableUntil));
-
-            // Demand JSON Array with Offer-Objects
-            JSONArray docs = jsonObj.getJSONArray("docs");
-
-            // Run through docs-object, read offer data
-            for (int i = 0; i < docs.length(); i++) {
-                JSONObject offer = docs.getJSONObject(i);
-
-                String title = offer.getString("titel").trim();
-                Double price = offer.getDouble("preis");
-                String description = Html.fromHtml(offer.getString("beschreibung")).toString();
-
-                Offer newOffer = new Offer(title, price, description);
-
-                receivedOffersList.add(newOffer);
-                //Log.v(TAG, "Added: " + newOffer);
+            fileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
+            fileOutputStream.write(string.getBytes());
+        } catch (FileNotFoundException e) {
+            Log.e(LOG_TAG, "FileNotFoundException: " + e.getMessage());
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "IOException: " + e.getMessage());
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "IOException: " + e.getMessage());
+                }
             }
-
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "JSONException: " + e.getMessage());
         }
-
-        Log.v(LOG_TAG, "Added: " + receivedOffersList.size() + " Elements.");
-        offerList.setOfferList(receivedOffersList);
-
-        return offerList;
-    }
-
-    public static OfferList restoreOffersFromFile(Context context, String filename) {
-        String jsonString = restoreStringFromFile(context, filename);
-        return createOfferListFromJSONString(jsonString);
     }
 
     private static String restoreStringFromFile (Context context, String filename) {
@@ -220,30 +164,78 @@ public class Utility {
         return jsonString;
     }
 
+    /*
+    * Utility functions for handling Offers
+    */
+
+    public static String requestOffersFromServer(Market market) {
+        Log.v(LOG_TAG, "Request Offers from Server.");
+
+        //String marketID = "192547";
+        String marketID = market.getMarketID();
+        String url = URL_EDEKA_OFFERS + "marketId=" + marketID + "&limit=89899";
+
+        Log.v(LOG_TAG, "Url: " + url);
+
+        return requestFromServer(url, "GET", null);
+    }
+
+    public static OfferList createOfferListFromJSONString(String jsonString) {
+
+        OfferList offerList = new OfferList();
+        List<Offer> receivedOffersList = new ArrayList<>();
+
+        try {
+            JSONObject jsonObj = new JSONObject(jsonString);
+
+            long availableFrom = jsonObj.getLong("gueltig_von");
+            long availableUntil = jsonObj.getLong("gueltig_bis");
+
+            offerList.setAvailableFrom(new Date(availableFrom));
+            offerList.setAvailableUntil(new Date(availableUntil));
+
+            // Demand JSON Array with Offer-Objects
+            JSONArray docs = jsonObj.getJSONArray("docs");
+
+            // Run through docs-object, read offer data
+            for (int i = 0; i < docs.length(); i++) {
+                JSONObject offer = docs.getJSONObject(i);
+
+                String title = offer.getString("titel")
+                        .replace("\n", " ")
+                        .trim();
+                Double price = offer.getDouble("preis");
+                String description = Html.fromHtml(offer.getString("beschreibung"))
+                        .toString()
+                        .replace("\n", " ")
+                        .trim();
+                String imageUrl = offer.getString("bild_app");
+
+                Offer newOffer = new Offer(title, price, description, imageUrl);
+
+                receivedOffersList.add(newOffer);
+                //Log.v(TAG, "Added: " + newOffer);
+            }
+
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "JSONException: " + e.getMessage());
+        }
+
+        Log.v(LOG_TAG, "Added: " + receivedOffersList.size() + " Elements.");
+        offerList.setOfferList(receivedOffersList);
+
+        return offerList;
+    }
+
+    public static OfferList restoreOffersFromFile(Context context, String filename) {
+        String jsonString = restoreStringFromFile(context, filename);
+        return createOfferListFromJSONString(jsonString);
+    }
+
     public static void saveOffersListInFile(Context context,OfferList offersList, String filename) {
         String jsonString = createJSONStringFromOffersList(offersList);
         saveStringInFile(context, jsonString, filename);
         Log.v(LOG_TAG, "Saved offers in file.");
-    }
-
-    private static void saveStringInFile(Context context, String string, String filename) {
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            fileOutputStream.write(string.getBytes());
-        } catch (FileNotFoundException e) {
-            Log.e(LOG_TAG, "FileNotFoundException: " + e.getMessage());
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "IOException: " + e.getMessage());
-        } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "IOException: " + e.getMessage());
-                }
-            }
-        }
     }
 
     private static String createJSONStringFromOffersList (OfferList offerList) {
@@ -255,6 +247,7 @@ public class Utility {
             jsonString.append("{\"titel\":\"").append(o.getTitle())
                     .append("\",\"preis\":").append(o.getPrice())
                     .append(",\"beschreibung\":\"").append(o.getDescription())
+                    .append("\",\"bild_app\":\"").append(o.getImageUrl())
                     .append("\"},");
         }
 
@@ -264,6 +257,34 @@ public class Utility {
         jsonString.append("}");
 
         return jsonString.toString();
+    }
+
+    /*
+    * Utility functions for handling Markets
+    */
+    public static String requestMarketsFromServer(String city) {
+        Log.v(LOG_TAG, "Request Markets from Server.");
+
+        try {
+            city = URLEncoder.encode(city, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String data = "indent=off" +
+                "&hl=false" +
+                "&rows=400" +
+                "&q=((indexName%3Ab2cMarktDBIndex++AND+kanalKuerzel_tlcm%3Aedeka+AND+" +
+                "((freigabeVonDatum_longField_l%3A%5B0+TO+1569362399999%5D+AND+" +
+                "freigabeBisDatum_longField_l%3A%5B1569276000000+TO+*%5D)+AND+NOT+" +
+                "(datumAppHiddenVon_longField_l%3A%5B0+TO+1569362399999%5D+AND+" +
+                "datumAppHiddenBis_longField_l%3A%5B1569276000000+TO+*%5D))+AND+" +
+                "ort_tlc%3A" + city.toLowerCase() + "" +
+                "))&fl=marktID_tlc%2Cplz_tlc%2Cort_tlc%2Cstrasse_tlc%2Cname_tlc";
+
+        Log.v(LOG_TAG, "Data: " + data);
+
+        return requestFromServer(URL_EDEKA_MARKETS, "POST", data);
     }
 
     public static List<Market> createMarketListFromJSONString (String jsonString) {
