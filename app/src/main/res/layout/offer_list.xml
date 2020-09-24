@@ -8,10 +8,10 @@
 
     <!-- Title -->
     <TextView
-        android:id="@+id/item_title"
+        android:id="@+id/offer_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/item_price"
+        android:layout_toLeftOf="@+id/offer_item_price"
         android:textSize="@dimen/offer_text_font_size"
         android:text="@string/sample_title"
         android:layout_marginEnd="5dp"
@@ -19,7 +19,7 @@
 
     <!-- Price -->
     <TextView
-        android:id="@+id/item_price"
+        android:id="@+id/offer_item_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

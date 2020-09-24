@@ -40,7 +40,7 @@ public class MarketArrayAdapter extends ArrayAdapter {
      * Constructor for the MarketArrayAdapter
      * @param context   the context where the Adapter is called from (used in the super constructor
      *                  and to initialize the LayoutInflater)
-     * @param marketList    used in the getView Method to get elements from the list
+     * @param marketList    used in the getView method to get elements from the list
      * @param datasource    used to check if a market is a favourite ( {@link MarketDbHelper})
      * @param parent    the activity where the Adapter is called from (to return to this activity
      *                  in the end)
@@ -57,7 +57,7 @@ public class MarketArrayAdapter extends ArrayAdapter {
 
     /**
      * The getView method creates the view hierarchy, extracts the position content, assigns the
-     * content to the view elements and returns the view hierarchy
+     * content to the view elements and returns the view hierarchy.
      * @param position  current position in the list view - done by java -
      * @param convertView   - done by java -
      * @param parent    - done by java -
@@ -69,7 +69,7 @@ public class MarketArrayAdapter extends ArrayAdapter {
     public View getView(int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
         // Create the view hierarchy defined in "R.layout.market_list" (one text view and the
         // favourite-market star image button)
-        View rowView = mLayoutInflater.inflate(R.layout.market_list, parent, false);
+        View rowView = mLayoutInflater.inflate(LIST_LAYOUT, parent, false);
 
         // Extract the content at the current position (get current market)
         final Market currentMarket = mMarketList.get(position);

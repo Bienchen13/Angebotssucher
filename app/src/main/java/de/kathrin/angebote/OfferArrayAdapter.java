@@ -13,45 +13,54 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+/**
+ * Adapter to show offers in a list view
+ * (used in the Main Activity)
+ */
 public class OfferArrayAdapter extends ArrayAdapter {
+
+    private static final int LIST_LAYOUT = R.layout.offer_list;
 
     private List<Offer> mOfferList;
     private LayoutInflater mLayoutInflater;
 
+    /**
+     * Constructor for the OfferArrayAdapter
+     * @param context   the context where the Adapter is called from (used in the super constructor
+     *      *           and to initialize the LayoutInflater)
+     * @param offerList used in the getView method to get elements from the list
+     */
     public OfferArrayAdapter(Context context, List<Offer> offerList) {
-        super(context, R.layout.offer_list, offerList);
+        super(context, LIST_LAYOUT, offerList);
 
         mOfferList = offerList;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
+    /**
+     * The getView method creates the view hierarchy, extracts the position content, assigns the
+     * content to the view elements and returns the view hierarchy.
+     * @param position  current position in the list view - done by java -
+     * @param convertView   - done by java -
+     * @param parent    - done by java -
+     * @return  the content filled view hierarchy of one child element of the list view
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        // Create view hierarchy defined in "R.layout.offer_list" (two text views)
+        View rowView = mLayoutInflater.inflate(LIST_LAYOUT, parent, false);
 
-        View rowView;
+        // Extract the content at the current position (get current offer)
+        final Offer currentOffer = mOfferList.get(position);
 
-        if (convertView == null) {
-            // Create view hierarchy
-             rowView = mLayoutInflater.inflate(R.layout.offer_list, parent, false);
-        } else {
-            rowView = convertView;
-        }
+        // Get view objects from view hierarchy (the two text views)
+        final TextView tvTitle = rowView.findViewById(R.id.offer_item_title);
+        final TextView tvPrice = rowView.findViewById(R.id.offer_item_price);
 
-        // Get current object
-        Offer currentOffer = mOfferList.get(position);
-
-        // Get view objects from view hierarchy
-        TextView tvTitle = rowView.findViewById(R.id.item_title);
-        TextView tvPrice = rowView.findViewById(R.id.item_price);
-        //TextView tvDescription = rowView.findViewById(R.id.item_description);
-
-        // Fill view object with contents from current object
-        //tvTitle.setText(currentOffer.getTitle().replace("\n", " "));
+        // Assign the title and price to the text views
         tvTitle.setText(currentOffer.getTitle());
-        String price = String.format("%02.2f", currentOffer.getPrice()) + "€";
-        tvPrice.setText(price);
-        //tvDescription.setText(currentOffer.getDescription());
+        tvPrice.setText(String.format("%02.2f", currentOffer.getPrice()) + "€");
 
         return rowView;
     }

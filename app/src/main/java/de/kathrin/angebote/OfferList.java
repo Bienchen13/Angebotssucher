@@ -5,11 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Every OfferList has a period of validity and (of course) a list with all offers.
+ */
 public class OfferList {
 
     private Date availableFrom;
     private Date availableUntil;
     private List<Offer> offerList;
+
     private final DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     public OfferList() {}
@@ -19,6 +23,8 @@ public class OfferList {
         this.availableUntil = availableUntil;
         this.offerList = offerList;
     }
+
+    // SETTER
 
     public void setAvailableFrom(Date availableFrom) {
         this.availableFrom = availableFrom;
@@ -32,6 +38,7 @@ public class OfferList {
         this.offerList = offerList;
     }
 
+    // GETTER
     public Date getAvailableFrom() {
         return availableFrom;
     }
