@@ -19,16 +19,16 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/searchMarketField"
+            android:id="@+id/market_search_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:layout_toLeftOf="@id/searchMarketButton"
+            android:layout_toLeftOf="@id/market_search_button"
             android:hint="Ort eingeben"
             android:textSize="@dimen/default_font_size" />
 
         <Button
-            android:id="@+id/searchMarketButton"
+            android:id="@+id/market_search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
@@ -39,7 +39,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/select_market_header"
+        android:id="@+id/market_select_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
@@ -47,7 +47,7 @@
         />
 
     <ListView
-        android:id="@+id/listview_select_market_activity"
+        android:id="@+id/market_select_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/default_margin"

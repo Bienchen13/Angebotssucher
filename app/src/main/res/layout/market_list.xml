@@ -7,17 +7,17 @@
     android:padding="@dimen/row_padding">
 
     <TextView
-        android:id="@+id/list_item"
+        android:id="@+id/market_list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_text_font_size"
         android:layout_marginEnd="5dp"
         android:text="EDEKA"
-        android:layout_toLeftOf="@+id/favicon"
+        android:layout_toLeftOf="@+id/market_fav_icon"
         />
 
     <ImageButton
-        android:id="@+id/favicon"
+        android:id="@+id/market_fav_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@android:drawable/btn_star_big_off"

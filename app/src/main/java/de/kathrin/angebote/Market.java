@@ -2,6 +2,11 @@ package de.kathrin.angebote;
 
 import java.io.Serializable;
 
+/**
+ *  Every market is an own object with
+ *  marketID (from the website), name, street,
+ *  city, plz and an _id for the database.
+ */
 public class Market implements Serializable {
 
     private String marketID;
