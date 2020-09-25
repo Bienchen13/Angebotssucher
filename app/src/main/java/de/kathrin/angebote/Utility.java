@@ -211,13 +211,24 @@ public class Utility {
      * @param market    market that is used
      * @return          server response
      */
-    public static String requestOffersFromServer(Market market) {
+    public static OfferList requestOffersFromServer(Context context, Market market, String filename) {
         Log.v(LOG_TAG, "Request Offers from Server.");
 
         // Compose URL with market ID
         String url = URL_EDEKA_OFFERS + "marketId=" + market.getMarketID() + "&limit=89899";
 
-        return requestFromServer(url, "GET", null);
+        // Request URL
+        String jsonString = requestFromServer(url, "GET", null);
+        OfferList offerList = null;
+
+        if (jsonString != null) {
+            offerList = createOfferListFromJSONString(jsonString);
+            saveOffersListInFile(context, offerList, filename);
+            Log.v(LOG_TAG, "Stored offers in file");
+        } else {
+            Log.v(LOG_TAG, "Nothing received.");
+        }
+        return offerList;
     }
 
     /**

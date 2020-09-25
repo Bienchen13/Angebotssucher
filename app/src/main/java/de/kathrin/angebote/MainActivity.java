@@ -3,6 +3,7 @@ package de.kathrin.angebote;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,20 +24,18 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Main Activity. Search for offers or go to the Select Market Activity.
+ */
 public class MainActivity extends AppCompatActivity {
 
     public static final String PROJECT_NAME = "Angebote.";
@@ -50,121 +49,162 @@ public class MainActivity extends AppCompatActivity {
     private Market selectedMarket = null;
 
 
+    /**
+     * Automatically called when starting the app.
+     * Sets the Layout, the default market (if it exists), initializes the search button,
+     * the select-market button and the result list.
+     * @param savedInstanceState to reconstruct the old state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.v(LOG_TAG, "In Create");
 
         // Set Layout
         setContentView(R.layout.activity_main);
 
         // Set Default Market
+        setDefaultMarket();
+
+        // Initialize the Search button
+        initOfferSearch();
+
+        // Initialize the Select Market button
+        initMarketSelection();
+
+        // Initialize Result List
+        initListView();
+    }
+
+    /**
+     * Read last used market from file and set it as default market.
+     */
+    private void setDefaultMarket () {
         File defaultMarketFile = getFileStreamPath(Utility.DEFAULT_MARKET_FILE);
         if (defaultMarketFile.exists()) {
             selectedMarket = Utility.restoreMarketFromFile(this);
-        } else {
-            selectedMarket = new Market("2643422", "E center Köwe-Center",
-                    "Dr.-Gessler-Straße 45", "Regensburg", "93051");
+            setSelectedMarket();
         }
-        setSelectedMarket();
+    }
 
-        // Define On Click Search Button Reaction
+    /**
+     * Display the selected market.
+     */
+    private void setSelectedMarket () {
+        String market = selectedMarket.getName() + "\n" +
+                        selectedMarket.getStreet() + "\n" +
+                        selectedMarket.getPlz() + " "  +
+                        selectedMarket.getCity();
+
+        ((TextView) findViewById(R.id.select_market)).setText(market);
+    }
+
+    /**
+     * Start the offer search on button click in a new {@link RequestOffersTask} instance.
+     */
+    private void initOfferSearch() {
+
+        // Start the search for offers, when the button was clicked.
         View.OnClickListener onSearchButtonClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(LOG_TAG, "Search for Offers Button was clicked");
-                // Start the search for offers
-                startOffersSearch();
-              }
+
+                // Get search item from text field
+                String searchItem = ((EditText) findViewById(R.id.searchField)).getText().toString();
+
+                // Start the search
+                RequestOffersTask offersTask = new RequestOffersTask();
+                offersTask.execute(searchItem);
+            }
         };
 
         // Add On Click Reaction to Search Button
         findViewById(R.id.searchButton).setOnClickListener(onSearchButtonClickListener);
+    }
 
-        // Define On Click Select Market Button Reaction
+    /**
+     * Switch to the Select Market Activity on button click.
+     */
+    private void initMarketSelection() {
+        // Switch to the Select Market Activity, when button was clicked.
         View.OnClickListener onSelectMarketClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(LOG_TAG, "Select Market Button was clicked");
-                // Start the search for offers
-                startSelectMarketActivity();
+
+                Intent explicitIntent = new Intent(MainActivity.this, SelectMarketActivity.class);
+                startActivityForResult(explicitIntent, SELECT_MARKET_REQUEST);
             }
         };
 
         // Add On Click Reaction to Select Market Button
         findViewById(R.id.change_market).setOnClickListener(onSelectMarketClickListener);
 
-        // Initialize Result List
-        bindAdapterToListView();
+    }
+
+    /**
+     * Bind the Adapter to the List View and init the click reaction on the offers.
+     */
+    private void initListView() {
+        // Bind Adapter to List View
+        OfferArrayAdapter offerArrayAdapter = new OfferArrayAdapter(this, resultOfferList);
+        ((ListView)findViewById(R.id.listview_activity_main)).setAdapter(offerArrayAdapter);
+
+        // Add pop-up with description when clicking on an offer.
         registerListViewClickListener();
     }
 
+    /**
+     * Automatically called when leaving the activity.
+     * Saves the current market in a file.
+     */
     @Override
     protected void onStop() {
         super.onStop();
         Log.v(LOG_TAG, "In onStop");
-        Utility.saveMarketToFile(this, selectedMarket);
+
+        if (selectedMarket != null) {
+            Utility.saveMarketToFile(this, selectedMarket);
+        }
     }
 
-    protected void startOffersSearch() {
-        // Get search item from text field
-        String searchItem = ((EditText) findViewById(R.id.searchField)).getText().toString();
-
-        // Start the search
-        RequestOffersTask offersTask = new RequestOffersTask();
-        offersTask.execute(searchItem);
-    }
-
-    protected void startSelectMarketActivity() {
-        Intent explicitIntent = new Intent(this, SelectMarketActivity.class);
-        startActivityForResult(explicitIntent, SELECT_MARKET_REQUEST);
-    }
-
+    /**
+     * Automatically called when returning from the Select Market Activity.
+     * Sets the returned market and deletes old offers.
+     * @param requestCode - done by Java
+     * @param resultCode - done by Java
+     * @param data - done by Java
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == SELECT_MARKET_REQUEST) {
             if (resultCode == RESULT_OK) {
-                selectedMarket = (Market) data.getSerializableExtra(SelectMarketActivity.EXTRA_MARKET);
-                Log.v(LOG_TAG, "Received: " + selectedMarket.toString());
 
-               setSelectedMarket();
+                if (data != null) {
+                    selectedMarket = (Market) data.getSerializableExtra(SelectMarketActivity.EXTRA_MARKET);
+                    setSelectedMarket();
+                }
 
                 // Delete old offers
                 allOffersList = null;
-            } else {
-                // Handle unsuccessful result
             }
         }
     }
 
-    private void setSelectedMarket () {
-        TextView selectMarketTextView = findViewById(R.id.select_market);
-        selectMarketTextView.setText(
-                selectedMarket.getName() + "\n" +
-                selectedMarket.getStreet() + "\n" +
-                selectedMarket.getPlz() + " "  + selectedMarket.getCity()
-        );
-    }
-
-    private void bindAdapterToListView() {
-        OfferArrayAdapter offerArrayAdapter = new OfferArrayAdapter(this, resultOfferList);
-        ListView offerListView = findViewById(R.id.listview_activity_main);
-        offerListView.setAdapter(offerArrayAdapter);
-    }
-
+    /**
+     * Open a new pop-up window with further information (description, image) when clicking
+     * on an offer.
+     */
     private void registerListViewClickListener() {
 
         AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Log.v(LOG_TAG, "Clicked on Item");
-
                 // Get the information from offer object
-                String titel = resultOfferList.get(position).getTitle();
+                String title = resultOfferList.get(position).getTitle();
                 String description = resultOfferList.get(position).getDescription();
                 String urlString = resultOfferList.get(position).getImageUrl();
 
@@ -172,20 +212,19 @@ public class MainActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View popupView = inflater.inflate(R.layout.description_popup, null);
 
-                // Get the elements from the popup view
-                TextView titelView = popupView.findViewById(R.id.titel_popup_text);
-                TextView descriptionView = popupView.findViewById(R.id.description_popup_text);
-                ImageView imageView  = popupView.findViewById(R.id.popup_image);
+                // Connect the elements from the popup view with the corresponding information
+                ((TextView) popupView.findViewById(R.id.titel_popup_text)).setText(title);
+                ((TextView) popupView.findViewById(R.id.description_popup_text)).setText(description);
 
-                // Add the information to the corresponding view element
-                titelView.setText(titel);
-                descriptionView.setText(description);
-                DownloadImageTask imageTask = new DownloadImageTask(imageView);
-                imageTask.execute(urlString);
+                // Start a new DownloadImageTask to display the image
+                ImageView imageView  = popupView.findViewById(R.id.popup_image);
+                new DownloadImageTask(imageView).execute(urlString);
 
                 // Show the Popup Window
-                final PopupWindow pw = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                final PopupWindow pw = new PopupWindow(popupView,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        true);
                 pw.showAtLocation(view, Gravity.CENTER, 0, 0);
 
                 // Add on Touch Listener to close popup window easily
@@ -199,69 +238,91 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        ListView listview = (ListView) findViewById(R.id.listview_activity_main);
-        listview.setOnItemClickListener(onItemClickListener);
+        ((ListView) findViewById(R.id.listview_activity_main)).setOnItemClickListener(onItemClickListener);
     }
 
+    /**
+     * Update result header and offer list.
+     * @param offerList new offers to show in the result
+     */
     protected void updateListView(List<Offer> offerList) {
         Log.v(LOG_TAG, "Updating view");
 
         // Set Header with available dates
-        TextView resultHeader = findViewById(R.id.resultHeader);
-        resultHeader.setText("Angebote gültig vom " + allOffersList.getAvailableFromFormatted() +
-                " bis zum " + allOffersList.getAvailableUntilFormatted() + ".");
+        String headerText = "Angebote gültig vom " +
+                allOffersList.getAvailableFromFormatted() +
+                " bis zum " +
+                allOffersList.getAvailableUntilFormatted() + ".";
+        ((TextView)findViewById(R.id.resultHeader)).setText(headerText);
 
         // Update result offer list
         resultOfferList.clear();
         resultOfferList.addAll(offerList);
 
         // Update list view
-        ListView listView = findViewById(R.id.listview_activity_main);
-        listView.invalidateViews();
+        ((ListView)findViewById(R.id.listview_activity_main)).invalidateViews();
     }
 
-
-    /*
-    PRIVATE CLASS REQUEST-OFFERS-TASK
-
-    1. Receives the search parameter (String).
-    2. Loads the current offers for the selected market from a file or
-        makes a server request if necessary.
-    3. Collects all offers which contain the search parameter.
-    4. Returns a List of all requested offers.
-
+    /**
+     *  PRIVATE CLASS REQUEST-OFFERS-TASK
+     *
+     *     1. Receives the search parameter (String).
+     *     2. Loads the current offers for the selected market from a file or
+     *         makes a server request if necessary.
+     *     3. Collects all offers which contain the search parameter.
+     *     4. Returns a list of all requested offers.
+     *
      */
-
     private class RequestOffersTask extends AsyncTask<String, String, List<Offer>> {
-        private String filename;
 
+        /**
+         * First load all offers of the selected market. (If there are not there, look
+         * in the file or make a server request.)
+         * Then search in the offers for offers matching the request string. Return those.
+         * @param searchItem request string
+         * @return list of offers matching the request string
+         */
         @Override
         protected List<Offer> doInBackground(String... searchItem) {
             List<Offer> resultList = new ArrayList<>();
-            filename = selectedMarket.getMarketID() + Utility.TEXTFILE_ENDING;
 
-            // Request Offers from server, if necessary
+            // May happen when starting the app the first time.
+            if (selectedMarket == null) {
+                publishProgress("Wählen Sie zu erst einen Markt aus!");
+                return resultList;
+            }
+
+            // Create a file for every selected market
+            String filename = selectedMarket.getMarketID() + Utility.TEXTFILE_ENDING;
+
+            // Load all offers of a market from file or make a server request
             if (allOffersList == null) {
 
                 // Load offers from file, if they exist
-                File offerDataFile = getFileStreamPath(filename);
-
-                if (offerDataFile.exists()) {
+                if (getFileStreamPath(filename).exists()) {
                     allOffersList = Utility.restoreOffersFromFile(MainActivity.this, filename);
 
-                    if (allOffersList.getAvailableUntil().before(new Date())) {
-                        Log.v(LOG_TAG, "Offers from file outdated");
-                        allOffersList = null;
-
-                        requestCurrentOffersFromServer();
-
-                    } else {
+                    // If not outdated, they can be used
+                    if (!allOffersList.getAvailableUntil().before(new Date())) {
                         Log.v(LOG_TAG, "Offers from file restored.");
-                        //Log.v(LOG_TAG, allOffersList.toString());
+
+                        // otherwise make a server request
+                    } else {
+                        Log.v(LOG_TAG, "Offers from file outdated");
+                        allOffersList = Utility.requestOffersFromServer(MainActivity.this, selectedMarket, filename);
+
                     }
+                    // if there is no file, also a server request is necessary
                 } else {
-                    requestCurrentOffersFromServer();
+                    allOffersList = Utility.requestOffersFromServer(MainActivity.this, selectedMarket, filename);
                 }
+            }
+
+            // if list is still null, something bad happened
+            if (allOffersList == null) {
+                publishProgress("Verbindung zum Server fehlgeschlagen. " +
+                        "Es konnten keine Angebote geladen werden.");
+                return resultList;
             }
 
             // collect all matching offers
@@ -279,52 +340,54 @@ public class MainActivity extends AppCompatActivity {
             return resultList;
         }
 
+        /**
+         * Inform about the ongoing process.
+         * @param stringParams message to display
+         */
         @Override
         protected void onProgressUpdate(String... stringParams) {
-            // post current status when publishProgress() in doInBackground() is called
+            // posts current status when publishProgress() in doInBackground() is called
             Toast.makeText(getApplicationContext(), stringParams[0], Toast.LENGTH_SHORT).show();
         }
 
+        /**
+         * Return the matching offers to the main activity, if there are any.
+         * @param receivedOfferList matching offers found
+         */
         @Override
         protected void onPostExecute(List<Offer> receivedOfferList) {
             // using result from doInBackground() function as parameter
-            updateListView(receivedOfferList);
-        }
-
-        private void requestCurrentOffersFromServer () {
-            String offers = Utility.requestOffersFromServer(selectedMarket);
-
-            if (offers != null) {
-                Log.v(LOG_TAG, offers);
-                allOffersList = Utility.createOfferListFromJSONString(offers);
-
-                Utility.saveOffersListInFile(MainActivity.this, allOffersList, filename);
-                Log.v(LOG_TAG, "Stored offers in file");
-            } else {
-                Log.v(LOG_TAG, "Nothing received.");
-                publishProgress("Verbindung zum Server fehlgeschlagen. " +
-                        "Es konnten keine Angebote geladen werden.");
+            if (allOffersList != null) {
+                updateListView(receivedOfferList);
             }
         }
     }
-
-
-    /*
-    PRIVATE CLASS DOWNLOAD-IMAGE-TASK
-
-    1. Receives the image url (String).
-    2. Loads the image from the internet.
-    3. Resizes the image to the needed height and corresponding width.
-    4. Sets the image into the given imageView.
-
+    
+    /**
+     * PRIVATE CLASS DOWNLOAD-IMAGE-TASK
+     *
+     * 1. Receives the image url (String).
+     * 2. Loads the image from the internet.
+     * 3. Resizes the image to the needed height and corresponding width.
+     * 4. Sets the image into the given imageView.
+     *
      */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView imageView;
 
+        /**
+         * Constructor, saving the needed image view.
+         * @param imageView place where the image is shown in the end
+         */
         public DownloadImageTask(ImageView imageView) {
             this.imageView = imageView;
         }
 
+        /**
+         * Loads the image and resizes it.
+         * @param urls image url
+         * @return the image bitmap
+         */
         @Override
         protected Bitmap doInBackground(String... urls) {
 
@@ -333,10 +396,12 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bMap = null;
 
             try {
+                // Load image
                 URL url = new URL(urlString);
                 InputStream in = url.openStream();
                 bMap = BitmapFactory.decodeStream(in);
 
+                // Resize to the correct format
                 int newImageHeight = 600;
                 int newImageWidth = bMap.getWidth() * newImageHeight / bMap.getHeight();
                 bMap = Bitmap.createScaledBitmap(bMap, newImageWidth, newImageHeight, true);
@@ -350,11 +415,13 @@ public class MainActivity extends AppCompatActivity {
             return bMap;
         }
 
+        /**
+         * Connects the image bitmap with the imageView.
+         * @param result image bitmap
+         */
         @Override
         protected void onPostExecute(Bitmap result) {
-            if (result == null) {
-                Log.v(LOG_TAG, "Result is null!");
-            }
+            // Add the image to the imageView
             imageView.setImageBitmap(result);
         }
     }
