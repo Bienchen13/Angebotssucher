@@ -239,7 +239,6 @@ public class Utility {
     public static OfferList createOfferListFromJSONString(String jsonString) {
 
         OfferList offerList = new OfferList();
-        List<Offer> receivedOffersList = new ArrayList<>();
 
         try {
             JSONObject jsonObj = new JSONObject(jsonString);
@@ -266,17 +265,14 @@ public class Utility {
                 String imageUrl = offer.getString("bild_app");
 
                 // Create new offer instance and add it to the list
-                receivedOffersList.add(new Offer(title, price, description, imageUrl));
+                offerList.add(new Offer(title, price, description, imageUrl));
             }
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "JSONException: " + e.getMessage());
         }
 
-        Log.v(LOG_TAG, "Added: " + receivedOffersList.size() + " Elements.");
-
-        // Add the offer list to the offerList instance
-        offerList.setOfferList(receivedOffersList);
+        Log.v(LOG_TAG, "Added: " + offerList.size() + " Elements.");
 
         return offerList;
     }
@@ -317,7 +313,7 @@ public class Utility {
 
         jsonString.append("{\"docs\":[");
 
-        for (Offer o: offerList.getOfferList()) {
+        for (Offer o: offerList) {
             jsonString.append("{\"titel\":\"").append(o.getTitle())
                     .append("\",\"preis\":").append(o.getPrice())
                     .append(",\"beschreibung\":\"").append(o.getDescription())

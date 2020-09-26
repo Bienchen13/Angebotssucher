@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(LOG_TAG, "Search for Offers Button was clicked");
 
                 // Get search item from text field
-                String searchItem = ((EditText) findViewById(R.id.searchField)).getText().toString();
+                String searchItem = ((EditText) findViewById(R.id.offer_search_field)).getText().toString();
 
                 // Start the search
                 RequestOffersTask offersTask = new RequestOffersTask();
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // Add On Click Reaction to Search Button
-        findViewById(R.id.searchButton).setOnClickListener(onSearchButtonClickListener);
+        findViewById(R.id.offer_search_button).setOnClickListener(onSearchButtonClickListener);
     }
 
     /**
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // Add On Click Reaction to Select Market Button
-        findViewById(R.id.change_market).setOnClickListener(onSelectMarketClickListener);
+        findViewById(R.id.select_market).setOnClickListener(onSelectMarketClickListener);
 
     }
 
@@ -147,9 +147,10 @@ public class MainActivity extends AppCompatActivity {
      * Bind the Adapter to the List View and init the click reaction on the offers.
      */
     private void initListView() {
+
         // Bind Adapter to List View
         OfferArrayAdapter offerArrayAdapter = new OfferArrayAdapter(this, resultOfferList);
-        ((ListView)findViewById(R.id.listview_activity_main)).setAdapter(offerArrayAdapter);
+        ((ListView)findViewById(R.id.offer_result_list)).setAdapter(offerArrayAdapter);
 
         // Add pop-up with description when clicking on an offer.
         registerListViewClickListener();
@@ -190,6 +191,11 @@ public class MainActivity extends AppCompatActivity {
 
                 // Delete old offers
                 allOffersList = null;
+
+                // Clear list view
+                resultOfferList.clear();
+                ((ListView)findViewById(R.id.offer_result_list)).invalidateViews();
+                ((TextView)findViewById(R.id.offer_result_header)).setText("");
             }
         }
     }
@@ -213,8 +219,8 @@ public class MainActivity extends AppCompatActivity {
                 View popupView = inflater.inflate(R.layout.description_popup, null);
 
                 // Connect the elements from the popup view with the corresponding information
-                ((TextView) popupView.findViewById(R.id.titel_popup_text)).setText(title);
-                ((TextView) popupView.findViewById(R.id.description_popup_text)).setText(description);
+                ((TextView) popupView.findViewById(R.id.popup_title)).setText(title);
+                ((TextView) popupView.findViewById(R.id.popup_description)).setText(description);
 
                 // Start a new DownloadImageTask to display the image
                 ImageView imageView  = popupView.findViewById(R.id.popup_image);
@@ -238,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        ((ListView) findViewById(R.id.listview_activity_main)).setOnItemClickListener(onItemClickListener);
+        ((ListView) findViewById(R.id.offer_result_list)).setOnItemClickListener(onItemClickListener);
     }
 
     /**
@@ -249,18 +255,18 @@ public class MainActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "Updating view");
 
         // Set Header with available dates
-        String headerText = "Angebote gültig vom " +
+        String headerText = "Gültig: " +
                 allOffersList.getAvailableFromFormatted() +
-                " bis zum " +
-                allOffersList.getAvailableUntilFormatted() + ".";
-        ((TextView)findViewById(R.id.resultHeader)).setText(headerText);
+                " - " +
+                allOffersList.getAvailableUntilFormatted();
+        ((TextView)findViewById(R.id.offer_result_header)).setText(headerText);
 
         // Update result offer list
         resultOfferList.clear();
         resultOfferList.addAll(offerList);
 
         // Update list view
-        ((ListView)findViewById(R.id.listview_activity_main)).invalidateViews();
+        ((ListView)findViewById(R.id.offer_result_list)).invalidateViews();
     }
 
     /**
@@ -295,27 +301,20 @@ public class MainActivity extends AppCompatActivity {
             // Create a file for every selected market
             String filename = selectedMarket.getMarketID() + Utility.TEXTFILE_ENDING;
 
-            // Load all offers of a market from file or make a server request
-            if (allOffersList == null) {
+            // Try to restore offers from file
+            if (allOffersList == null && getFileStreamPath(filename).exists()) {
+                allOffersList = Utility.restoreOffersFromFile(MainActivity.this, filename);
 
-                // Load offers from file, if they exist
-                if (getFileStreamPath(filename).exists()) {
-                    allOffersList = Utility.restoreOffersFromFile(MainActivity.this, filename);
-
-                    // If not outdated, they can be used
-                    if (!allOffersList.getAvailableUntil().before(new Date())) {
-                        Log.v(LOG_TAG, "Offers from file restored.");
-
-                        // otherwise make a server request
-                    } else {
-                        Log.v(LOG_TAG, "Offers from file outdated");
-                        allOffersList = Utility.requestOffersFromServer(MainActivity.this, selectedMarket, filename);
-
-                    }
-                    // if there is no file, also a server request is necessary
-                } else {
-                    allOffersList = Utility.requestOffersFromServer(MainActivity.this, selectedMarket, filename);
+                // Check if the file is outdated
+                if (allOffersList.getAvailableUntil().before(new Date())) {
+                    Log.v(LOG_TAG, "Offers from file outdated");
+                    allOffersList = null;
                 }
+            }
+
+            // Try to make a server request to load offers
+            if (allOffersList == null) {
+                allOffersList = Utility.requestOffersFromServer(MainActivity.this, selectedMarket, filename);
             }
 
             // if list is still null, something bad happened
@@ -326,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // collect all matching offers
-            for (Offer o: allOffersList.getOfferList()) {
+            for (Offer o: allOffersList) {
                 if (o.getTitle().toLowerCase().contains(searchItem[0].toLowerCase()) ||
                     o.getDescription().toLowerCase().contains(searchItem[0].toLowerCase())) {
                     resultList.add(o);

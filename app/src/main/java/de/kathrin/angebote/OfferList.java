@@ -2,17 +2,17 @@ package de.kathrin.angebote;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Every OfferList has a period of validity and (of course) a list with all offers.
  */
-public class OfferList {
+public class OfferList extends ArrayList<Offer> {
 
     private Date availableFrom;
     private Date availableUntil;
-    private List<Offer> offerList;
 
     private final DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -21,7 +21,6 @@ public class OfferList {
     public OfferList(Date availableFrom, Date availableUntil, List<Offer> offerList) {
         this.availableFrom = availableFrom;
         this.availableUntil = availableUntil;
-        this.offerList = offerList;
     }
 
     // SETTER
@@ -32,10 +31,6 @@ public class OfferList {
 
     public void setAvailableUntil(Date availableUntil) {
         this.availableUntil = availableUntil;
-    }
-
-    public void setOfferList(List<Offer> offerList) {
-        this.offerList = offerList;
     }
 
     // GETTER
@@ -63,14 +58,9 @@ public class OfferList {
         return availableUntil.getTime();
     }
 
-    public List<Offer> getOfferList() {
-        return offerList;
-    }
-
     @Override
     public String toString() {
         return "Folgende Angebote sind vom " + format.format(availableFrom) +
-                " bis zum " + format.format(availableUntil) + " gültig:\n" +
-                offerList;
+                " bis zum " + format.format(availableUntil) + " gültig";
     }
 }
