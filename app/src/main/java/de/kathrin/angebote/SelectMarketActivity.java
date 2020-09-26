@@ -14,13 +14,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity to change the selected market
+ */
 public class SelectMarketActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + SelectMarketActivity.class.getSimpleName();
-    private List<Market> resultMarketList = new ArrayList<>();
+    // For the intent used in the MarketArrayAdapter Class
     public static final String EXTRA_MARKET = "de.kathrin.angebote.EXTRA_MARKET";
+
+    // Used to show the markets
+    private List<Market> resultMarketList = new ArrayList<>();
+    // Database with all favourite markets
     private MarketDataSource marketDataSource;
 
+    /**
+     * Called automatically when entering this the first time activity.
+     * Sets the layout, the click listener for the search button, connects the database
+     * and connects the adapter to the list view
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,26 +51,36 @@ public class SelectMarketActivity extends AppCompatActivity {
             }
         };
 
-        // Add On Click Reaction to Button
-        findViewById(R.id.searchMarketButton).setOnClickListener(onSearchButtonClickListener);
+        // Add Reaction to Button
+        findViewById(R.id.market_search_button).setOnClickListener(onSearchButtonClickListener);
 
+        // Connect to favourite market database
         marketDataSource = new MarketDataSource(this);
 
+        // Initialize list view
         bindAdapterToListView();
     }
 
+    /**
+     * Called automatically every time entering this activity.
+     * The database is opened and the favourite markets are shown.
+     */
     @Override
     protected void onResume() {
         super.onResume();
-        marketDataSource.open();
         Log.v(LOG_TAG, "On Resume");
 
+        // Open database connection
+        marketDataSource.open();
+
         // Show Favourites
-        List<Market> favouriteMarkets = marketDataSource.getAllFavouriteMarkets();
-        //Log.v(LOG_TAG, "All favourite markets: " + favouriteMarkets);
-        updateListView(favouriteMarkets);
+        showResults(marketDataSource.getAllFavouriteMarkets());
     }
 
+    /**
+     * Called automatically every time leaving this activity.
+     * The database is closed.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -65,80 +88,109 @@ public class SelectMarketActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "On Pause");
     }
 
+    /*************************************** OWN METHODS ****************************************/
+
+    /**
+     * Set the {@link MarketArrayAdapter} to the list view element to display the markets correctly
+     */
     private void bindAdapterToListView() {
         MarketArrayAdapter marketArrayAdapter =
                 new MarketArrayAdapter(this, resultMarketList, marketDataSource, this);
 
         // Add adapter to list view
-        ListView marketListView = findViewById(R.id.listview_select_market_activity);
+        ListView marketListView = findViewById(R.id.market_select_list);
         marketListView.setAdapter(marketArrayAdapter);
     }
 
+    /**
+     * Start the search for markets in the requested city.
+     */
     private void startMarketSearch () {
-        String requestedCity = ((EditText) findViewById(R.id.searchMarketField)).getText().toString();
+        String requestedCity = ((EditText) findViewById(R.id.market_search_field)).getText().toString();
 
+        // Start a new RequestMarketsTask to make the search
         RequestMarketsTask marketsTask = new RequestMarketsTask();
         marketsTask.execute(requestedCity);
     }
 
-    protected void updateListView(List<Market> marketList) {
+    /**
+     * Shows the results of the search, the number of found markets and the market list.
+     * @param marketList list of markets to be displayed
+     */
+    protected void showResults(List<Market> marketList) {
         Log.v(LOG_TAG, "Updating view");
 
-        // Set Header with available markets
-        TextView resultHeader = findViewById(R.id.select_market_header);
+        // Update Header with number of found markets
+        TextView resultHeader = findViewById(R.id.market_select_header);
         resultHeader.setText("Gefundene Märkte: " + marketList.size());
 
         // Update result market list
         resultMarketList.clear();
         resultMarketList.addAll(marketList);
 
-        // Update List View
-        ListView listView = findViewById(R.id.listview_select_market_activity);
+        // Update list View
+        ListView listView = findViewById(R.id.market_select_list);
         listView.invalidateViews();
     }
 
-     /*
-    PRIVATE CLASS REQUEST-MARKETS-TASK
 
-    1. Receives the requested city (String).
-    2. Loads the current markets in the requested city with a server request.
-    3. Returns a List of all found markets.
 
-     */
 
+    /*******************************************************************************************
+     PRIVATE CLASS REQUEST-MARKETS-TASK
+    1. Receives the requested city (String)
+    2. Checks for markets with a server request.
+    3. Returns a list of all found markets.
+     ********************************************************************************************/
     private class RequestMarketsTask extends AsyncTask<String, String, List<Market>> {
 
+        /**
+         * Called when "execute" is called. Makes a server request with the city and returns
+         * all found markets in a list.
+         * @param requestedCity city which markets are returned
+         * @return  list of found markets
+         */
         @Override
         protected List<Market> doInBackground(String... requestedCity) {
-
-            String marketString = Utility.requestMarketsFromServer(requestedCity[0]);
             List<Market> marketList = new ArrayList<>();
 
+            // JSON String with found markets
+            String marketString = Utility.requestMarketsFromServer(requestedCity[0]);
+
             if (marketString != null) {
-                Log.v(LOG_TAG, marketString);
+                // Convert JSON to market list
                 marketList = Utility.createMarketListFromJSONString(marketString);
+
+                if (marketList.isEmpty()) {
+                    publishProgress("Keine Märkte zu Ihrer Anfrage gefunden");
+                }
+
             } else {
                 Log.v(LOG_TAG, "Nothing received.");
                 publishProgress("Verbindung zum Server fehlgeschlagen. " +
                         "Es konnten keine Märkte gefunden werden.");
             }
 
-            if (marketList.isEmpty()) {
-                //resultList.add(new Offer("keine Eintraege gefunden", 0.0, ""));
-                publishProgress("Keine Märkte zu Ihrer Anfrage gefunden");
-            }
-
             return marketList;
         }
 
+        /**
+         * Not used?
+         * @param stringParams
+         */
         @Override
         protected void onProgressUpdate(String... stringParams) {
             Toast.makeText(getApplicationContext(), stringParams[0], Toast.LENGTH_SHORT).show();
         }
 
+        /**
+         * When done return to main class to show the results.
+         * (Called automatically when "doInBackground" has finished)
+         * @param markets list with to found markets
+         */
         @Override
         protected void onPostExecute(List<Market> markets) {
-            updateListView (markets);
+            showResults(markets);
         }
     }
 }

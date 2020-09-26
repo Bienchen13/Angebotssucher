@@ -9,6 +9,10 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handling the Market Data Source where all favourite markets are saved.
+ * (Using the {@link MarketDbHelper} class)
+ */
 public class MarketDataSource {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + MarketDataSource.class.getSimpleName();
@@ -24,21 +28,35 @@ public class MarketDataSource {
             MarketDbHelper.COLUMN_PLZ
     };
 
+    /**
+     * Constructor creating a {@link MarketDbHelper} instance
+     * @param context given to the MarketDbHelper instance
+     */
     public MarketDataSource(Context context) {
         Log.v(LOG_TAG, "DbHelper is created.");
         dbHelper = new MarketDbHelper(context);
     }
 
+    /**
+     * Opens a new database connection
+     */
     public void open() {
         database = dbHelper.getWritableDatabase();
         Log.v(LOG_TAG, "Opened database connection.");
     }
 
+    /**
+     * Closes the current database connection
+     */
     public void close () {
         dbHelper.close();
         Log.v(LOG_TAG,"Closed database connection.");
     }
 
+    /**
+     * Add the given market to the database
+     * @param m market added to the favourites
+     */
     public void addMarketToFavourites (Market m) {
         ContentValues values = new ContentValues();
         values.put(MarketDbHelper.COLUMN_MARKET_ID, m.getMarketID());
@@ -52,6 +70,10 @@ public class MarketDataSource {
         Log.v(LOG_TAG, "Added favourite market! ID: " + insertID + " Market: " + m.toString());
     }
 
+    /**
+     * Delete the given market from the database
+     * @param m market deleted from the favourites
+     */
     public void deleteMarketFromFavourites (Market m) {
         String id = m.getMarketID();
 
@@ -62,38 +84,44 @@ public class MarketDataSource {
         Log.v(LOG_TAG, "Market deleted! Market: " + m.toString());
     }
 
+    /**
+     * Private helper method that converts the cursor data in the database to a market instance
+     * @param cursor  current database position
+     * @return the market filled with the data of the cursor position
+     */
     private Market cursorToMarket (Cursor cursor) {
-        int idIndex = cursor.getColumnIndex(MarketDbHelper.COLUMN_ID);
-        int idMarketId = cursor.getColumnIndex(MarketDbHelper.COLUMN_MARKET_ID);
-        int idName = cursor.getColumnIndex(MarketDbHelper.COLUMN_NAME);
-        int idStreet = cursor.getColumnIndex(MarketDbHelper.COLUMN_STREET);
-        int idCity = cursor.getColumnIndex(MarketDbHelper.COLUMN_CITY);
-        int idPlz = cursor.getColumnIndex(MarketDbHelper.COLUMN_PLZ);
-
-        String marketId = cursor.getString(idMarketId);
-        String name = cursor.getString(idName);
-        String street = cursor.getString(idStreet);
-        String city = cursor.getString(idCity);
-        String plz = cursor.getString(idPlz);
-        long id = cursor.getLong(idIndex);
+        String marketId = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_MARKET_ID));
+        String name     = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_NAME));
+        String street   = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_STREET));
+        String city     = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_CITY));
+        String plz      = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_PLZ));
+        long id         = cursor.getLong(cursor.getColumnIndex(MarketDbHelper.COLUMN_ID));
 
         return new Market(marketId, name, street, city, plz, id);
     }
 
+    /**
+     * Return a list with all markets in the database.
+     * (Walking through the entire database saving all markets in one list.)
+     * @return a list with all markets in the database
+     */
     public List<Market> getAllFavouriteMarkets() {
         List<Market> marketList = new ArrayList<>();
 
+        // Get entire database
         Cursor cursor = database.query(MarketDbHelper.TABLE_MARKET_FAVOURITES, columns,
                 null, null, null, null, null);
 
         cursor.moveToFirst();
         Market market;
 
+        // Step through very entry and add it to the list
         while (!cursor.isAfterLast()) {
             market = cursorToMarket(cursor);
             marketList.add(market);
-            Log.v(LOG_TAG, "ID: " + market.get_id() + ", Market: " + market.toString());
             cursor.moveToNext();
+
+            Log.v(LOG_TAG, "ID: " + market.get_id() + ", Market: " + market.toString());
         }
 
         cursor.close();
@@ -101,12 +129,20 @@ public class MarketDataSource {
         return marketList;
     }
 
+    /**
+     * Check if a market is a favourite market.
+     * (If it is int the database
+     * @param m market that is checked
+     * @return  boolean, true if market is favourite
+     */
     public boolean checkMarketInFavourites (Market m) {
+        // Go to market in datbase
         Cursor cursor = database.query(MarketDbHelper.TABLE_MARKET_FAVOURITES, columns,
                 MarketDbHelper.COLUMN_MARKET_ID + "=" + m.getMarketID(),
                 null, null, null, null);
         cursor.moveToFirst();
 
+        // There is no entry found, return false, else true
         if (cursor.getCount() == 0) {
             return false;
         } else {

@@ -1,5 +1,9 @@
 package de.kathrin.angebote;
 
+/**
+ * Every offer has a title, price, description and image.
+ */
+
 public class Offer {
 
     private final String title;

@@ -5,6 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/**
+ * Class to create and handle the market database where all favourite markets are saved.
+ */
 public class MarketDbHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + MarketDbHelper.class.getSimpleName();
@@ -12,6 +15,7 @@ public class MarketDbHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "market_favourites.db";
     public static final int DB_VERSION = 1;
 
+    // Set all column names
     public static final String TABLE_MARKET_FAVOURITES  = "market_favourites";
     public static final String COLUMN_ID                = "_id";
     public static final String COLUMN_MARKET_ID         = "marketid";
@@ -20,6 +24,7 @@ public class MarketDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CITY              = "city";
     public static final String COLUMN_PLZ               = "plz";
 
+    // Set the instruction to create the favourite markets table
     public static final String SQL_CREATE =
             "CREATE TABLE " + TABLE_MARKET_FAVOURITES +
                     " (" +
@@ -32,10 +37,20 @@ public class MarketDbHelper extends SQLiteOpenHelper {
                     ");";
 
 
+    /**
+     * Constructor using the constructor of the Java Class {@link SQLiteOpenHelper},
+     * giving it the name and the version of the database
+     * @param context needed by SQLiteOpenHelper
+     */
     public MarketDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+    /**
+     * Called automatically when an instance of this class is created, creates the table
+     * for the favourite markets
+     * @param db - done by Java -
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
@@ -46,6 +61,12 @@ public class MarketDbHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Not used
+     * @param db
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 

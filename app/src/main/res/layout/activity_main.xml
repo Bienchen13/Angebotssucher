@@ -9,10 +9,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
-        android:text="Supertoller Angebotssucher"
+        android:text="Suchen Sie nach Angeboten."
         android:textAlignment="center"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         />
 
@@ -21,7 +20,7 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/searchField"
+            android:id="@+id/offer_search_field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
@@ -29,43 +28,28 @@
             android:textSize="@dimen/default_font_size" />
 
         <Button
-            android:id="@+id/searchButton"
+            android:id="@+id/offer_search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:layout_toLeftOf="@id/searchField"
+            android:layout_toLeftOf="@id/offer_search_field"
             android:layout_alignParentRight="true"
             android:text="Suchen"
             android:textSize="@dimen/default_font_size" />
 
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/select_market"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:textSize="20sp"
+        android:drawableRight="@drawable/edit_pencil"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/select_market"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:textSize="@dimen/default_font_size" />
-
-        <Button
-            android:id="@+id/change_market"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/select_market"
-            android:layout_margin="@dimen/default_margin"
-            android:layout_alignParentRight="true"
-            android:text="Ändern"
-            android:textSize="@dimen/default_font_size" />
-
-    </RelativeLayout>
 
     <TextView
-        android:id="@+id/resultHeader"
+        android:id="@+id/offer_result_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
@@ -73,7 +57,7 @@
         />
 
     <ListView
-        android:id="@+id/listview_activity_main"
+        android:id="@+id/offer_result_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/default_margin"

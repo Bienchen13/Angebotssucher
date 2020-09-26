@@ -27,33 +27,49 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Utility class for handling server requests, file access and JSON conversions
+ */
 public class Utility {
 
+    private static final String LOG_TAG = MainActivity.PROJECT_NAME + Utility.class.getSimpleName();
+
+    // Server request URLs
     private static final String URL_EDEKA_OFFERS = "https://www.edeka.de/eh/service/eh/offers?";
     private static final String URL_EDEKA_MARKETS = "https://www.edeka.de/search.xml";
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + Utility.class.getSimpleName();
+
+    // File Access Strings
     static final String TEXTFILE_ENDING = ".txt";
     static final String DEFAULT_MARKET_FILE = "default_market.txt";
 
-    /*
-     * Utility functions for handling Server Requests
-     */
+    /*********************************************************************************************
+     *
+     *                               SERVER REQUESTS
+     *
+     * *******************************************************************************************/
 
+    /**
+     * Sends a request to the given URL and returns the response.
+     * @param requestUrl    which URL is adressed
+     * @param requestMethod for example POST or GET
+     * @param encodedData   if its the search for a market: the requested city
+     * @return  the server response
+     */
     private static String requestFromServer (String requestUrl, String requestMethod, String encodedData) {
 
         String resultString = null;
         HttpURLConnection conn = null;
         try {
 
-            // Aufbauen der Verbindung zum Webserver - Timeout nach 9000ms
+            // Establishing the connection to the web server - timeout after 9000ms
             URL url = new URL(requestUrl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(requestMethod);
             conn.setConnectTimeout(9000);
             conn.setReadTimeout(9000);
 
+            // If not null, it is a market request. Otherwise an offer request.
             if (encodedData != null) {
-                Log.v(LOG_TAG, "POST Request");
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestProperty("Content-Length", String.valueOf(encodedData.length()));
@@ -71,7 +87,7 @@ public class Utility {
             Log.v(LOG_TAG, "ResponseCode: " + conn.getResponseCode());
 
             if (conn.getResponseCode() == 200) {
-                // Anfordern der Daten und Umwandeln dieser in eine Zeichenkette (String)
+                // Request the data and convert it into a string
                 InputStream stream = new BufferedInputStream(conn.getInputStream());
                 resultString = convertStreamToString(stream);
             }
@@ -93,6 +109,11 @@ public class Utility {
         return resultString;
     }
 
+    /**
+     * Helper method for requestFromServer and restoreStringFromFile. Converts a InputStream into a string.
+     * @param is    the InputStream
+     * @return      the string
+     */
     private static String convertStreamToString(InputStream is) {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
         StringBuilder stringBuilder = new StringBuilder();
@@ -115,10 +136,19 @@ public class Utility {
         return stringBuilder.toString();
     }
 
-    /*
-     * Utility functions for handling File Access
-     */
 
+    /**********************************************************************************************
+     *
+     *                               FILE ACCESS
+     *
+     * *******************************************************************************************/
+
+    /**
+     * Write a string into a file.
+     * @param context   current context
+     * @param string    string that should be saved
+     * @param filename  name of the file that is written
+     */
     private static void saveStringInFile(Context context, String string, String filename) {
         FileOutputStream fileOutputStream = null;
         try {
@@ -139,6 +169,12 @@ public class Utility {
         }
     }
 
+    /**
+     * Write file content into a JSON string.
+     * @param context   current context
+     * @param filename  name of the file that it read
+     * @return  JSON string with the file content
+     */
     private static String restoreStringFromFile (Context context, String filename) {
         Log.v (LOG_TAG, "Restoring context!");
         String jsonString = "";
@@ -164,35 +200,52 @@ public class Utility {
         return jsonString;
     }
 
-    /*
-    * Utility functions for handling Offers
-    */
+    /**********************************************************************************************
+     *
+     *                               HANDLE OFFERS
+     *
+     * *******************************************************************************************/
 
-    public static String requestOffersFromServer(Market market) {
+    /**
+     * Request all offers from one market from the server.
+     * @param market    market that is used
+     * @return          server response
+     */
+    public static OfferList requestOffersFromServer(Context context, Market market, String filename) {
         Log.v(LOG_TAG, "Request Offers from Server.");
 
-        //String marketID = "192547";
-        String marketID = market.getMarketID();
-        String url = URL_EDEKA_OFFERS + "marketId=" + marketID + "&limit=89899";
+        // Compose URL with market ID
+        String url = URL_EDEKA_OFFERS + "marketId=" + market.getMarketID() + "&limit=89899";
 
-        Log.v(LOG_TAG, "Url: " + url);
+        // Request URL
+        String jsonString = requestFromServer(url, "GET", null);
+        OfferList offerList = null;
 
-        return requestFromServer(url, "GET", null);
+        if (jsonString != null) {
+            offerList = createOfferListFromJSONString(jsonString);
+            saveOffersListInFile(context, offerList, filename);
+            Log.v(LOG_TAG, "Stored offers in file");
+        } else {
+            Log.v(LOG_TAG, "Nothing received.");
+        }
+        return offerList;
     }
 
+    /**
+     * Convert JSON String into an offerList instance.
+     * @param jsonString string to convert
+     * @return offerList instance
+     */
     public static OfferList createOfferListFromJSONString(String jsonString) {
 
         OfferList offerList = new OfferList();
-        List<Offer> receivedOffersList = new ArrayList<>();
 
         try {
             JSONObject jsonObj = new JSONObject(jsonString);
 
-            long availableFrom = jsonObj.getLong("gueltig_von");
-            long availableUntil = jsonObj.getLong("gueltig_bis");
-
-            offerList.setAvailableFrom(new Date(availableFrom));
-            offerList.setAvailableUntil(new Date(availableUntil));
+            // Get period of validity
+            offerList.setAvailableFrom(new Date(jsonObj.getLong("gueltig_von")));
+            offerList.setAvailableUntil(new Date(jsonObj.getLong("gueltig_bis")));
 
             // Demand JSON Array with Offer-Objects
             JSONArray docs = jsonObj.getJSONArray("docs");
@@ -211,39 +264,56 @@ public class Utility {
                         .trim();
                 String imageUrl = offer.getString("bild_app");
 
-                Offer newOffer = new Offer(title, price, description, imageUrl);
-
-                receivedOffersList.add(newOffer);
-                //Log.v(TAG, "Added: " + newOffer);
+                // Create new offer instance and add it to the list
+                offerList.add(new Offer(title, price, description, imageUrl));
             }
 
         } catch (JSONException e) {
             Log.e(LOG_TAG, "JSONException: " + e.getMessage());
         }
 
-        Log.v(LOG_TAG, "Added: " + receivedOffersList.size() + " Elements.");
-        offerList.setOfferList(receivedOffersList);
+        Log.v(LOG_TAG, "Added: " + offerList.size() + " Elements.");
 
         return offerList;
     }
 
+    /**
+     * Take a file and convert the content into an offerList instance.
+     * (Combine restoreStringFromFile and createOfferListFromJSONString.)
+     * @param context   current context
+     * @param filename  file to convert
+     * @return          offerList instance
+     */
     public static OfferList restoreOffersFromFile(Context context, String filename) {
-        String jsonString = restoreStringFromFile(context, filename);
-        return createOfferListFromJSONString(jsonString);
+        return createOfferListFromJSONString(restoreStringFromFile(context, filename));
     }
 
-    public static void saveOffersListInFile(Context context,OfferList offersList, String filename) {
+    /**
+     * Take an offerList instance and save it into a file.
+     * (Combine createJSONStringFromOffersList and saveStringInFile.)
+     * @param context       current context
+     * @param offersList    offerList instance to be saved
+     * @param filename      file where to save the offers
+     */
+    public static void saveOffersListInFile(Context context, OfferList offersList, String filename) {
         String jsonString = createJSONStringFromOffersList(offersList);
         saveStringInFile(context, jsonString, filename);
-        Log.v(LOG_TAG, "Saved offers in file.");
     }
 
+    /**
+     * Helper function for saveOffersListInFile.
+     * Convert offerList instance into a JSON string.
+     * Has to have the same format as the server response!
+     *
+     * @param offerList offerList to convert
+     * @return  JSON string
+     */
     private static String createJSONStringFromOffersList (OfferList offerList) {
         StringBuilder jsonString = new StringBuilder();
 
         jsonString.append("{\"docs\":[");
 
-        for (Offer o: offerList.getOfferList()) {
+        for (Offer o: offerList) {
             jsonString.append("{\"titel\":\"").append(o.getTitle())
                     .append("\",\"preis\":").append(o.getPrice())
                     .append(",\"beschreibung\":\"").append(o.getDescription())
@@ -259,13 +329,23 @@ public class Utility {
         return jsonString.toString();
     }
 
-    /*
-    * Utility functions for handling Markets
-    */
+
+    /**********************************************************************************************
+     *
+     *                               HANDLE MARKETS
+     *
+     * *******************************************************************************************/
+
+    /**
+     * Request all markets in the given city from the server.
+     * @param city  where to be searched
+     * @return      JSON String with all markets in the city
+     */
     public static String requestMarketsFromServer(String city) {
         Log.v(LOG_TAG, "Request Markets from Server.");
 
         try {
+            // Handle umlauts
             city = URLEncoder.encode(city, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -282,25 +362,26 @@ public class Utility {
                 "ort_tlc%3A" + city.toLowerCase() + "" +
                 "))&fl=marktID_tlc%2Cplz_tlc%2Cort_tlc%2Cstrasse_tlc%2Cname_tlc";
 
-        Log.v(LOG_TAG, "Data: " + data);
-
         return requestFromServer(URL_EDEKA_MARKETS, "POST", data);
     }
 
+    /**
+     * Convert JSON String into list of markets
+     * @param jsonString    JSON String to convert
+     * @return  list of markets
+     */
     public static List<Market> createMarketListFromJSONString (String jsonString) {
 
         List<Market> marketList = new ArrayList<>();
 
         try {
             JSONObject jsonObj = new JSONObject(jsonString);
-            JSONObject response = jsonObj.getJSONObject("response");
-            JSONArray docs = response.getJSONArray("docs");
+            JSONArray docs = jsonObj.getJSONObject("response").getJSONArray("docs");
 
             // Run through docs-object, read offer data
             for (int i = 0; i < docs.length(); i++) {
                 Market newMarket = getMarketFromJSONString(docs.getJSONObject(i));
                 marketList.add(newMarket);
-                Log.v(LOG_TAG, "Added: " + newMarket);
             }
 
         } catch (JSONException e) {
@@ -310,6 +391,12 @@ public class Utility {
         return marketList;
     }
 
+    /**
+     * Helper function to convert a JSON Object into a single market instance.
+     * (Used in createMarketListFromJSONString and restoreMarketFromFile)
+     * @param jsonObject    JSON Object to convert
+     * @return              market instance
+     */
     private static Market getMarketFromJSONString (JSONObject jsonObject) {
         try {
             String id = jsonObject.getString("marktID_tlc");
@@ -326,6 +413,12 @@ public class Utility {
         return null;
     }
 
+    /**
+     * Helper function to convert a market instance into a JSON string.
+     * (Used in saveMarketToFile)
+     * @param market    market to be converted
+     * @return  JSON string
+     */
     private static String createJSONStringFromMarket (Market market) {
         String jsonString = "";
 
@@ -340,22 +433,30 @@ public class Utility {
         return jsonString;
     }
 
+    /**
+     * Write a market to a file (used to save the default market).
+     * @param context   current context
+     * @param market    default market
+     */
     public static void saveMarketToFile (Context context, Market market) {
         String jsonString = createJSONStringFromMarket(market);
         saveStringInFile(context, jsonString, DEFAULT_MARKET_FILE);
-        Log.v(LOG_TAG, "Market saved in File.");
     }
 
+    /**
+     * Read market from file (used to read the default market)
+     * @param context   current context
+     * @return          default market
+     */
     public static Market restoreMarketFromFile (Context context) {
-        String jsonString = restoreStringFromFile(context, DEFAULT_MARKET_FILE);
-        Market m = null;
-
         try {
-            m = getMarketFromJSONString(new JSONObject(jsonString));
+
+            String jsonString = restoreStringFromFile(context, DEFAULT_MARKET_FILE);
+            return getMarketFromJSONString(new JSONObject(jsonString));
+
         } catch (JSONException e) {
             Log.e(LOG_TAG, "JSONException: " + e.getMessage());
+            return null;
         }
-
-        return m;
     }
 }
