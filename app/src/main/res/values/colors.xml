@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="colorRowBackground">#fff</color>
+    <color name="colorRowBackground">#FEFEFE</color>
     <color name="colorDivider">#f7f7f7</color>
     <color name="colorAuthor">#999</color>
 </resources>

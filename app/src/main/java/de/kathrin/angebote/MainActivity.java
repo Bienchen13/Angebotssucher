@@ -91,10 +91,10 @@ public class MainActivity extends AppCompatActivity {
      * Display the selected market.
      */
     private void setSelectedMarket () {
-        String market = selectedMarket.getName() + "\n" +
-                        selectedMarket.getStreet() + "\n" +
-                        selectedMarket.getPlz() + " "  +
-                        selectedMarket.getCity();
+        String market = selectedMarket.getName(); //+ "\n" +
+                        //selectedMarket.getStreet() + "\n" +
+                        // selectedMarket.getPlz() + " "  +
+                        //selectedMarket.getCity();
 
         ((TextView) findViewById(R.id.select_market)).setText(market);
     }
@@ -324,10 +324,12 @@ public class MainActivity extends AppCompatActivity {
                 return resultList;
             }
 
+            String requestString = searchItem[0].toLowerCase().trim();
+
             // collect all matching offers
             for (Offer o: allOffersList) {
-                if (o.getTitle().toLowerCase().contains(searchItem[0].toLowerCase()) ||
-                    o.getDescription().toLowerCase().contains(searchItem[0].toLowerCase())) {
+                if (o.getTitle().toLowerCase().contains(requestString) ||
+                    o.getDescription().toLowerCase().contains(requestString)) {
                     resultList.add(o);
                 }
             }

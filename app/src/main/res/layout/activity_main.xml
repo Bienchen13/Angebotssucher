@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Suchen Sie nach Angeboten."
         android:textAlignment="center"
-        android:textSize="20sp"
+        android:textSize="@dimen/default_font_size"
         android:textStyle="bold"
         />
 
@@ -21,31 +21,35 @@
 
         <EditText
             android:id="@+id/offer_search_field"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="Suchbegriff eingeben"
-            android:textSize="@dimen/default_font_size" />
+            android:layout_toLeftOf="@id/offer_search_button"
+            android:textSize="@dimen/search_font_size" />
 
         <Button
             android:id="@+id/offer_search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:layout_toLeftOf="@id/offer_search_field"
             android:layout_alignParentRight="true"
             android:text="Suchen"
-            android:textSize="@dimen/default_font_size" />
+            android:textSize="@dimen/search_font_size" />
 
     </RelativeLayout>
 
     <TextView
         android:id="@+id/select_market"
-        android:layout_width="wrap_content"
+        android:hint="EDEKA"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:textSize="20sp"
-        android:drawableRight="@drawable/edit_pencil"/>
+        android:padding="@dimen/default_margin"
+        android:textSize="@dimen/default_font_size"
+        android:drawableRight="@drawable/edit_pencil"
+        android:background="@color/colorRowBackground"
+        />
 
 
     <TextView
