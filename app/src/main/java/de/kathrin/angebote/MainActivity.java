@@ -15,15 +15,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -36,6 +32,7 @@ import de.kathrin.angebote.adapter.OfferArrayAdapter;
 import de.kathrin.angebote.models.Market;
 import de.kathrin.angebote.models.Offer;
 import de.kathrin.angebote.models.OfferList;
+import de.kathrin.angebote.utlis.LayoutUtilsMain;
 import de.kathrin.angebote.utlis.MarketUtils;
 import de.kathrin.angebote.utlis.OfferUtils;
 
@@ -54,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Offer> resultOfferList = new ArrayList<>();
     private Market selectedMarket = null;
 
+    private LayoutUtilsMain lu;
 
     /**
      * Automatically called when starting the app.
@@ -67,7 +65,10 @@ public class MainActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "In Create");
 
         // Set Layout
-        setContentView(R.layout.activity_main);
+        setContentView(LayoutUtilsMain.MAIN_ACTIVITY);
+
+        // Init Helper Class to handle the access to the layout elements
+        lu = new LayoutUtilsMain(this);
 
         // Set Default Market
         setDefaultMarket();
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         // selectedMarket.getPlz() + " "  +
                         //selectedMarket.getCity();
 
-        ((TextView) findViewById(R.id.select_market)).setText(market);
+        lu.MARKET_SELECT_VIEW.setText(market);
     }
 
     /**
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(LOG_TAG, "Search for Offers Button was clicked");
 
                 // Get search item from text field
-                String searchItem = ((EditText) findViewById(R.id.offer_search_field)).getText().toString();
+                String searchItem = lu.OFFER_SEARCH_FIELD_VIEW.getText().toString();
 
                 // Start the search
                 RequestOffersTask offersTask = new RequestOffersTask();
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // Add On Click Reaction to Search Button
-        findViewById(R.id.offer_search_button).setOnClickListener(onSearchButtonClickListener);
+        lu.OFFER_SEARCH_BUTTON_VIEW.setOnClickListener(onSearchButtonClickListener);
     }
 
     /**
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         // Add On Click Reaction to Select Market Button
-        findViewById(R.id.select_market).setOnClickListener(onSelectMarketClickListener);
+        lu.MARKET_SELECT_VIEW.setOnClickListener(onSelectMarketClickListener);
 
     }
 
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Bind Adapter to List View
         OfferArrayAdapter offerArrayAdapter = new OfferArrayAdapter(this, resultOfferList);
-        ((ListView)findViewById(R.id.offer_result_list)).setAdapter(offerArrayAdapter);
+        lu.OFFER_RESULT_LIST_VIEW.setAdapter(offerArrayAdapter);
 
         // Add pop-up with description when clicking on an offer.
         registerListViewClickListener();
@@ -200,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // Clear list view
                 resultOfferList.clear();
-                ((ListView)findViewById(R.id.offer_result_list)).invalidateViews();
-                ((TextView)findViewById(R.id.offer_result_header)).setText("");
+                lu.OFFER_RESULT_LIST_VIEW.invalidateViews();
+                lu.OFFER_RESULT_HEADER_VIEW.setText("");
             }
         }
     }
@@ -222,15 +223,15 @@ public class MainActivity extends AppCompatActivity {
 
                 // Set up the popup
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View popupView = inflater.inflate(R.layout.description_popup, null);
+                View popupView = inflater.inflate(LayoutUtilsMain.OFFER_POPUP, null);
+                lu.setPopupView(popupView);
 
                 // Connect the elements from the popup view with the corresponding information
-                ((TextView) popupView.findViewById(R.id.popup_title)).setText(title);
-                ((TextView) popupView.findViewById(R.id.popup_description)).setText(description);
+                lu.OFFER_POPUP_TITLE_VIEW.setText(title);
+                lu.OFFER_POPUP_DESCRIPTION_VIEW.setText(description);
 
                 // Start a new DownloadImageTask to display the image
-                ImageView imageView  = popupView.findViewById(R.id.popup_image);
-                new DownloadImageTask(imageView).execute(urlString);
+                new DownloadImageTask(lu.OFFER_POPUP_IMAGE_VIEW).execute(urlString);
 
                 // Show the Popup Window
                 final PopupWindow pw = new PopupWindow(popupView,
@@ -250,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        ((ListView) findViewById(R.id.offer_result_list)).setOnItemClickListener(onItemClickListener);
+        lu.OFFER_RESULT_LIST_VIEW.setOnItemClickListener(onItemClickListener);
     }
 
     /**
@@ -265,14 +266,14 @@ public class MainActivity extends AppCompatActivity {
                 allOffersList.getAvailableFromFormatted() +
                 " - " +
                 allOffersList.getAvailableUntilFormatted();
-        ((TextView)findViewById(R.id.offer_result_header)).setText(headerText);
+        lu.OFFER_RESULT_HEADER_VIEW.setText(headerText);
 
         // Update result offer list
         resultOfferList.clear();
         resultOfferList.addAll(offerList);
 
         // Update list view
-        ((ListView)findViewById(R.id.offer_result_list)).invalidateViews();
+        lu.OFFER_RESULT_LIST_VIEW.invalidateViews();
     }
 
     /**

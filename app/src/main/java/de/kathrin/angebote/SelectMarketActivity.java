@@ -17,6 +17,8 @@ import java.util.List;
 import de.kathrin.angebote.adapter.MarketArrayAdapter;
 import de.kathrin.angebote.database.MarketDataSource;
 import de.kathrin.angebote.models.Market;
+import de.kathrin.angebote.utlis.LayoutUtilsMain;
+import de.kathrin.angebote.utlis.LayoutUtilsSelectMarket;
 import de.kathrin.angebote.utlis.MarketUtils;
 
 /**
@@ -33,6 +35,8 @@ public class SelectMarketActivity extends AppCompatActivity {
     // Database with all favourite markets
     private MarketDataSource marketDataSource;
 
+    private LayoutUtilsSelectMarket lu;
+
     /**
      * Called automatically when entering this the first time activity.
      * Sets the layout, the click listener for the search button, connects the database
@@ -44,7 +48,8 @@ public class SelectMarketActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Set Layout
-        setContentView(R.layout.activity_select_market);
+        setContentView(LayoutUtilsSelectMarket.SELECT_MARKET_ACTIVITY);
+        lu = new LayoutUtilsSelectMarket(this);
 
         // Define On Click Button Reaction
         View.OnClickListener onSearchButtonClickListener = new View.OnClickListener() {
@@ -57,7 +62,7 @@ public class SelectMarketActivity extends AppCompatActivity {
         };
 
         // Add Reaction to Button
-        findViewById(R.id.market_search_button).setOnClickListener(onSearchButtonClickListener);
+        lu.MARKET_SEARCH_BUTTON_VIEW.setOnClickListener(onSearchButtonClickListener);
 
         // Connect to favourite market database
         marketDataSource = new MarketDataSource(this);
@@ -103,15 +108,14 @@ public class SelectMarketActivity extends AppCompatActivity {
                 new MarketArrayAdapter(this, resultMarketList, marketDataSource, this);
 
         // Add adapter to list view
-        ListView marketListView = findViewById(R.id.market_select_list);
-        marketListView.setAdapter(marketArrayAdapter);
+        lu.MARKET_RESULT_LIST_VIEW.setAdapter(marketArrayAdapter);
     }
 
     /**
      * Start the search for markets in the requested city.
      */
     private void startMarketSearch () {
-        String requestedCity = ((EditText) findViewById(R.id.market_search_field)).getText().toString();
+        String requestedCity = lu.MARKET_SEARCH_FIELD_VIEW.getText().toString();
 
         // Start a new RequestMarketsTask to make the search
         RequestMarketsTask marketsTask = new RequestMarketsTask();
@@ -126,16 +130,14 @@ public class SelectMarketActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "Updating view");
 
         // Update Header with number of found markets
-        TextView resultHeader = findViewById(R.id.market_select_header);
-        resultHeader.setText("Gefundene Märkte: " + marketList.size());
+        lu.MARKET_RESULT_HEADER_VIEW.setText("Gefundene Märkte: " + marketList.size());
 
         // Update result market list
         resultMarketList.clear();
         resultMarketList.addAll(marketList);
 
         // Update list View
-        ListView listView = findViewById(R.id.market_select_list);
-        listView.invalidateViews();
+        lu.MARKET_RESULT_LIST_VIEW.invalidateViews();
     }
 
 
