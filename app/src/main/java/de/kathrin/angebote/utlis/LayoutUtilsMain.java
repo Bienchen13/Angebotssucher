@@ -32,34 +32,31 @@ public class LayoutUtilsMain {
 
     // To get also the views..
 
-    private Activity activity;
-    private View popupView;
+    public final TextView MARKET_SELECT_VIEW;
 
-    public TextView MARKET_SELECT_VIEW;
+    public final TextView OFFER_RESULT_HEADER_VIEW;
+    public final ListView OFFER_RESULT_LIST_VIEW;
 
-    public TextView OFFER_RESULT_HEADER_VIEW;
-    public ListView OFFER_RESULT_LIST_VIEW;
+    public final EditText OFFER_SEARCH_FIELD_VIEW;
+    public final Button   OFFER_SEARCH_BUTTON_VIEW;
 
-    public EditText OFFER_SEARCH_FIELD_VIEW;
-    public Button OFFER_SEARCH_BUTTON_VIEW;
+    public LayoutUtilsMain(Activity activity) {
+        MARKET_SELECT_VIEW        = activity.findViewById(MARKET_SELECT);
+
+        OFFER_RESULT_HEADER_VIEW  = activity.findViewById(OFFER_RESULT_HEADER);
+        OFFER_RESULT_LIST_VIEW    = activity.findViewById(OFFER_RESULT_LIST);
+
+        OFFER_SEARCH_FIELD_VIEW   = activity.findViewById(OFFER_SEARCH_FIELD);
+        OFFER_SEARCH_BUTTON_VIEW  = activity.findViewById(OFFER_SEARCH_BUTTON);
+    }
+
+    // For the popup:
 
     public TextView OFFER_POPUP_TITLE_VIEW;
     public TextView OFFER_POPUP_DESCRIPTION_VIEW;
     public ImageView OFFER_POPUP_IMAGE_VIEW;
 
-    public LayoutUtilsMain(Activity activity) {
-        this.activity = activity;
-
-        MARKET_SELECT_VIEW        = this.activity.findViewById(MARKET_SELECT);
-
-        OFFER_RESULT_HEADER_VIEW  = this.activity.findViewById(OFFER_RESULT_HEADER);
-        OFFER_RESULT_LIST_VIEW    = this.activity.findViewById(OFFER_RESULT_LIST);
-
-        OFFER_SEARCH_FIELD_VIEW   = this.activity.findViewById(OFFER_SEARCH_FIELD);
-        OFFER_SEARCH_BUTTON_VIEW  = this.activity.findViewById(OFFER_SEARCH_BUTTON);
-
-
-    }
+    private View popupView;
 
     public void setPopupView(View view) {
         this.popupView = view;

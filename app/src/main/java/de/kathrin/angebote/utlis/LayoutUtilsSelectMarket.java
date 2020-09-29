@@ -21,21 +21,17 @@ public class LayoutUtilsSelectMarket {
 
     // To get also the views..
 
-    private Activity activity;
+    public final EditText MARKET_SEARCH_FIELD_VIEW;
+    public final Button MARKET_SEARCH_BUTTON_VIEW;
 
-    public EditText MARKET_SEARCH_FIELD_VIEW;
-    public Button MARKET_SEARCH_BUTTON_VIEW;
-
-    public TextView MARKET_RESULT_HEADER_VIEW;
-    public ListView MARKET_RESULT_LIST_VIEW;
+    public final TextView MARKET_RESULT_HEADER_VIEW;
+    public final ListView MARKET_RESULT_LIST_VIEW;
 
     public LayoutUtilsSelectMarket(Activity activity) {
-        this.activity = activity;
+        MARKET_SEARCH_FIELD_VIEW    = activity.findViewById(MARKET_SEARCH_FIELD);
+        MARKET_SEARCH_BUTTON_VIEW   = activity.findViewById(MARKET_SEARCH_BUTTON);
 
-        MARKET_SEARCH_FIELD_VIEW    = this.activity.findViewById(MARKET_SEARCH_FIELD);
-        MARKET_SEARCH_BUTTON_VIEW   = this.activity.findViewById(MARKET_SEARCH_BUTTON);
-
-        MARKET_RESULT_HEADER_VIEW   = this.activity.findViewById(MARKET_RESULT_HEADER);
-        MARKET_RESULT_LIST_VIEW     = this.activity.findViewById(MARKET_RESULT_LIST);
+        MARKET_RESULT_HEADER_VIEW   = activity.findViewById(MARKET_RESULT_HEADER);
+        MARKET_RESULT_LIST_VIEW     = activity.findViewById(MARKET_RESULT_LIST);
     }
 }

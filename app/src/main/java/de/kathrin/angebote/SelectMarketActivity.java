@@ -27,6 +27,7 @@ import de.kathrin.angebote.utlis.MarketUtils;
 public class SelectMarketActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + SelectMarketActivity.class.getSimpleName();
+
     // For the intent used in the MarketArrayAdapter Class
     public static final String EXTRA_MARKET = "de.kathrin.angebote.EXTRA_MARKET";
 
@@ -49,22 +50,14 @@ public class SelectMarketActivity extends AppCompatActivity {
 
         // Set Layout
         setContentView(LayoutUtilsSelectMarket.SELECT_MARKET_ACTIVITY);
+
+        // Init Helper Class to handle the access to the layout elements
         lu = new LayoutUtilsSelectMarket(this);
 
-        // Define On Click Button Reaction
-        View.OnClickListener onSearchButtonClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(LOG_TAG, "Search for Markets Button was clicked");
-                // Start the search for offers
-                startMarketSearch();
-            }
-        };
+        // Initialize the search button
+        initMarketSearch();
 
-        // Add Reaction to Button
-        lu.MARKET_SEARCH_BUTTON_VIEW.setOnClickListener(onSearchButtonClickListener);
-
-        // Connect to favourite market database
+        // Connect to favourite-market database
         marketDataSource = new MarketDataSource(this);
 
         // Initialize list view
@@ -94,11 +87,36 @@ public class SelectMarketActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        marketDataSource.close();
         Log.v(LOG_TAG, "On Pause");
+
+        // Close database connection
+        marketDataSource.close();
+
     }
 
     /*************************************** OWN METHODS ****************************************/
+
+    /**
+     * Start the market search on button click in a new {@link RequestMarketsTask} instance.
+     */
+    private void initMarketSearch() {
+        // Define On Click Button Reaction
+        View.OnClickListener onSearchButtonClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(LOG_TAG, "Search for Markets Button was clicked");
+
+                // Get the requested city from the text view
+                String requestedCity = lu.MARKET_SEARCH_FIELD_VIEW.getText().toString();
+
+                // Start a new RequestMarketsTask to make the search
+                new RequestMarketsTask().execute(requestedCity);
+            }
+        };
+
+        // Add Reaction to Button
+        lu.MARKET_SEARCH_BUTTON_VIEW.setOnClickListener(onSearchButtonClickListener);
+    }
 
     /**
      * Set the {@link MarketArrayAdapter} to the list view element to display the markets correctly
@@ -109,17 +127,6 @@ public class SelectMarketActivity extends AppCompatActivity {
 
         // Add adapter to list view
         lu.MARKET_RESULT_LIST_VIEW.setAdapter(marketArrayAdapter);
-    }
-
-    /**
-     * Start the search for markets in the requested city.
-     */
-    private void startMarketSearch () {
-        String requestedCity = lu.MARKET_SEARCH_FIELD_VIEW.getText().toString();
-
-        // Start a new RequestMarketsTask to make the search
-        RequestMarketsTask marketsTask = new RequestMarketsTask();
-        marketsTask.execute(requestedCity);
     }
 
     /**
