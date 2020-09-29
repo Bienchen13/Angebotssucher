@@ -1,4 +1,4 @@
-package de.kathrin.angebote;
+package de.kathrin.angebote.models;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -58,9 +58,19 @@ public class OfferList extends ArrayList<Offer> {
         return availableUntil.getTime();
     }
 
+    public String getOffersInString () {
+        String concat = "";
+        for (Offer o: this) {
+            concat += o.getTitle() + ": " + o.getPrice().toString() + "€ " +
+                    o.getDescription() + " " + o.getImageUrl() + "\n";
+        }
+        return concat;
+    }
+
     @Override
     public String toString() {
         return "Folgende Angebote sind vom " + format.format(availableFrom) +
-                " bis zum " + format.format(availableUntil) + " gültig";
+                " bis zum " + format.format(availableUntil) + " gültig:" +
+                getOffersInString();
     }
 }

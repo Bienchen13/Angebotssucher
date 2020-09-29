@@ -1,4 +1,4 @@
-package de.kathrin.angebote;
+package de.kathrin.angebote.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +8,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.kathrin.angebote.MainActivity;
+import de.kathrin.angebote.models.Market;
 
 /**
  * Handling the Market Data Source where all favourite markets are saved.

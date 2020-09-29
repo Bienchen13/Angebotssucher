@@ -1,9 +1,11 @@
-package de.kathrin.angebote;
+package de.kathrin.angebote.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import de.kathrin.angebote.MainActivity;
 
 /**
  * Class to create and handle the market database where all favourite markets are saved.

@@ -14,6 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.kathrin.angebote.adapter.MarketArrayAdapter;
+import de.kathrin.angebote.database.MarketDataSource;
+import de.kathrin.angebote.models.Market;
+import de.kathrin.angebote.utlis.MarketUtils;
+
 /**
  * Activity to change the selected market
  */
@@ -155,11 +160,11 @@ public class SelectMarketActivity extends AppCompatActivity {
             List<Market> marketList = new ArrayList<>();
 
             // JSON String with found markets
-            String marketString = Utility.requestMarketsFromServer(requestedCity[0]);
+            String marketString = MarketUtils.requestMarketsFromServer(requestedCity[0]);
 
             if (marketString != null) {
                 // Convert JSON to market list
-                marketList = Utility.createMarketListFromJSONString(marketString);
+                marketList = MarketUtils.createMarketListFromJSONString(marketString);
 
                 if (marketList.isEmpty()) {
                     publishProgress("Keine Märkte zu Ihrer Anfrage gefunden");

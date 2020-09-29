@@ -1,7 +1,6 @@
-package de.kathrin.angebote;
+package de.kathrin.angebote.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.List;
+
+import de.kathrin.angebote.models.Offer;
+import de.kathrin.angebote.R;
 
 /**
  * Adapter to show offers in a list view

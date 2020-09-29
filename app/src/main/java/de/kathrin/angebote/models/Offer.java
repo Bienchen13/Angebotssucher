@@ -1,4 +1,4 @@
-package de.kathrin.angebote;
+package de.kathrin.angebote.models;
 
 /**
  * Every offer has a title, price, description and image.

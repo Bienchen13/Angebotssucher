@@ -1,4 +1,4 @@
-package de.kathrin.angebote;
+package de.kathrin.angebote.models;
 
 import java.io.Serializable;
 

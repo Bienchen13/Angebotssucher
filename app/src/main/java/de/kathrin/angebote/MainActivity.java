@@ -3,7 +3,6 @@ package de.kathrin.angebote;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +32,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import de.kathrin.angebote.adapter.OfferArrayAdapter;
+import de.kathrin.angebote.models.Market;
+import de.kathrin.angebote.models.Offer;
+import de.kathrin.angebote.models.OfferList;
+import de.kathrin.angebote.utlis.IOUtils;
+import de.kathrin.angebote.utlis.MarketUtils;
+import de.kathrin.angebote.utlis.OfferUtils;
+
 /**
  * Main Activity. Search for offers or go to the Select Market Activity.
  */
@@ -41,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String PROJECT_NAME = "Angebote.";
     private static final String LOG_TAG = PROJECT_NAME + MainActivity.class.getSimpleName();
 
-    static final int SELECT_MARKET_REQUEST = 1;
-    static final int RESULT_OK = 0;
+    public static final int SELECT_MARKET_REQUEST = 1;
+    public static final int RESULT_OK = 0;
 
     private OfferList allOffersList = null;
     private List<Offer> resultOfferList = new ArrayList<>();
@@ -80,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
      * Read last used market from file and set it as default market.
      */
     private void setDefaultMarket () {
-        File defaultMarketFile = getFileStreamPath(Utility.DEFAULT_MARKET_FILE);
+        // TODO: Can I change this too?
+        File defaultMarketFile = getFileStreamPath(IOUtils.DEFAULT_MARKET_FILE);
         if (defaultMarketFile.exists()) {
-            selectedMarket = Utility.restoreMarketFromFile(this);
+            selectedMarket = MarketUtils.restoreMarketFromFile(this);
             setSelectedMarket();
         }
     }
@@ -166,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "In onStop");
 
         if (selectedMarket != null) {
-            Utility.saveMarketToFile(this, selectedMarket);
+            MarketUtils.saveMarketToFile(this, selectedMarket);
         }
     }
 
@@ -299,11 +307,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create a file for every selected market
-            String filename = selectedMarket.getMarketID() + Utility.TEXTFILE_ENDING;
+            // TODO: Change this crap
+            String filename = selectedMarket.getMarketID() + IOUtils.TEXTFILE_ENDING;
 
             // Try to restore offers from file
             if (allOffersList == null && getFileStreamPath(filename).exists()) {
-                allOffersList = Utility.restoreOffersFromFile(MainActivity.this, filename);
+                allOffersList = OfferUtils.restoreOffersFromFile(MainActivity.this, filename);
 
                 // Check if the file is outdated
                 if (allOffersList.getAvailableUntil().before(new Date())) {
@@ -314,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Try to make a server request to load offers
             if (allOffersList == null) {
-                allOffersList = Utility.requestOffersFromServer(MainActivity.this, selectedMarket, filename);
+                allOffersList = OfferUtils.requestOffersFromServer(MainActivity.this, selectedMarket, filename);
             }
 
             // if list is still null, something bad happened

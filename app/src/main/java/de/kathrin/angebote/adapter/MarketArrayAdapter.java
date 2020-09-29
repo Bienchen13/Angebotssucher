@@ -1,4 +1,4 @@
-package de.kathrin.angebote;
+package de.kathrin.angebote.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
+
+import de.kathrin.angebote.MainActivity;
+import de.kathrin.angebote.models.Market;
+import de.kathrin.angebote.R;
+import de.kathrin.angebote.database.MarketDataSource;
+import de.kathrin.angebote.database.MarketDbHelper;
 
 import static de.kathrin.angebote.SelectMarketActivity.EXTRA_MARKET;
 
