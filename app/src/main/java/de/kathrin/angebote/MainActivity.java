@@ -36,7 +36,6 @@ import de.kathrin.angebote.adapter.OfferArrayAdapter;
 import de.kathrin.angebote.models.Market;
 import de.kathrin.angebote.models.Offer;
 import de.kathrin.angebote.models.OfferList;
-import de.kathrin.angebote.utlis.IOUtils;
 import de.kathrin.angebote.utlis.MarketUtils;
 import de.kathrin.angebote.utlis.OfferUtils;
 
@@ -87,10 +86,9 @@ public class MainActivity extends AppCompatActivity {
      * Read last used market from file and set it as default market.
      */
     private void setDefaultMarket () {
-        // TODO: Can I change this too?
-        File defaultMarketFile = getFileStreamPath(IOUtils.DEFAULT_MARKET_FILE);
-        if (defaultMarketFile.exists()) {
-            selectedMarket = MarketUtils.restoreMarketFromFile(this);
+        selectedMarket = MarketUtils.restoreMarketFromFile(this);
+
+        if (selectedMarket != null) {
             setSelectedMarket();
         }
     }
@@ -306,16 +304,12 @@ public class MainActivity extends AppCompatActivity {
                 return resultList;
             }
 
-            // Create a file for every selected market
-            // TODO: Change this crap
-            String filename = selectedMarket.getMarketID() + IOUtils.TEXTFILE_ENDING;
-
             // Try to restore offers from file
-            if (allOffersList == null && getFileStreamPath(filename).exists()) {
-                allOffersList = OfferUtils.restoreOffersFromFile(MainActivity.this, filename);
+            if (allOffersList == null) {
+                allOffersList = OfferUtils.restoreOffersFromFile(MainActivity.this, selectedMarket);
 
                 // Check if the file is outdated
-                if (allOffersList.getAvailableUntil().before(new Date())) {
+                if (allOffersList != null && allOffersList.getAvailableUntil().before(new Date())) {
                     Log.v(LOG_TAG, "Offers from file outdated");
                     allOffersList = null;
                 }
@@ -323,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Try to make a server request to load offers
             if (allOffersList == null) {
-                allOffersList = OfferUtils.requestOffersFromServer(MainActivity.this, selectedMarket, filename);
+                allOffersList = OfferUtils.requestOffersFromServer(MainActivity.this, selectedMarket);
             }
 
             // if list is still null, something bad happened

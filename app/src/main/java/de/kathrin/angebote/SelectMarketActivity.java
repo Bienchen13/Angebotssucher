@@ -157,31 +157,21 @@ public class SelectMarketActivity extends AppCompatActivity {
          */
         @Override
         protected List<Market> doInBackground(String... requestedCity) {
-            List<Market> marketList = new ArrayList<>();
+            List<Market> marketList = MarketUtils.requestMarketsFromServer(requestedCity[0]);
 
-            // JSON String with found markets
-            String marketString = MarketUtils.requestMarketsFromServer(requestedCity[0]);
-
-            if (marketString != null) {
-                // Convert JSON to market list
-                marketList = MarketUtils.createMarketListFromJSONString(marketString);
-
-                if (marketList.isEmpty()) {
-                    publishProgress("Keine Märkte zu Ihrer Anfrage gefunden");
-                }
-
-            } else {
-                Log.v(LOG_TAG, "Nothing received.");
+            if (marketList == null) {
                 publishProgress("Verbindung zum Server fehlgeschlagen. " +
                         "Es konnten keine Märkte gefunden werden.");
+            } else if (marketList.isEmpty()) {
+                publishProgress("Keine Märkte zu Ihrer Anfrage gefunden");
             }
 
             return marketList;
         }
 
         /**
-         * Not used?
-         * @param stringParams
+         * Used by calling "publishProgress", posts update messages
+         * @param stringParams  the message to pop up
          */
         @Override
         protected void onProgressUpdate(String... stringParams) {

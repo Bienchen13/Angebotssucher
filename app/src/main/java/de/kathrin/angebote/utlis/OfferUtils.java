@@ -19,12 +19,14 @@ public class OfferUtils {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + OfferUtils.class.getSimpleName();
 
+    //      PUBLIC FUNCTIONS
+
     /**
      * Request all offers from one market from the server.
      * @param market    market that is used
      * @return          server response
      */
-    public static OfferList requestOffersFromServer(Context context, Market market, String filename) {
+    public static OfferList requestOffersFromServer(Context context, Market market) {
         Log.v(LOG_TAG, "Request Offers from Server.");
 
         // Compose URL with market ID
@@ -36,7 +38,7 @@ public class OfferUtils {
 
         if (jsonString != null) {
             offerList = createOfferListFromJSONString(jsonString);
-            saveOffersListInFile(context, offerList, filename);
+            saveOffersListInFile(context, offerList, getOfferFilename(market));
             Log.v(LOG_TAG, "Stored offers in file");
         } else {
             Log.v(LOG_TAG, "Nothing received.");
@@ -45,11 +47,31 @@ public class OfferUtils {
     }
 
     /**
+     * Take a file (found by the market id) and convert the content into an offerList instance.
+     * (Combine restoreStringFromFile and createOfferListFromJSONString.)
+     * @param context   current context
+     * @param market    market of which the offers are restored
+     * @return          offerList instance
+     */
+    public static OfferList restoreOffersFromFile(Context context, Market market) {
+
+        String filename = getOfferFilename(market);
+
+        if (context.getFileStreamPath(filename).exists()) {
+            return createOfferListFromJSONString(IOUtils.restoreStringFromFile(context, filename));
+        }
+        return null;
+    }
+
+
+    // PRIVATE HELPER FUNCTIONS
+
+    /**
      * Convert JSON String into an offerList instance.
      * @param jsonString string to convert
      * @return offerList instance
      */
-    public static OfferList createOfferListFromJSONString(String jsonString) {
+    private static OfferList createOfferListFromJSONString(String jsonString) {
         OfferList offerList = new OfferList();
 
         try {
@@ -91,29 +113,6 @@ public class OfferUtils {
     }
 
     /**
-     * Take a file and convert the content into an offerList instance.
-     * (Combine restoreStringFromFile and createOfferListFromJSONString.)
-     * @param context   current context
-     * @param filename  file to convert
-     * @return          offerList instance
-     */
-    public static OfferList restoreOffersFromFile(Context context, String filename) {
-        return createOfferListFromJSONString(IOUtils.restoreStringFromFile(context, filename));
-    }
-
-    /**
-     * Take an offerList instance and save it into a file.
-     * (Combine createJSONStringFromOffersList and saveStringInFile.)
-     * @param context       current context
-     * @param offersList    offerList instance to be saved
-     * @param filename      file where to save the offers
-     */
-    public static void saveOffersListInFile(Context context, OfferList offersList, String filename) {
-        String jsonString = createJSONStringFromOffersList(offersList);
-        IOUtils.saveStringInFile(context, jsonString, filename);
-    }
-
-    /**
      * Helper function for saveOffersListInFile.
      * Convert offerList instance into a JSON string.
      * Has to have the same format as the server response!
@@ -140,6 +139,27 @@ public class OfferUtils {
         jsonString.append("}");
 
         return jsonString.toString();
+    }
+
+    /**
+     * Take an offerList instance and save it into a file.
+     * (Combine createJSONStringFromOffersList and saveStringInFile.)
+     * @param context       current context
+     * @param offersList    offerList instance to be saved
+     * @param filename      file where to save the offers
+     */
+    private static void saveOffersListInFile(Context context, OfferList offersList, String filename) {
+        String jsonString = createJSONStringFromOffersList(offersList);
+        IOUtils.saveStringInFile(context, jsonString, filename);
+    }
+
+    /**
+     * Get the filename, where all offers of a market are saved.
+     * @param m     market which offers are searched
+     * @return      filename
+     */
+    private static String getOfferFilename (Market m) {
+        return m.getMarketID() + IOUtils.TEXTFILE_ENDING;
     }
 
 }

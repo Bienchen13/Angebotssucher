@@ -14,17 +14,20 @@ import java.util.List;
 
 import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.models.Market;
+import de.kathrin.angebote.models.OfferList;
 
 public class MarketUtils {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + MarketUtils.class.getSimpleName();
 
+    // PUBLIC FUNCTIONS
+
     /**
      * Request all markets in the given city from the server.
      * @param city  where to be searched
-     * @return      JSON String with all markets in the city
+     * @return      List with all markets in the city
      */
-    public static String requestMarketsFromServer(String city) {
+    public static List<Market> requestMarketsFromServer(String city) {
         Log.v(LOG_TAG, "Request Markets from Server.");
 
         try {
@@ -45,15 +48,58 @@ public class MarketUtils {
                 "ort_tlc%3A" + city.toLowerCase() + "" +
                 "))&fl=marktID_tlc%2Cplz_tlc%2Cort_tlc%2Cstrasse_tlc%2Cname_tlc";
 
-        return IOUtils.requestFromServer(IOUtils.URL_EDEKA_MARKETS, "POST", data);
+        // Request URL
+        String jsonString = IOUtils.requestFromServer(IOUtils.URL_EDEKA_MARKETS, "POST", data);
+        List<Market> marketList = null;
+
+        if (jsonString != null) {
+            // Convert JSON to market list
+            marketList = createMarketListFromJSONString(jsonString);
+        } else {
+            Log.v(LOG_TAG, "Nothing received.");
+        }
+
+        return marketList;
     }
+
+    /**
+     * Write a market to a file (used to save the default market).
+     * @param context   current context
+     * @param market    default market
+     */
+    public static void saveMarketToFile (Context context, Market market) {
+        String jsonString = createJSONStringFromMarket(market);
+        IOUtils.saveStringInFile(context, jsonString, IOUtils.DEFAULT_MARKET_FILE);
+    }
+
+    /**
+     * Read market from file (used to read the default market)
+     * @param context   current context
+     * @return          default market
+     */
+    public static Market restoreMarketFromFile (Context context) {
+        try {
+            // Check if file exists
+            if (context.getFileStreamPath(IOUtils.DEFAULT_MARKET_FILE).exists()) {
+                // Restore JSON from File
+                String jsonString = IOUtils.restoreStringFromFile(context, IOUtils.DEFAULT_MARKET_FILE);
+                // Convert JSON to Market
+                return getMarketFromJSONString(new JSONObject(jsonString));
+            }
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "JSONException: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // PRIVATE HELPER FUNCTIONS
 
     /**
      * Convert JSON String into list of markets
      * @param jsonString    JSON String to convert
      * @return  list of markets
      */
-    public static List<Market> createMarketListFromJSONString (String jsonString) {
+    private static List<Market> createMarketListFromJSONString (String jsonString) {
 
         List<Market> marketList = new ArrayList<>();
 
@@ -114,33 +160,6 @@ public class MarketUtils {
         jsonString += "}";
 
         return jsonString;
-    }
-
-    /**
-     * Write a market to a file (used to save the default market).
-     * @param context   current context
-     * @param market    default market
-     */
-    public static void saveMarketToFile (Context context, Market market) {
-        String jsonString = createJSONStringFromMarket(market);
-        IOUtils.saveStringInFile(context, jsonString, IOUtils.DEFAULT_MARKET_FILE);
-    }
-
-    /**
-     * Read market from file (used to read the default market)
-     * @param context   current context
-     * @return          default market
-     */
-    public static Market restoreMarketFromFile (Context context) {
-        try {
-
-            String jsonString = IOUtils.restoreStringFromFile(context, IOUtils.DEFAULT_MARKET_FILE);
-            return getMarketFromJSONString(new JSONObject(jsonString));
-
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "JSONException: " + e.getMessage());
-            return null;
-        }
     }
 
 }

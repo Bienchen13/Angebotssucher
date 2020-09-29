@@ -18,6 +18,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 import de.kathrin.angebote.MainActivity;
+import de.kathrin.angebote.models.Market;
 
 /**
  * Utility class for handling server requests and file access
@@ -31,8 +32,8 @@ public class IOUtils {
     static final String URL_EDEKA_MARKETS = "https://www.edeka.de/search.xml";
 
     // File Access Strings
-    public static final String TEXTFILE_ENDING = ".txt";
-    public static final String DEFAULT_MARKET_FILE = "default_market.txt";
+    static final String TEXTFILE_ENDING = ".txt";
+    static final String DEFAULT_MARKET_FILE = "default_market.txt";
 
     /*********************************************************************************************
      *
