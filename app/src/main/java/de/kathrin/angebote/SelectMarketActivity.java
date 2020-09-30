@@ -29,7 +29,7 @@ public class SelectMarketActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + SelectMarketActivity.class.getSimpleName();
 
     // For the intent used in the MarketArrayAdapter Class
-    public static final String EXTRA_MARKET = "de.kathrin.angebote.EXTRA_MARKET";
+    public static final String EXTRA_MARKET = MainActivity.PROJECT_NAME + "EXTRA_MARKET";
 
     // Used to show the markets
     private List<Market> resultMarketList = new ArrayList<>();
@@ -42,7 +42,7 @@ public class SelectMarketActivity extends AppCompatActivity {
      * Called automatically when entering this the first time activity.
      * Sets the layout, the click listener for the search button, connects the database
      * and connects the adapter to the list view
-     * @param savedInstanceState
+     * @param savedInstanceState - save old state -
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
