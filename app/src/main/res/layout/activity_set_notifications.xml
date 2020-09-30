@@ -30,10 +30,10 @@
         android:id="@+id/check_products_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Produkte überprüfen"
-        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
         android:layout_margin="@dimen/default_margin"
-        android:textSize="@dimen/default_font_size"/>
+        android:text="Jetzt überprüfen"
+        android:textSize="@dimen/default_font_size" />
 
     <RelativeLayout
         android:layout_width="match_parent"

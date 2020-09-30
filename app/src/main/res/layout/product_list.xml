@@ -8,10 +8,20 @@
 
     <TextView
         android:id="@+id/product_item"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_text_font_size"
         android:text="Test"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/product_item_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_text_font_size"
+        android:layout_alignParentRight="true"
+        android:text="X"
         android:layout_marginEnd="5dp"
         android:padding="5dp"/>
 

@@ -44,13 +44,15 @@ public class NotificationActivity extends AppCompatActivity {
                 Log.v(LOG_TAG, product);
 
                 productList.add(product);
+
+                ((ListView)findViewById(R.id.product_list)).invalidateViews();
             }
         };
 
         // Add Reaction to Button
         findViewById(R.id.add_product_button).setOnClickListener(onAddButtonClickListener);
 
-        ProductArrayAdapter arrayAdapter = new ProductArrayAdapter(this, productList, this);
+        ProductArrayAdapter arrayAdapter = new ProductArrayAdapter(this, productList);
         ((ListView)findViewById(R.id.product_list)).setAdapter(arrayAdapter);
     }
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,6 @@ public class ProductArrayAdapter extends ArrayAdapter {
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + ProductArrayAdapter.class.getSimpleName();
     private static final int LIST_LAYOUT = R.layout.product_list;
 
-    private AppCompatActivity mParent;
     private List<String> mProductList;
     private LayoutInflater mLayoutInflater;
 
@@ -38,14 +38,11 @@ public class ProductArrayAdapter extends ArrayAdapter {
      * @param context   the context where the Adapter is called from (used in the super constructor
      *                  and to initialize the LayoutInflater)
      * @param productList    used in the getView method to get elements from the list
-     * @param parent    the activity where the Adapter is called from (to return to this activity
-     *                  in the end)
      */
 
-    public ProductArrayAdapter(Context context, List<String> productList, AppCompatActivity parent) {
+    public ProductArrayAdapter(Context context, List<String> productList) {
         super(context, LIST_LAYOUT, productList);
 
-        mParent = parent;
         mProductList = productList;
         mLayoutInflater = LayoutInflater.from(context);
     }
@@ -61,9 +58,9 @@ public class ProductArrayAdapter extends ArrayAdapter {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
         // Create the view hierarchy defined in "R.layout.product_list" (one text view)
-        View rowView = mLayoutInflater.inflate(LIST_LAYOUT, parent, false);
+        final View rowView = mLayoutInflater.inflate(LIST_LAYOUT, parent, false);
 
         // Extract the content at the current position (get current market)
         final String currentProduct = mProductList.get(position);
@@ -73,6 +70,19 @@ public class ProductArrayAdapter extends ArrayAdapter {
 
         // Assign the current product name to the text view
         textView.setText(currentProduct);
+
+        final TextView deleteButton = rowView.findViewById(R.id.product_item_delete);
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(LOG_TAG, "Clicked on the X.");
+                mProductList.remove(position);
+
+                // Refreshes the list view immediately
+                ((ListView) parent.findViewById(R.id.product_list)).invalidateViews();
+            }
+        });
 
         return rowView;
     }
