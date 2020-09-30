@@ -21,6 +21,7 @@ import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.R;
 import de.kathrin.angebote.database.MarketDataSource;
 import de.kathrin.angebote.database.MarketDbHelper;
+import de.kathrin.angebote.database.ProductDataSource;
 import de.kathrin.angebote.models.Market;
 
 import static de.kathrin.angebote.SelectMarketActivity.EXTRA_MARKET;
@@ -31,6 +32,7 @@ public class ProductArrayAdapter extends ArrayAdapter {
     private static final int LIST_LAYOUT = R.layout.product_list;
 
     private List<String> mProductList;
+    private ProductDataSource mProductDataSource;
     private LayoutInflater mLayoutInflater;
 
     /**
@@ -40,10 +42,11 @@ public class ProductArrayAdapter extends ArrayAdapter {
      * @param productList    used in the getView method to get elements from the list
      */
 
-    public ProductArrayAdapter(Context context, List<String> productList) {
+    public ProductArrayAdapter(Context context, List<String> productList, ProductDataSource productDataSource) {
         super(context, LIST_LAYOUT, productList);
 
         mProductList = productList;
+        mProductDataSource = productDataSource;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -78,6 +81,10 @@ public class ProductArrayAdapter extends ArrayAdapter {
             public void onClick(View v) {
                 Log.v(LOG_TAG, "Clicked on the X.");
                 mProductList.remove(position);
+
+                Log.v(LOG_TAG, "Delete from Database");
+                mProductDataSource.deleteProductFromNotificationDatabase(currentProduct);
+                Log.v(LOG_TAG, "Done.");
 
                 // Refreshes the list view immediately
                 ((ListView) parent.findViewById(R.id.product_list)).invalidateViews();
