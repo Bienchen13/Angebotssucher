@@ -29,6 +29,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     private List<String> productList = new ArrayList<>();
     private ProductDataSource productDataSource;
+    private NotificationController notificationController;
 
     private LayoutUtilsNotification lu;
 
@@ -57,9 +58,11 @@ public class NotificationActivity extends AppCompatActivity {
         // Connect to product notification database
         productDataSource = new ProductDataSource(this);
 
+        // Connect to the notification controller
+        notificationController = new NotificationController(this);
+
         // Initialize list view
         bindAdapterToListView ();
-
     }
 
     /**
@@ -135,6 +138,24 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     /**
+     * Notifies the user about the products on offer in a market
+     * @param market    market which has the offers
+     * @param offerList products on offer
+     */
+    private void notifyOffersAvailable (Market market, List<Offer> offerList) {
+        Log.v(LOG_TAG, "Notify about available products on offer.");
+
+        String title = "Neue Angebote im " + market.getName() + "!";
+
+        StringBuilder content = new StringBuilder();
+        for (Offer o: offerList) {
+            content.append("- " + o.getTitle() + "\n");
+        }
+
+        notificationController.addNewNotification(title, content.toString());
+    }
+
+    /**
      * Called automatically every time entering this activity.
      * The database is opened.
      */
@@ -179,10 +200,20 @@ public class NotificationActivity extends AppCompatActivity {
     private class CheckOffersTask extends AsyncTask <List<String>, String, List<Offer>> {
         private Market market;
 
+        /**
+         * Constructor, saves the current market
+         * @param market    market which offers are compared later
+         */
         public CheckOffersTask (Market market) {
             this.market = market;
         }
 
+        /**
+         * Load the offers from the given market and look for matching products (compare with
+         * the products in the given list).
+         * @param products  to compare with the offers in the market
+         * @return  list of matching offers
+         */
         @Override
         protected List<Offer> doInBackground(List<String>... products) {
 
@@ -207,6 +238,17 @@ public class NotificationActivity extends AppCompatActivity {
             Log.v(LOG_TAG, "Results: " + resultList);
 
             return resultList;
+        }
+
+        /**
+         * Notify the user about the products on offer.
+         * @param offers
+         */
+        @Override
+        protected void onPostExecute(List<Offer> offers) {
+            if (!offers.isEmpty()) {
+                notifyOffersAvailable(market, offers);
+            }
         }
     }
 }
