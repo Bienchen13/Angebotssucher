@@ -1,30 +1,22 @@
 package de.kathrin.angebote.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
 import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.R;
-import de.kathrin.angebote.database.MarketDataSource;
-import de.kathrin.angebote.database.MarketDbHelper;
 import de.kathrin.angebote.database.ProductDataSource;
-import de.kathrin.angebote.models.Market;
-
-import static de.kathrin.angebote.SelectMarketActivity.EXTRA_MARKET;
 
 public class ProductArrayAdapter extends ArrayAdapter {
 

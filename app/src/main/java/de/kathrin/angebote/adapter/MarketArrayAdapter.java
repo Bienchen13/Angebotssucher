@@ -21,7 +21,6 @@ import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.models.Market;
 import de.kathrin.angebote.R;
 import de.kathrin.angebote.database.MarketDataSource;
-import de.kathrin.angebote.database.MarketDbHelper;
 
 import static de.kathrin.angebote.SelectMarketActivity.EXTRA_MARKET;
 
@@ -47,7 +46,7 @@ public class MarketArrayAdapter extends ArrayAdapter {
      * @param context   the context where the Adapter is called from (used in the super constructor
      *                  and to initialize the LayoutInflater)
      * @param marketList    used in the getView method to get elements from the list
-     * @param datasource    used to check if a market is a favourite ( {@link MarketDbHelper})
+     * @param datasource    used to check if a market is a favourite ( {@link MarketDataSource})
      * @param parent    the activity where the Adapter is called from (to return to this activity
      *                  in the end)
      */
