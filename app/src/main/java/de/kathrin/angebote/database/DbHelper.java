@@ -7,6 +7,9 @@ import android.util.Log;
 
 import de.kathrin.angebote.MainActivity;
 
+/**
+ * Helper Class to create the favourite-markets and the product-notification databases
+ */
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + DbHelper.class.getSimpleName();
@@ -16,17 +19,17 @@ public class DbHelper extends SQLiteOpenHelper {
 
     // Set all column names for the market table
     public static final String TABLE_MARKET_FAVOURITES  = "market_favourites";
-    public static final String MARKET_COLUMN_ID                = "_id";
-    public static final String MARKET_COLUMN_MARKET_ID         = "marketid";
-    public static final String MARKET_COLUMN_NAME              = "name";
-    public static final String MARKET_COLUMN_STREET            = "street";
-    public static final String MARKET_COLUMN_CITY              = "city";
-    public static final String MARKET_COLUMN_PLZ               = "plz";
+    public static final String MARKET_COLUMN_ID         = "_id";
+    public static final String MARKET_COLUMN_MARKET_ID  = "marketid";
+    public static final String MARKET_COLUMN_NAME       = "name";
+    public static final String MARKET_COLUMN_STREET     = "street";
+    public static final String MARKET_COLUMN_CITY       = "city";
+    public static final String MARKET_COLUMN_PLZ        = "plz";
 
-    // Set all column names for the product
-    public static final String TABLE_PRODUCT_NOTIFICATION  = "product_notification";
-    public static final String PRODUCT_COLUMN_ID                   = "_id";
-    public static final String PRODUCT_COLUMN_PRODUCT              = "product";
+    // Set all column names for the product table
+    public static final String TABLE_PRODUCT_NOTIFICATION   = "product_notification";
+    public static final String PRODUCT_COLUMN_ID            = "_id";
+    public static final String PRODUCT_COLUMN_PRODUCT       = "product";
 
     // Set the instruction to create the favourite markets table
     public static final String SQL_CREATE_MARKET =

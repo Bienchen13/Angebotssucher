@@ -18,6 +18,14 @@ import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.R;
 import de.kathrin.angebote.database.ProductDataSource;
 
+import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_ITEM;
+import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_ITEM_DELETE;
+import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_LIST;
+
+/**
+ * Adapter to extract the Product data and show it in a list view
+ * (used in the Notification Activity)
+ */
 public class ProductArrayAdapter extends ArrayAdapter {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + ProductArrayAdapter.class.getSimpleName();
@@ -28,10 +36,11 @@ public class ProductArrayAdapter extends ArrayAdapter {
     private LayoutInflater mLayoutInflater;
 
     /**
-     * Constructor for the MarketArrayAdapter
+     * Constructor for the ProductArrayAdapter
      * @param context   the context where the Adapter is called from (used in the super constructor
      *                  and to initialize the LayoutInflater)
      * @param productList    used in the getView method to get elements from the list
+     * @param productDataSource needed in getView method to delete elements from the database
      */
 
     public ProductArrayAdapter(Context context, List<String> productList, ProductDataSource productDataSource) {
@@ -54,32 +63,26 @@ public class ProductArrayAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
-        // Create the view hierarchy defined in "R.layout.product_list" (one text view)
+        // Create the view hierarchy defined in LIST_LAYOUT (one text view and the delete X)
         final View rowView = mLayoutInflater.inflate(LIST_LAYOUT, parent, false);
 
-        // Extract the content at the current position (get current market)
+        // Extract the content at the current position (get current product name)
         final String currentProduct = mProductList.get(position);
 
-        // Get view objects from view hierarchy (the text view)
-        final TextView textView = rowView.findViewById(R.id.product_item);
+        // Get the text view from the view hierarchy and assign the current product name to it
+        ((TextView)rowView.findViewById(PRODUCT_ITEM)).setText(currentProduct);
 
-        // Assign the current product name to the text view
-        textView.setText(currentProduct);
-
-        final TextView deleteButton = rowView.findViewById(R.id.product_item_delete);
-
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        // When clicking on the X the element is removed from the list view and the database
+        rowView.findViewById(PRODUCT_ITEM_DELETE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(LOG_TAG, "Clicked on the X.");
-                mProductList.remove(position);
 
-                Log.v(LOG_TAG, "Delete from Database");
+                mProductList.remove(position);
                 mProductDataSource.deleteProductFromNotificationDatabase(currentProduct);
-                Log.v(LOG_TAG, "Done.");
 
                 // Refreshes the list view immediately
-                ((ListView) parent.findViewById(R.id.product_list)).invalidateViews();
+                ((ListView) parent.findViewById(PRODUCT_LIST)).invalidateViews();
             }
         });
 

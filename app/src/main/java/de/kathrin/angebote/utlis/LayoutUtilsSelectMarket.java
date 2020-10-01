@@ -18,6 +18,9 @@ public class LayoutUtilsSelectMarket {
     public static final int MARKET_RESULT_HEADER    = R.id.market_select_header;
     public static final int MARKET_RESULT_LIST      = R.id.market_select_list;
 
+    public static final int MARKET_ITEM             = R.id.market_list_item;
+    public static final int MARKET_ITEM_STAR        = R.id.market_fav_icon;
+
 
     // To get also the views..
 

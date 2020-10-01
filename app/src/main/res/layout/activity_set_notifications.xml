@@ -27,7 +27,7 @@
         />
 
     <Button
-        android:id="@+id/check_products_button"
+        android:id="@+id/product_check_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
@@ -40,16 +40,16 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/add_product_field"
+            android:id="@+id/product_add_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:layout_toLeftOf="@id/add_product_button"
+            android:layout_toLeftOf="@id/product_add_button"
             android:hint="Produkt eingeben"
             android:textSize="@dimen/default_font_size" />
 
         <Button
-            android:id="@+id/add_product_button"
+            android:id="@+id/product_add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
@@ -60,7 +60,7 @@
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/product_list"
+        android:id="@+id/product_notification_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/default_margin"

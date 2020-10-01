@@ -69,7 +69,6 @@ public class ProductDataSource {
      * @param product product deleted from the notification database
      */
     public void deleteProductFromNotificationDatabase (String product) {
-        Log.v(LOG_TAG, "Trying to delete: " + product);
 
         database.delete(DbHelper.TABLE_PRODUCT_NOTIFICATION,
                 DbHelper.PRODUCT_COLUMN_PRODUCT + "=\"" + product + "\"",

@@ -7,7 +7,7 @@
     android:padding="@dimen/row_padding">
 
     <TextView
-        android:id="@+id/product_item"
+        android:id="@+id/product_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_text_font_size"

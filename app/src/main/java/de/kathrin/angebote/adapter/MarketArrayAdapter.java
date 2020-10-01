@@ -23,6 +23,8 @@ import de.kathrin.angebote.R;
 import de.kathrin.angebote.database.MarketDataSource;
 
 import static de.kathrin.angebote.SelectMarketActivity.EXTRA_MARKET;
+import static de.kathrin.angebote.utlis.LayoutUtilsSelectMarket.MARKET_ITEM;
+import static de.kathrin.angebote.utlis.LayoutUtilsSelectMarket.MARKET_ITEM_STAR;
 
 /**
  * Adapter to extract the Market data and show it in a list view
@@ -80,8 +82,8 @@ public class MarketArrayAdapter extends ArrayAdapter {
         final Market currentMarket = mMarketList.get(position);
 
         // Get view objects from view hierarchy (the text view and the image button)
-        final TextView tvTitle = rowView.findViewById(R.id.market_list_item);
-        final ImageButton favicon = rowView.findViewById(R.id.market_fav_icon);
+        final TextView tvTitle = rowView.findViewById(MARKET_ITEM);
+        final ImageButton favicon = rowView.findViewById(MARKET_ITEM_STAR);
 
         // Assign the current market name to the text view
         tvTitle.setText(currentMarket.toString());
