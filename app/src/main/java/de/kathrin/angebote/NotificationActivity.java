@@ -51,6 +51,7 @@ public class NotificationActivity extends AppCompatActivity {
         // Init the button to add products to the list
         initAddProductButton();
 
+        // Init the button to check if the product are on offer
         initCheckProductsButton();
 
         // Connect to product notification database
@@ -88,6 +89,11 @@ public class NotificationActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Check if the products are on offer in the favourite markets.
+     * (First load the markets from the market database, then start a {@link CheckOffersTask}
+     * for every market.)
+     */
     private void initCheckProductsButton () {
 
         // Define On Click Button Reaction
@@ -96,6 +102,7 @@ public class NotificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.v(LOG_TAG, "Check Button Clicked.");
 
+                // Todo: Do this in the beginning once?
                 MarketDataSource marketDataSource = new MarketDataSource(NotificationActivity.this);
 
                 marketDataSource.open();
@@ -162,6 +169,13 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
 
+    /*******************************************************************************************
+     PRIVATE CLASS CHECK-OFFERS-TASKS
+     1. Get the market and the product list
+     2. Load the offers of the market from the server
+     3. Go through all products and the offers to find matching once
+     4. Return a list with all offers that match the product list.
+     ********************************************************************************************/
     private class CheckOffersTask extends AsyncTask <List<String>, String, List<Offer>> {
         private Market market;
 
