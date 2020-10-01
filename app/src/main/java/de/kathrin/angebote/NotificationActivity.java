@@ -1,8 +1,10 @@
 package de.kathrin.angebote;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,9 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.kathrin.angebote.adapter.ProductArrayAdapter;
+import de.kathrin.angebote.database.MarketDataSource;
 import de.kathrin.angebote.database.ProductDataSource;
+import de.kathrin.angebote.models.Market;
+import de.kathrin.angebote.models.Offer;
+import de.kathrin.angebote.models.OfferList;
 import de.kathrin.angebote.utlis.LayoutUtilsNotification;
+import de.kathrin.angebote.utlis.OfferUtils;
 
+/**
+ * Activity to control the notifications
+ */
 public class NotificationActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + NotificationActivity.class.getSimpleName();
@@ -40,6 +50,8 @@ public class NotificationActivity extends AppCompatActivity {
 
         // Init the button to add products to the list
         initAddProductButton();
+
+        initCheckProductsButton();
 
         // Connect to product notification database
         productDataSource = new ProductDataSource(this);
@@ -74,6 +86,37 @@ public class NotificationActivity extends AppCompatActivity {
         // Add Reaction to Button
         lu.PRODUCT_ADD_BUTTON_VIEW.setOnClickListener(onAddButtonClickListener);
 
+    }
+
+    private void initCheckProductsButton () {
+
+        // Define On Click Button Reaction
+        View.OnClickListener onAddButtonClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(LOG_TAG, "Check Button Clicked.");
+
+                MarketDataSource marketDataSource = new MarketDataSource(NotificationActivity.this);
+
+                marketDataSource.open();
+                List<Market> marketList = marketDataSource.getAllFavouriteMarkets();
+                marketDataSource.close();
+
+                if (marketList.isEmpty()) {
+                    String message = "Sie haben keinen Lieblingsmarkt ausgewählt.";
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                }
+
+                for (Market m: marketList) {
+                    Log.v(LOG_TAG, "Checking market: " + m);
+                    new CheckOffersTask(m).execute(productList);
+                }
+
+            }
+        };
+
+        // Add Reaction to Button
+        lu.PRODUCT_CHECK_BUTTON_VIEW.setOnClickListener(onAddButtonClickListener);
     }
 
     /**
@@ -116,5 +159,40 @@ public class NotificationActivity extends AppCompatActivity {
         // Close database connection
         productDataSource.close();
 
+    }
+
+
+    private class CheckOffersTask extends AsyncTask <List<String>, String, List<Offer>> {
+        private Market market;
+
+        public CheckOffersTask (Market market) {
+            this.market = market;
+        }
+
+        @Override
+        protected List<Offer> doInBackground(List<String>... products) {
+
+            List<Offer> resultList = new ArrayList<>();
+
+            // TODO: First look in the files?
+            OfferList offerList = OfferUtils.requestOffersFromServer(NotificationActivity.this, market);
+
+            // collect all matching offers
+            for (String p: products[0]) {
+
+                String product = p.trim().toLowerCase();
+
+                for (Offer o: offerList) {
+                    if (o.getTitle().toLowerCase().contains(product) ||
+                            o.getDescription().toLowerCase().contains(product)) {
+                        resultList.add(o);
+                    }
+                }
+            }
+
+            Log.v(LOG_TAG, "Results: " + resultList);
+
+            return resultList;
+        }
     }
 }
