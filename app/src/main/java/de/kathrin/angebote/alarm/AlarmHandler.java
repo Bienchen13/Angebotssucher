@@ -28,21 +28,19 @@ public class AlarmHandler {
     public static void setAlarm (final Context context) {
 
         // Set the stating time for the alarm
-        Calendar time = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
 
-        //calendar.set(Calendar.DAY_OF_WEEK, 1);
-        //Log.v(LOG_TAG, "Calender on:" + calendar.getTime());
-
-
+        calendar.set(Calendar.DAY_OF_WEEK, 1);
+        Log.v(LOG_TAG, "Calender on:" + calendar.getTime());
 
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         // Set the repeating alarm (every week, starting at monday)
         alarmManager.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,                    // wake phone up
-                time.getTimeInMillis(),                 // every monday
-                //AlarmManager.INTERVAL_DAY * 7,   // each week once
-                1000 * 60, // every minute
+                calendar.getTimeInMillis(),                 // every monday
+                AlarmManager.INTERVAL_DAY * 7,   // each week once
+                //1000 * 60, // every minute
                 createIntent(context));
 
         Log.v(LOG_TAG, "Alarm is set.");

@@ -1,5 +1,7 @@
 package de.kathrin.angebote.models;
 
+import java.util.Objects;
+
 /**
  * Every offer has a title, price, description and image.
  */
