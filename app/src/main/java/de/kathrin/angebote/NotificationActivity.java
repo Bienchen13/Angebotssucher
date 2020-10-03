@@ -1,5 +1,7 @@
 package de.kathrin.angebote;
 
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.kathrin.angebote.adapter.ProductArrayAdapter;
+import de.kathrin.angebote.alarm.AlarmHandler;
+import de.kathrin.angebote.alarm.AlarmReceiver;
+import de.kathrin.angebote.alarm.BootReceiver;
+import de.kathrin.angebote.alarm.NotificationController;
 import de.kathrin.angebote.database.MarketDataSource;
 import de.kathrin.angebote.database.ProductDataSource;
 import de.kathrin.angebote.models.Market;
@@ -62,7 +68,31 @@ public class NotificationActivity extends AppCompatActivity {
         notificationController = new NotificationController(this);
 
         // Initialize list view
-        bindAdapterToListView ();
+        bindAdapterToListView();
+
+        // Set repeating alarm
+        registerAlarmAndBootReceivers();
+
+        // Todo: Set this after products are registered and cancel it otherwise
+        AlarmHandler.setAlarm(this);
+    }
+
+    /**
+     * Enables an AlarmReceiver and a BootReceiver in the PackageManager.
+     * Both are used for notifications.
+     */
+    private void registerAlarmAndBootReceivers() {
+        final ComponentName alarmReceiver = new ComponentName(NotificationActivity.this, AlarmReceiver.class);
+        final PackageManager pm = NotificationActivity.this.getPackageManager();
+
+        pm.setComponentEnabledSetting(alarmReceiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+        final ComponentName bootReceiver = new ComponentName(NotificationActivity.this, BootReceiver.class);
+        pm.setComponentEnabledSetting(bootReceiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
     /**
@@ -219,7 +249,7 @@ public class NotificationActivity extends AppCompatActivity {
 
             List<Offer> resultList = new ArrayList<>();
 
-            // TODO: First look in the files?
+            // TODO: First look in the files
             OfferList offerList = OfferUtils.requestOffersFromServer(NotificationActivity.this, market);
 
             // collect all matching offers

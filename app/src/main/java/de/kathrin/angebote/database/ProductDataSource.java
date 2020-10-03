@@ -70,6 +70,8 @@ public class ProductDataSource {
      */
     public void deleteProductFromNotificationDatabase (String product) {
 
+        // Todo: First do a select and then only delete the first occurrence
+
         database.delete(DbHelper.TABLE_PRODUCT_NOTIFICATION,
                 DbHelper.PRODUCT_COLUMN_PRODUCT + "=\"" + product + "\"",
                 null);

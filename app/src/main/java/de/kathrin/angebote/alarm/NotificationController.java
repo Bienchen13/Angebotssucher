@@ -1,4 +1,4 @@
-package de.kathrin.angebote;
+package de.kathrin.angebote.alarm;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,6 +10,9 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import de.kathrin.angebote.MainActivity;
+import de.kathrin.angebote.R;
 
 import static de.kathrin.angebote.MainActivity.RESULT_OK;
 
@@ -53,7 +56,7 @@ public class NotificationController {
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(description))
                 // Set the intent that will fire when the user taps the notification
-                //.setContentIntent(pendingIntent)
+                .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
