@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.Calendar;
+
+import de.kathrin.angebote.utlis.NotificationUtils;
+
 /**
  * Register the alarm after a reboot.
  */
@@ -22,7 +26,10 @@ public class BootReceiver extends BroadcastReceiver {
 
         // Only set the alarm handler new after a reboot
         if (BOOT_COMPLETE_ACTION.equals(intent.getAction())) {
-            AlarmHandler.setAlarm(context);
+            if (NotificationUtils.alarmIsSet(context)) {
+                Calendar date = NotificationUtils.getAlarmDateFromFile(context);
+                AlarmHandler.setAlarm(context, date);
+            }
         }
 
     }

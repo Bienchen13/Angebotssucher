@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class MarketUtils {
      * @param city  where to be searched
      * @return      List with all markets in the city
      */
-    public static List<Market> requestMarketsFromServer(String city) {
+    public static List<Market> requestMarketsFromServer(String city) throws IOException {
         Log.v(LOG_TAG, "Request Markets from Server.");
 
         try {

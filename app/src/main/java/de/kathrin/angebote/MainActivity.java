@@ -354,14 +354,15 @@ public class MainActivity extends AppCompatActivity {
 
             // Try to make a server request to load offers
             if (allOffersList == null) {
-                allOffersList = OfferUtils.requestOffersFromServer(MainActivity.this, selectedMarket);
-            }
 
-            // if list is still null, something bad happened
-            if (allOffersList == null) {
-                publishProgress("Verbindung zum Server fehlgeschlagen. " +
-                        "Es konnten keine Angebote geladen werden.");
-                return resultList;
+                try {
+                    allOffersList = OfferUtils.requestOffersFromServer(MainActivity.this, selectedMarket);
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "IOException: " + e.getMessage());
+                    publishProgress("Verbindung zum Server fehlgeschlagen. " +
+                            "Es konnten keine Angebote geladen werden.");
+                    return resultList;
+                }
             }
 
             String requestString = searchItem[0].toLowerCase().trim();

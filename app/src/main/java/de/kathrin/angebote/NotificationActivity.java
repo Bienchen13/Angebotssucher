@@ -10,7 +10,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import de.kathrin.angebote.adapter.ProductArrayAdapter;
@@ -23,7 +26,9 @@ import de.kathrin.angebote.database.ProductDataSource;
 import de.kathrin.angebote.models.Market;
 import de.kathrin.angebote.models.Offer;
 import de.kathrin.angebote.models.OfferList;
+import de.kathrin.angebote.utlis.IOUtils;
 import de.kathrin.angebote.utlis.LayoutUtilsNotification;
+import de.kathrin.angebote.utlis.NotificationUtils;
 import de.kathrin.angebote.utlis.OfferUtils;
 
 /**
@@ -72,9 +77,6 @@ public class NotificationActivity extends AppCompatActivity {
 
         // Set repeating alarm
         registerAlarmAndBootReceivers();
-
-        // Todo: Set this after products are registered and cancel it otherwise
-        AlarmHandler.setAlarm(this);
     }
 
     /**
@@ -114,6 +116,8 @@ public class NotificationActivity extends AppCompatActivity {
 
                 // Refresh the list view immediately
                 lu.PRODUCT_LIST_VIEW.invalidateViews();
+
+                //TODO: Clear input field
             }
         };
 
@@ -198,6 +202,7 @@ public class NotificationActivity extends AppCompatActivity {
         productDataSource.open();
 
         // Show all current products in the database
+        productList.clear();
         productList.addAll(productDataSource.getAllProductsFromDatabase());
         lu.PRODUCT_LIST_VIEW.invalidateViews();
 
@@ -207,18 +212,54 @@ public class NotificationActivity extends AppCompatActivity {
 
     /**
      * Called automatically every time leaving this activity.
-     * The database is closed.
+     * The database is closed and the alarm is set.
      */
     @Override
-    protected void onPause() {
-        super.onPause();
-        Log.v(LOG_TAG, "On Pause");
+    protected void onStop() {
+        super.onStop();
+        Log.v(LOG_TAG, "On Stop");
 
         // Close database connection
         productDataSource.close();
 
+        // Set or clear alarm
+        updateAlarm();
     }
 
+    private void updateAlarm () {
+
+        if (productList.isEmpty()) {
+            Log.v(LOG_TAG, "List is empty, no alarm set.");
+
+            // Cancel alarm
+            AlarmHandler.cancelAlarm(this);
+
+            // Delete file
+            NotificationUtils.clearAlarmFile(this);
+
+        } else if (NotificationUtils.alarmIsSet(this)){
+            // When file has alarm: good
+            Log.v(LOG_TAG, "Alarm is already set.");
+
+        } else {
+            // Set Date on next Monday 6h
+            Calendar nextMonday = Calendar.getInstance();
+            nextMonday.set(Calendar.DAY_OF_WEEK, 2);
+            nextMonday.set(Calendar.HOUR_OF_DAY, 9);
+            nextMonday.set(Calendar.MINUTE, 0);
+            nextMonday.set(Calendar.SECOND, 0);
+            nextMonday.add(Calendar.DATE, 7);
+
+            // Set alarm to next monday
+            AlarmHandler.setAlarm(this, nextMonday);
+
+            // Update file
+            NotificationUtils.writeAlarmToFile(this, nextMonday);
+
+            Log.v(LOG_TAG, "Setting new alarm to " + nextMonday.getTime());
+
+        }
+    }
 
     /*******************************************************************************************
      PRIVATE CLASS CHECK-OFFERS-TASKS
@@ -248,9 +289,15 @@ public class NotificationActivity extends AppCompatActivity {
         protected List<Offer> doInBackground(List<String>... products) {
 
             List<Offer> resultList = new ArrayList<>();
+            OfferList offerList = null;
 
             // TODO: First look in the files
-            OfferList offerList = OfferUtils.requestOffersFromServer(NotificationActivity.this, market);
+            try {
+                offerList = OfferUtils.requestOffersFromServer(NotificationActivity.this, market);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "IOException: " + e.getMessage());
+                return resultList;
+            }
 
             // collect all matching offers
             for (String p: products[0]) {

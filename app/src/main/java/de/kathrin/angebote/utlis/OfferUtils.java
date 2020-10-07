@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Date;
 
 import de.kathrin.angebote.MainActivity;
@@ -26,7 +27,7 @@ public class OfferUtils {
      * @param market    market that is used
      * @return          server response
      */
-    public static OfferList requestOffersFromServer(Context context, Market market) {
+    public static OfferList requestOffersFromServer(Context context, Market market) throws IOException {
         Log.v(LOG_TAG, "Request Offers from Server.");
 
         // Compose URL with market ID
@@ -34,6 +35,9 @@ public class OfferUtils {
 
         // Request URL
         String jsonString = IOUtils.requestFromServer(url, "GET", null);
+
+        Log.v(LOG_TAG, "Should not be here");
+
         OfferList offerList = null;
 
         if (jsonString != null) {

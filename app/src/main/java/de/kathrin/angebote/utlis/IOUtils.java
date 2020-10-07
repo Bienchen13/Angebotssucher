@@ -48,7 +48,7 @@ public class IOUtils {
      * @param encodedData   if its the search for a market: the requested city
      * @return  the server response
      */
-    static String requestFromServer (String requestUrl, String requestMethod, String encodedData) {
+    static String requestFromServer (String requestUrl, String requestMethod, String encodedData) throws IOException{
 
         String resultString = null;
         HttpURLConnection conn = null;
@@ -89,10 +89,10 @@ public class IOUtils {
             Log.e(LOG_TAG, "MalformedURLException: " + e.getMessage());
         } catch (ProtocolException e) {
             Log.e(LOG_TAG, "ProtocolException: " + e.getMessage());
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "IOException: " + e.getMessage());
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception: " + e.getMessage());
+//        } catch (IOException e) {
+//            Log.e(LOG_TAG, "IOException: " + e.getMessage());
+//        } catch (Exception e) {
+//            Log.e(LOG_TAG, "Exception: " + e.getMessage());
         } finally {
             if (conn != null) {
                 conn.disconnect();

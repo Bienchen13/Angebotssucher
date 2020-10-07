@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import de.kathrin.angebote.MainActivity;
@@ -15,7 +17,10 @@ import de.kathrin.angebote.database.ProductDataSource;
 import de.kathrin.angebote.models.Market;
 import de.kathrin.angebote.models.Offer;
 import de.kathrin.angebote.models.OfferList;
+import de.kathrin.angebote.utlis.NotificationUtils;
 import de.kathrin.angebote.utlis.OfferUtils;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Creates a new notification when the alarmManager send a signal
@@ -23,6 +28,7 @@ import de.kathrin.angebote.utlis.OfferUtils;
 public class AlarmReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + AlarmReceiver.class.getSimpleName();
+    private boolean validInternetConnection = true;
 
     /**
      * Show a new notification. The method automatically is called, when an alarm
@@ -35,6 +41,47 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.v(LOG_TAG, "Alarm received.");
 
         checkForNewOffers(context);
+
+        Log.v(LOG_TAG, "After here.");
+
+        try {
+            // Sleep for 20 sec
+            sleep(20*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.v(LOG_TAG, "And now Im here");
+        setNewAlarm(context);
+    }
+
+    /**
+     * Set the next alarm. In one week if every thing was fine. In one hour if there was no
+     * internet connection
+     * @param context   current context
+     */
+    private void setNewAlarm(Context context) {
+
+        Calendar date = Calendar.getInstance();
+
+        if (validInternetConnection) {
+            // Set Date on next Monday 6h
+            date.set(Calendar.DAY_OF_WEEK, 2);
+            date.set(Calendar.HOUR_OF_DAY, 9);
+            date.set(Calendar.MINUTE, 0);
+            date.set(Calendar.SECOND, 0);
+            date.add(Calendar.DATE, 7);
+        } else {
+            // Set date on in one hour
+            date.add(Calendar.HOUR_OF_DAY, 1);
+        }
+
+        // Set alarm to date
+        AlarmHandler.setAlarm(context, date);
+
+        // Update file
+        NotificationUtils.writeAlarmToFile(context, date);
+
+        Log.v(LOG_TAG, "Setting new alarm to " + date.getTime());
     }
 
     /**
@@ -76,7 +123,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      3. Go through all products and the offers to find matching once
      4. Return a list with all offers that match the product list.
      ********************************************************************************************/
-    private class CheckOffersTask extends AsyncTask<List<String>, String, List<Offer>> {
+    private class CheckOffersTask extends AsyncTask<List<String>, String, List<Offer>>{
         private Market market;
         private Context context;
 
@@ -101,7 +148,16 @@ public class AlarmReceiver extends BroadcastReceiver {
             List<Offer> resultList = new ArrayList<>();
 
             // TODO: First look in the files
-            OfferList offerList = OfferUtils.requestOffersFromServer(context, market);
+
+            OfferList offerList = null;
+            try {
+                offerList = OfferUtils.requestOffersFromServer(context, market);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "IOException: " + e.getMessage());
+                e.printStackTrace();
+                validInternetConnection = false;
+                return resultList;
+            }
 
             // collect all matching offers
             for (String p: products[0]) {
@@ -117,7 +173,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
 
             Log.v(LOG_TAG, "Results: " + resultList);
-
             return resultList;
         }
 

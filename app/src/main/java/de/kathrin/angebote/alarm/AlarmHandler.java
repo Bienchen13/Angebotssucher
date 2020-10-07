@@ -21,22 +21,46 @@ public class AlarmHandler {
     public static final int REQUEST_CODE = 0;
 
     /**
+     * Set the alarm for the given date
+     * @param context   current context
+     * @param date      date when the alarm should fire
+     */
+    public static void setAlarm (final Context context, Calendar date) {
+        final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        // Set the alarm at the given date
+        alarmManager.set(
+                AlarmManager.RTC_WAKEUP,                // wake phone up
+                date.getTimeInMillis(),                 // at specific date
+                createIntent(context));
+
+        Log.v(LOG_TAG, "Alarm is set on + " + date.getTime() + ".");
+    }
+
+    /**
      * Set the repeating alarm. At the time, the alarmManager wakes the app and calls the
      * {@link AlarmReceiver}.
      * @param context   current context
      */
-    public static void setAlarm (final Context context) {
+    public static void setRepeatingAlarm (final Context context) {
 
         // Set the stating time for the alarm
         Calendar calendar = Calendar.getInstance();
 
-        calendar.set(Calendar.DAY_OF_WEEK, 1);
+        // Set Date on next Monday 6h
+        calendar.set(Calendar.DAY_OF_WEEK, 2);
+        calendar.set(Calendar.HOUR_OF_DAY, 6);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        calendar.add(Calendar.DATE, 7);
+
         Log.v(LOG_TAG, "Calender on:" + calendar.getTime());
 
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         // Set the repeating alarm (every week, starting at monday)
-        alarmManager.setInexactRepeating(
+        alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,                    // wake phone up
                 calendar.getTimeInMillis(),                 // every monday
                 AlarmManager.INTERVAL_DAY * 7,   // each week once
@@ -55,7 +79,6 @@ public class AlarmHandler {
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(createIntent(context));
         Log.v(LOG_TAG, "Canceled alarm.");
-
     }
 
     /**

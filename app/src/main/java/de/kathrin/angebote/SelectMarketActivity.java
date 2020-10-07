@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,12 +167,19 @@ public class SelectMarketActivity extends AppCompatActivity {
          */
         @Override
         protected List<Market> doInBackground(String... requestedCity) {
-            List<Market> marketList = MarketUtils.requestMarketsFromServer(requestedCity[0]);
+            List<Market> marketList = new ArrayList<>();
 
-            if (marketList == null) {
+            try {
+                marketList = MarketUtils.requestMarketsFromServer(requestedCity[0]);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "IOException: " + e.getMessage());
+                e.printStackTrace();
                 publishProgress("Verbindung zum Server fehlgeschlagen. " +
                         "Es konnten keine Märkte gefunden werden.");
-            } else if (marketList.isEmpty()) {
+                return marketList;
+            }
+
+            if (marketList.isEmpty()) {
                 publishProgress("Keine Märkte zu Ihrer Anfrage gefunden");
             }
 
