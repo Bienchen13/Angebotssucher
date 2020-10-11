@@ -12,7 +12,7 @@ import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.utlis.NotificationUtils;
 
 /**
- * Class to set and cancel the repeated offer notification
+ * Class to set and cancel the offer notifications
  */
 public class AlarmHandler {
 
@@ -43,7 +43,7 @@ public class AlarmHandler {
      * {@link AlarmReceiver}.
      * @param context   current context
      */
-    public static void setRepeatingAlarm (final Context context) {
+    /*public static void setRepeatingAlarm (final Context context) {
 
         // Set the stating time for the alarm next monday
         Calendar calendar = NotificationUtils.getNextMonday();
@@ -61,7 +61,7 @@ public class AlarmHandler {
 
         Log.v(LOG_TAG, "Alarm is set.");
 
-    }
+    }*/
 
     /**
      * Cancel the repeating alarm.

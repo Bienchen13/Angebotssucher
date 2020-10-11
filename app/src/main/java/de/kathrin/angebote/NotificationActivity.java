@@ -40,13 +40,13 @@ public class NotificationActivity extends AppCompatActivity {
 
     private List<String> productList = new ArrayList<>();
     private ProductDataSource productDataSource;
-    private NotificationController notificationController;
+    //private NotificationController notificationController;
 
     private LayoutUtilsNotification lu;
 
     /**
      * Called automatically when entering this the first time activity.
-     * Sets the layout.
+     * Sets the layout, initializes the Add-Product-Button and registers the alarm receiver.
      * @param savedInstanceState - save old state -
      */
     @Override
@@ -70,7 +70,7 @@ public class NotificationActivity extends AppCompatActivity {
         productDataSource = new ProductDataSource(this);
 
         // Connect to the notification controller
-        notificationController = new NotificationController(this);
+        //notificationController = new NotificationController(this);
 
         // Initialize list view
         bindAdapterToListView();
@@ -84,25 +84,25 @@ public class NotificationActivity extends AppCompatActivity {
      * Both are used for notifications.
      */
     private void registerAlarmAndBootReceivers() {
-        final ComponentName alarmReceiver = new ComponentName(NotificationActivity.this, AlarmReceiver.class);
         final PackageManager pm = NotificationActivity.this.getPackageManager();
 
-        pm.setComponentEnabledSetting(alarmReceiver,
+        // Alarm Receiver
+        pm.setComponentEnabledSetting(
+                new ComponentName(NotificationActivity.this, AlarmReceiver.class),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
 
-        final ComponentName bootReceiver = new ComponentName(NotificationActivity.this, BootReceiver.class);
-        pm.setComponentEnabledSetting(bootReceiver,
+        // Boot Receiver
+        pm.setComponentEnabledSetting(
+                new ComponentName(NotificationActivity.this, BootReceiver.class),
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP);
     }
 
     /**
-     * Add the elements in the text view to the list and database on the button click
+     * Add the elements in the text view to the list and to the database on button click
      */
     private void initAddProductButton () {
-
-        // Define On Click Button Reaction
         View.OnClickListener onAddButtonClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,14 +117,11 @@ public class NotificationActivity extends AppCompatActivity {
 
                 // Refresh the list view immediately
                 lu.PRODUCT_LIST_VIEW.invalidateViews();
-
-
             }
         };
 
         // Add Reaction to Button
         lu.PRODUCT_ADD_BUTTON_VIEW.setOnClickListener(onAddButtonClickListener);
-
     }
 
     /**
@@ -165,11 +162,12 @@ public class NotificationActivity extends AppCompatActivity {
     }*/
 
     /**
-     * Connect the list view to the custom array adapter
+     * Connect the list view to the product array adapter
      */
     private void bindAdapterToListView () {
-        ProductArrayAdapter arrayAdapter = new ProductArrayAdapter(this, productList, productDataSource);
-        lu.PRODUCT_LIST_VIEW.setAdapter(arrayAdapter);
+        lu.PRODUCT_LIST_VIEW.setAdapter(
+                new ProductArrayAdapter(this, productList, productDataSource)
+        );
     }
 
     /**
@@ -177,7 +175,7 @@ public class NotificationActivity extends AppCompatActivity {
      * @param market    market which has the offers
      * @param offerList products on offer
      */
-    private void notifyOffersAvailable (Market market, List<Offer> offerList) {
+    /*private void notifyOffersAvailable (Market market, List<Offer> offerList) {
         Log.v(LOG_TAG, "Notify about available products on offer.");
 
         String title = "Neue Angebote im " + market.getName() + "!";
@@ -188,11 +186,11 @@ public class NotificationActivity extends AppCompatActivity {
         }
 
         notificationController.addNewNotification(title, content.toString());
-    }
+    }*/
 
     /**
      * Called automatically every time entering this activity.
-     * The database is opened.
+     * The database is opened and the current products to notify on offer are shown.
      */
     @Override
     protected void onResume() {
@@ -207,8 +205,7 @@ public class NotificationActivity extends AppCompatActivity {
         productList.addAll(productDataSource.getAllProductsFromDatabase());
         lu.PRODUCT_LIST_VIEW.invalidateViews();
 
-        Log.v(LOG_TAG, "Loaded " + productList.size() + " elements from the database: " +
-                productList.toString());
+        //Log.v(LOG_TAG, "Loaded " + productList.size() + " elements from the database: " + productList.toString());
     }
 
     /**
@@ -227,33 +224,29 @@ public class NotificationActivity extends AppCompatActivity {
         updateAlarm();
     }
 
+    /**
+     * Set or cancel the alarm.
+     * If there are no products in the list, cancel it.
+     * Otherwise check if there is already an alarm set. If not, set it.
+     */
     private void updateAlarm () {
 
         if (productList.isEmpty()) {
+            // Cancel alarm and delete file
+            AlarmHandler.cancelAlarm(this);
+            NotificationUtils.clearAlarmFile(this);
             Log.v(LOG_TAG, "List is empty, no alarm set.");
 
-            // Cancel alarm
-            AlarmHandler.cancelAlarm(this);
-
-            // Delete file
-            NotificationUtils.clearAlarmFile(this);
-
         } else if (NotificationUtils.alarmIsSet(this)){
-            // When file has alarm: good
+            // When file has alarm: good, do nothing
             Log.v(LOG_TAG, "Alarm is already set.");
 
         } else {
-            // Set Date on next Monday 6h
+            // Set alarm to next monday and update file
             Calendar nextMonday = NotificationUtils.getNextMonday();
-
-            // Set alarm to next monday
             AlarmHandler.setAlarm(this, nextMonday);
-
-            // Update file
             NotificationUtils.writeAlarmToFile(this, nextMonday);
-
             Log.v(LOG_TAG, "Setting new alarm to " + nextMonday.getTime());
-
         }
     }
 

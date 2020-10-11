@@ -23,12 +23,13 @@ import de.kathrin.angebote.utlis.OfferUtils;
 import static java.lang.Thread.sleep;
 
 /**
- * Creates a new notification when the alarmManager send a signal
+ * Creates a new notification when the alarmManager sends a signal
  */
 public class AlarmReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + AlarmReceiver.class.getSimpleName();
     private boolean validInternetConnection = true;
+    private Context context;
 
     /**
      * Show a new notification. The method automatically is called, when an alarm
@@ -39,44 +40,42 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v(LOG_TAG, "Alarm received.");
+        this.context = context;
 
-        checkForNewOffers(context);
+        // Check if there are new offers and send notifications if there are
+        checkForNewOffers();
 
-        Log.v(LOG_TAG, "After here.");
-
+        // Doing this ugly shit to reassure the check for offers task is done
+        // Because it is async otherwise there is no guarantee its done by now.
         try {
             // Sleep for 20 sec
             sleep(20*1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.v(LOG_TAG, "And now Im here");
-        setNewAlarm(context);
+
+        // Set the new alarm depending on the success of the search
+        setNewAlarm();
     }
 
     /**
      * Set the next alarm. In one week if every thing was fine. In one hour if there was no
      * internet connection
-     * @param context   current context
      */
-    private void setNewAlarm(Context context) {
+    private void setNewAlarm() {
 
-        Calendar date;
+        // Set Date on next Monday
+        Calendar date = NotificationUtils.getNextMonday();
 
-        if (validInternetConnection) {
-            // Set Date on next Monday 6h
-            date = NotificationUtils.getNextMonday();
-
-        } else {
+        // If there was no connection, change it to: in one hour
+        if (!validInternetConnection) {
             // Set date on in one hour
             date =  Calendar.getInstance();
             date.add(Calendar.HOUR_OF_DAY, 1);
         }
 
-        // Set alarm to date
+        // Set alarm to date and update file
         AlarmHandler.setAlarm(context, date);
-
-        // Update file
         NotificationUtils.writeAlarmToFile(context, date);
 
         Log.v(LOG_TAG, "Setting new alarm to " + date.getTime());
@@ -86,32 +85,51 @@ public class AlarmReceiver extends BroadcastReceiver {
      * Check if the products are on offer in the favourite markets.
      * (First load the markets from the market database, then start a {@link CheckOffersTask}
      *  for every market.)
-     * @param context   current context
      */
-    private void checkForNewOffers (Context context) {
-
+    private void checkForNewOffers () {
         List<String> productList = new ArrayList<>();
 
+        // Load all products of interest
         ProductDataSource productDataSource = new ProductDataSource(context);
-
         productDataSource.open();
         productList.addAll(productDataSource.getAllProductsFromDatabase());
         productDataSource.close();
 
+        // Load all favourite markets
         MarketDataSource marketDataSource = new MarketDataSource(context);
-
         marketDataSource.open();
         List<Market> marketList = marketDataSource.getAllFavouriteMarkets();
         marketDataSource.close();
 
         if (!marketList.isEmpty()) {
 
+            // Go through all markets and check for products on offer
             for (Market m : marketList) {
                 Log.v(LOG_TAG, "Checking market: " + m);
                 new CheckOffersTask(context, m).execute(productList);
             }
         }
 
+    }
+
+    /**
+     * Create the title and the content of a new notification and send it to the
+     * {@link NotificationController}.
+     * @param market    Market where the products are on offer
+     * @param offers    Products on offer.
+     */
+    private void notifyAboutOffers (Market market, List<Offer> offers) {
+        NotificationController nc = new NotificationController(context);
+
+        String title = "Neue Angebote im " + market.getName() + "!";
+
+        StringBuilder content = new StringBuilder();
+        for (Offer o: offers) {
+            content.append("- " + o.getTitle() + "\n");
+        }
+
+        // Show new notification
+        nc.addNewNotification(title, content.toString());
     }
 
     /*******************************************************************************************
@@ -144,15 +162,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         protected List<Offer> doInBackground(List<String>... products) {
 
             List<Offer> resultList = new ArrayList<>();
+            OfferList offerList;
 
-            // TODO: First look in the files
-
-            OfferList offerList = null;
+            // Try to load the offers from the server
             try {
                 offerList = OfferUtils.requestOffersFromServer(context, market);
             } catch (IOException e) {
-                Log.e(LOG_TAG, "IOException: " + e.getMessage());
-                e.printStackTrace();
+                Log.v(LOG_TAG, "No valid internet connection");
                 validInternetConnection = false;
                 return resultList;
             }
@@ -170,27 +186,18 @@ public class AlarmReceiver extends BroadcastReceiver {
                 }
             }
 
-            Log.v(LOG_TAG, "Results: " + resultList);
+            //Log.v(LOG_TAG, "Results: " + resultList);
             return resultList;
         }
 
         /**
          * Notify the user about the products on offer.
-         * @param offers
+         * @param offers    products on offer
          */
         @Override
         protected void onPostExecute(List<Offer> offers) {
             if (!offers.isEmpty()) {
-                NotificationController nc = new NotificationController(context);
-
-                String title = "Neue Angebote im " + market.getName() + "!";
-
-                StringBuilder content = new StringBuilder();
-                for (Offer o: offers) {
-                    content.append("- " + o.getTitle() + "\n");
-                }
-
-                nc.addNewNotification(title, content.toString());
+                notifyAboutOffers(market, offers);
             }
         }
     }
