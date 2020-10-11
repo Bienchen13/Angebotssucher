@@ -64,7 +64,7 @@ public class NotificationActivity extends AppCompatActivity {
         initAddProductButton();
 
         // Init the button to check if the product are on offer
-        initCheckProductsButton();
+        //initCheckProductsButton();
 
         // Connect to product notification database
         productDataSource = new ProductDataSource(this);
@@ -107,8 +107,9 @@ public class NotificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // Get product from Text View
+                // Get product from Text View and reset it
                 String product = lu.PRODUCT_ADD_FIELD_VIEW.getText().toString();
+                lu.PRODUCT_ADD_FIELD_VIEW.setText("");
 
                 // Add product to list and database
                 productList.add(product);
@@ -117,7 +118,7 @@ public class NotificationActivity extends AppCompatActivity {
                 // Refresh the list view immediately
                 lu.PRODUCT_LIST_VIEW.invalidateViews();
 
-                //TODO: Clear input field
+
             }
         };
 
@@ -131,7 +132,7 @@ public class NotificationActivity extends AppCompatActivity {
      * (First load the markets from the market database, then start a {@link CheckOffersTask}
      * for every market.)
      */
-    private void initCheckProductsButton () {
+    /*private void initCheckProductsButton () {
 
         // Define On Click Button Reaction
         View.OnClickListener onAddButtonClickListener = new View.OnClickListener() {
@@ -161,7 +162,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         // Add Reaction to Button
         lu.PRODUCT_CHECK_BUTTON_VIEW.setOnClickListener(onAddButtonClickListener);
-    }
+    }*/
 
     /**
      * Connect the list view to the custom array adapter
@@ -243,12 +244,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         } else {
             // Set Date on next Monday 6h
-            Calendar nextMonday = Calendar.getInstance();
-            nextMonday.set(Calendar.DAY_OF_WEEK, 2);
-            nextMonday.set(Calendar.HOUR_OF_DAY, 9);
-            nextMonday.set(Calendar.MINUTE, 0);
-            nextMonday.set(Calendar.SECOND, 0);
-            nextMonday.add(Calendar.DATE, 7);
+            Calendar nextMonday = NotificationUtils.getNextMonday();
 
             // Set alarm to next monday
             AlarmHandler.setAlarm(this, nextMonday);
@@ -268,64 +264,63 @@ public class NotificationActivity extends AppCompatActivity {
      3. Go through all products and the offers to find matching once
      4. Return a list with all offers that match the product list.
      ********************************************************************************************/
-    private class CheckOffersTask extends AsyncTask <List<String>, String, List<Offer>> {
-        private Market market;
-
-        /**
-         * Constructor, saves the current market
-         * @param market    market which offers are compared later
-         */
-        public CheckOffersTask (Market market) {
-            this.market = market;
-        }
-
-        /**
-         * Load the offers from the given market and look for matching products (compare with
-         * the products in the given list).
-         * @param products  to compare with the offers in the market
-         * @return  list of matching offers
-         */
-        @Override
-        protected List<Offer> doInBackground(List<String>... products) {
-
-            List<Offer> resultList = new ArrayList<>();
-            OfferList offerList = null;
-
-            // TODO: First look in the files
-            try {
-                offerList = OfferUtils.requestOffersFromServer(NotificationActivity.this, market);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "IOException: " + e.getMessage());
-                return resultList;
-            }
-
-            // collect all matching offers
-            for (String p: products[0]) {
-
-                String product = p.trim().toLowerCase();
-
-                for (Offer o: offerList) {
-                    if (o.getTitle().toLowerCase().contains(product) ||
-                            o.getDescription().toLowerCase().contains(product)) {
-                        resultList.add(o);
-                    }
-                }
-            }
-
-            Log.v(LOG_TAG, "Results: " + resultList);
-
-            return resultList;
-        }
-
-        /**
-         * Notify the user about the products on offer.
-         * @param offers
-         */
-        @Override
-        protected void onPostExecute(List<Offer> offers) {
-            if (!offers.isEmpty()) {
-                notifyOffersAvailable(market, offers);
-            }
-        }
-    }
+//     private class CheckOffersTask extends AsyncTask <List<String>, String, List<Offer>> {
+//        private Market market;
+//
+//        /**
+//         * Constructor, saves the current market
+//         * @param market    market which offers are compared later
+//         */
+//        public CheckOffersTask (Market market) {
+//            this.market = market;
+//        }
+//
+//        /**
+//         * Load the offers from the given market and look for matching products (compare with
+//         * the products in the given list).
+//         * @param products  to compare with the offers in the market
+//         * @return  list of matching offers
+//         */
+//        @Override
+//        protected List<Offer> doInBackground(List<String>... products) {
+//
+//            List<Offer> resultList = new ArrayList<>();
+//            OfferList offerList;
+//
+//            try {
+//                offerList = OfferUtils.requestOffersFromServer(NotificationActivity.this, market);
+//            } catch (IOException e) {
+//                Log.e(LOG_TAG, "IOException: " + e.getMessage());
+//                return resultList;
+//            }
+//
+//            // collect all matching offers
+//            for (String p: products[0]) {
+//
+//                String product = p.trim().toLowerCase();
+//
+//                for (Offer o: offerList) {
+//                    if (o.getTitle().toLowerCase().contains(product) ||
+//                            o.getDescription().toLowerCase().contains(product)) {
+//                        resultList.add(o);
+//                    }
+//                }
+//            }
+//
+//            Log.v(LOG_TAG, "Results: " + resultList);
+//
+//            return resultList;
+//        }
+//
+//        /**
+//         * Notify the user about the products on offer.
+//         * @param offers
+//         */
+//        @Override
+//        protected void onPostExecute(List<Offer> offers) {
+//            if (!offers.isEmpty()) {
+//                notifyOffersAvailable(market, offers);
+//            }
+//        }
+//    }
 }

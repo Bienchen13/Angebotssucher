@@ -36,8 +36,6 @@ public class OfferUtils {
         // Request URL
         String jsonString = IOUtils.requestFromServer(url, "GET", null);
 
-        Log.v(LOG_TAG, "Should not be here");
-
         OfferList offerList = null;
 
         if (jsonString != null) {

@@ -9,6 +9,7 @@ import android.util.Log;
 import java.util.Calendar;
 
 import de.kathrin.angebote.MainActivity;
+import de.kathrin.angebote.utlis.NotificationUtils;
 
 /**
  * Class to set and cancel the repeated offer notification
@@ -44,17 +45,8 @@ public class AlarmHandler {
      */
     public static void setRepeatingAlarm (final Context context) {
 
-        // Set the stating time for the alarm
-        Calendar calendar = Calendar.getInstance();
-
-        // Set Date on next Monday 6h
-        calendar.set(Calendar.DAY_OF_WEEK, 2);
-        calendar.set(Calendar.HOUR_OF_DAY, 6);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        calendar.add(Calendar.DATE, 7);
-
+        // Set the stating time for the alarm next monday
+        Calendar calendar = NotificationUtils.getNextMonday();
         Log.v(LOG_TAG, "Calender on:" + calendar.getTime());
 
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

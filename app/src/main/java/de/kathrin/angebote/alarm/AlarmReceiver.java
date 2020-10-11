@@ -61,17 +61,15 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
     private void setNewAlarm(Context context) {
 
-        Calendar date = Calendar.getInstance();
+        Calendar date;
 
         if (validInternetConnection) {
             // Set Date on next Monday 6h
-            date.set(Calendar.DAY_OF_WEEK, 2);
-            date.set(Calendar.HOUR_OF_DAY, 9);
-            date.set(Calendar.MINUTE, 0);
-            date.set(Calendar.SECOND, 0);
-            date.add(Calendar.DATE, 7);
+            date = NotificationUtils.getNextMonday();
+
         } else {
             // Set date on in one hour
+            date =  Calendar.getInstance();
             date.add(Calendar.HOUR_OF_DAY, 1);
         }
 

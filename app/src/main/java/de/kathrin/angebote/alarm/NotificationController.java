@@ -48,7 +48,7 @@ public class NotificationController {
 
         // Create the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher_without_background)
                 .setContentTitle(title)
                 //.setContentText(description)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
