@@ -25,15 +25,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/main_hint"
-            android:layout_toLeftOf="@id/offer_search_button"
-            android:textSize="@dimen/search_font_size" />
+            android:layout_toStartOf="@id/offer_search_button"
+            android:textSize="@dimen/search_font_size"
+            android:importantForAutofill="no"
+            android:inputType="text" />
 
         <Button
             android:id="@+id/offer_search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:text="@string/main_button"
             android:textSize="@dimen/search_font_size" />
 
@@ -47,7 +49,7 @@
         android:layout_margin="@dimen/default_margin"
         android:padding="@dimen/default_margin"
         android:textSize="@dimen/default_font_size"
-        android:drawableRight="@drawable/edit_pencil"
+        android:drawableEnd="@drawable/edit_pencil"
         android:background="@color/colorRowBackground"
         />
 

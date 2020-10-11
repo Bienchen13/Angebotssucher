@@ -18,16 +18,20 @@
     <string name="set_notification_button">+</string>
 
     <string name="popup_sample_title">Titel</string>
+    <string name="popup_sample_description">Test Pop-Up</string>
 
     <string name="market_list_sample">EDEKA</string>
 
     <string name="offer_list_sample_title">Kinder schokolade oder Yogurette</string>
     <string name="offer_list_sample_description">Die ideale Zwischenmahlzeit</string>
+    <string name="offer_list_sample_price">1,99€</string>
 
     <string name="product_list_sample">Nudeln</string>
     <string name="product_list_delete">X</string>
 
     <string name="menu_set_notification">Benachrichtigungen einstellen</string>
 
+    <string name="image_description">Product Image</string>
+    <string name="image_star">Fav Star</string>
 
 </resources>

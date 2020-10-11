@@ -11,7 +11,7 @@
         android:id="@+id/offer_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/offer_item_price"
+        android:layout_toStartOf="@+id/offer_item_price"
         android:textSize="@dimen/offer_text_font_size"
         android:text="@string/offer_list_sample_title"
         android:layout_marginEnd="5dp"
@@ -22,9 +22,9 @@
         android:id="@+id/offer_item_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:textAlignment="center"
         android:textSize="@dimen/offer_text_font_size"
-        android:text="1,99€" />
+        android:text="@string/offer_list_sample_price" />
 
 </RelativeLayout>
