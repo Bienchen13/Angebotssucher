@@ -1,5 +1,6 @@
 package de.kathrin.angebote;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -178,6 +181,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Create an options menu to set the notifications
+     * @param menu  - done by Java -
+     * @return      true
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_set_notification, menu);
+        return true;
+    }
+
+    /**
+     * Called, when an element in the options menu is clicked
+     * @param item  clicked item
+     * @return      boolean, true if everything is fine
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_show_notifications:
+                Log.v(LOG_TAG, "Clicked on set notifications!");
+
+                // Switch to Notification Activity
+                Intent intent = new Intent(this, NotificationActivity.class);
+                startActivity(intent);
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
      * Automatically called when returning from the Select Market Activity.
      * Sets the returned market and deletes old offers.
      * @param requestCode - done by Java
@@ -318,14 +354,15 @@ public class MainActivity extends AppCompatActivity {
 
             // Try to make a server request to load offers
             if (allOffersList == null) {
-                allOffersList = OfferUtils.requestOffersFromServer(MainActivity.this, selectedMarket);
-            }
 
-            // if list is still null, something bad happened
-            if (allOffersList == null) {
-                publishProgress("Verbindung zum Server fehlgeschlagen. " +
-                        "Es konnten keine Angebote geladen werden.");
-                return resultList;
+                try {
+                    allOffersList = OfferUtils.requestOffersFromServer(MainActivity.this, selectedMarket);
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "IOException: " + e.getMessage());
+                    publishProgress("Verbindung zum Server fehlgeschlagen. " +
+                            "Es konnten keine Angebote geladen werden.");
+                    return resultList;
+                }
             }
 
             String requestString = searchItem[0].toLowerCase().trim();

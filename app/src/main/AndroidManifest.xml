@@ -28,6 +28,29 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <activity
+            android:name=".NotificationActivity"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <receiver android:name=".alarm.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="de.kathrin.angebote.notification"></action>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".alarm.BootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

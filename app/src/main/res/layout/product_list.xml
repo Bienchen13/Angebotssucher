@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp"
+    android:background="@color/colorRowBackground"
+    android:padding="@dimen/row_padding">
+
+    <TextView
+        android:id="@+id/product_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_text_font_size"
+        android:text="Test"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/product_item_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/offer_text_font_size"
+        android:layout_alignParentRight="true"
+        android:text="X"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp"/>
+
+</RelativeLayout>

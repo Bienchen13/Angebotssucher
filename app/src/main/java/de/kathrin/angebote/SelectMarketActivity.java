@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class SelectMarketActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + SelectMarketActivity.class.getSimpleName();
 
     // For the intent used in the MarketArrayAdapter Class
-    public static final String EXTRA_MARKET = "de.kathrin.angebote.EXTRA_MARKET";
+    public static final String EXTRA_MARKET = MainActivity.PROJECT_NAME + "EXTRA_MARKET";
 
     // Used to show the markets
     private List<Market> resultMarketList = new ArrayList<>();
@@ -42,7 +43,7 @@ public class SelectMarketActivity extends AppCompatActivity {
      * Called automatically when entering this the first time activity.
      * Sets the layout, the click listener for the search button, connects the database
      * and connects the adapter to the list view
-     * @param savedInstanceState
+     * @param savedInstanceState - save old state -
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,12 +167,19 @@ public class SelectMarketActivity extends AppCompatActivity {
          */
         @Override
         protected List<Market> doInBackground(String... requestedCity) {
-            List<Market> marketList = MarketUtils.requestMarketsFromServer(requestedCity[0]);
+            List<Market> marketList = new ArrayList<>();
 
-            if (marketList == null) {
+            try {
+                marketList = MarketUtils.requestMarketsFromServer(requestedCity[0]);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "IOException: " + e.getMessage());
+                e.printStackTrace();
                 publishProgress("Verbindung zum Server fehlgeschlagen. " +
                         "Es konnten keine Märkte gefunden werden.");
-            } else if (marketList.isEmpty()) {
+                return marketList;
+            }
+
+            if (marketList.isEmpty()) {
                 publishProgress("Keine Märkte zu Ihrer Anfrage gefunden");
             }
 

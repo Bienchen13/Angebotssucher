@@ -7,4 +7,6 @@
     <string name="cab_add">Hinzufügen</string>
     <string name="cab_delete">Löschen</string>
     <string name="cab_fav">Favorite</string>
+
+    <string name="explanation_notifications">"Wenn eines der von Ihnen genannten Produkte in einem Ihrer Lieblingssupermärkten im Angebot ist, erhalten Sie automatisch eine Benachrichtigung von uns."</string>
 </resources>

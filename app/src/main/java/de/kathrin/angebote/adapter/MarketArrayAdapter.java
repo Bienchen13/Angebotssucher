@@ -21,9 +21,10 @@ import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.models.Market;
 import de.kathrin.angebote.R;
 import de.kathrin.angebote.database.MarketDataSource;
-import de.kathrin.angebote.database.MarketDbHelper;
 
 import static de.kathrin.angebote.SelectMarketActivity.EXTRA_MARKET;
+import static de.kathrin.angebote.utlis.LayoutUtilsSelectMarket.MARKET_ITEM;
+import static de.kathrin.angebote.utlis.LayoutUtilsSelectMarket.MARKET_ITEM_STAR;
 
 /**
  * Adapter to extract the Market data and show it in a list view
@@ -47,7 +48,7 @@ public class MarketArrayAdapter extends ArrayAdapter {
      * @param context   the context where the Adapter is called from (used in the super constructor
      *                  and to initialize the LayoutInflater)
      * @param marketList    used in the getView method to get elements from the list
-     * @param datasource    used to check if a market is a favourite ( {@link MarketDbHelper})
+     * @param datasource    used to check if a market is a favourite ( {@link MarketDataSource})
      * @param parent    the activity where the Adapter is called from (to return to this activity
      *                  in the end)
      */
@@ -81,8 +82,8 @@ public class MarketArrayAdapter extends ArrayAdapter {
         final Market currentMarket = mMarketList.get(position);
 
         // Get view objects from view hierarchy (the text view and the image button)
-        final TextView tvTitle = rowView.findViewById(R.id.market_list_item);
-        final ImageButton favicon = rowView.findViewById(R.id.market_fav_icon);
+        final TextView tvTitle = rowView.findViewById(MARKET_ITEM);
+        final ImageButton favicon = rowView.findViewById(MARKET_ITEM_STAR);
 
         // Assign the current market name to the text view
         tvTitle.setText(currentMarket.toString());

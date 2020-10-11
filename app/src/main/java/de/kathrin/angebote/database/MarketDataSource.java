@@ -14,30 +14,30 @@ import de.kathrin.angebote.models.Market;
 
 /**
  * Handling the Market Data Source where all favourite markets are saved.
- * (Using the {@link MarketDbHelper} class)
+ * (Using the {@link DbHelper} class)
  */
 public class MarketDataSource {
 
     private static final String LOG_TAG = MainActivity.PROJECT_NAME + MarketDataSource.class.getSimpleName();
 
     private SQLiteDatabase database;
-    private MarketDbHelper dbHelper;
+    private DbHelper dbHelper;
     private String[] columns = {
-            MarketDbHelper.COLUMN_ID,
-            MarketDbHelper.COLUMN_MARKET_ID,
-            MarketDbHelper.COLUMN_NAME,
-            MarketDbHelper.COLUMN_STREET,
-            MarketDbHelper.COLUMN_CITY,
-            MarketDbHelper.COLUMN_PLZ
+            DbHelper.MARKET_COLUMN_ID,
+            DbHelper.MARKET_COLUMN_MARKET_ID,
+            DbHelper.MARKET_COLUMN_NAME,
+            DbHelper.MARKET_COLUMN_STREET,
+            DbHelper.MARKET_COLUMN_CITY,
+            DbHelper.MARKET_COLUMN_PLZ
     };
 
     /**
-     * Constructor creating a {@link MarketDbHelper} instance
+     * Constructor creating a {@link DbHelper} instance
      * @param context given to the MarketDbHelper instance
      */
     public MarketDataSource(Context context) {
         Log.v(LOG_TAG, "DbHelper is created.");
-        dbHelper = new MarketDbHelper(context);
+        dbHelper = new DbHelper(context);
     }
 
     /**
@@ -62,12 +62,12 @@ public class MarketDataSource {
      */
     public void addMarketToFavourites (Market m) {
         ContentValues values = new ContentValues();
-        values.put(MarketDbHelper.COLUMN_MARKET_ID, m.getMarketID());
-        values.put(MarketDbHelper.COLUMN_NAME, m.getName());
-        values.put(MarketDbHelper.COLUMN_STREET, m.getStreet());
-        values.put(MarketDbHelper.COLUMN_CITY, m.getCity());
-        values.put(MarketDbHelper.COLUMN_PLZ, m.getPlz());
-        long insertID = database.insert(MarketDbHelper.TABLE_MARKET_FAVOURITES,
+        values.put(DbHelper.MARKET_COLUMN_MARKET_ID, m.getMarketID());
+        values.put(DbHelper.MARKET_COLUMN_NAME, m.getName());
+        values.put(DbHelper.MARKET_COLUMN_STREET, m.getStreet());
+        values.put(DbHelper.MARKET_COLUMN_CITY, m.getCity());
+        values.put(DbHelper.MARKET_COLUMN_PLZ, m.getPlz());
+        long insertID = database.insert(DbHelper.TABLE_MARKET_FAVOURITES,
                 null, values);
 
         Log.v(LOG_TAG, "Added favourite market! ID: " + insertID + " Market: " + m.toString());
@@ -80,8 +80,8 @@ public class MarketDataSource {
     public void deleteMarketFromFavourites (Market m) {
         String id = m.getMarketID();
 
-        database.delete(MarketDbHelper.TABLE_MARKET_FAVOURITES,
-                MarketDbHelper.COLUMN_MARKET_ID + "=" + id,
+        database.delete(DbHelper.TABLE_MARKET_FAVOURITES,
+                DbHelper.MARKET_COLUMN_MARKET_ID + "=" + id,
                 null);
 
         Log.v(LOG_TAG, "Market deleted! Market: " + m.toString());
@@ -93,12 +93,12 @@ public class MarketDataSource {
      * @return the market filled with the data of the cursor position
      */
     private Market cursorToMarket (Cursor cursor) {
-        String marketId = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_MARKET_ID));
-        String name     = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_NAME));
-        String street   = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_STREET));
-        String city     = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_CITY));
-        String plz      = cursor.getString(cursor.getColumnIndex(MarketDbHelper.COLUMN_PLZ));
-        long id         = cursor.getLong(cursor.getColumnIndex(MarketDbHelper.COLUMN_ID));
+        String marketId = cursor.getString(cursor.getColumnIndex(DbHelper.MARKET_COLUMN_MARKET_ID));
+        String name     = cursor.getString(cursor.getColumnIndex(DbHelper.MARKET_COLUMN_NAME));
+        String street   = cursor.getString(cursor.getColumnIndex(DbHelper.MARKET_COLUMN_STREET));
+        String city     = cursor.getString(cursor.getColumnIndex(DbHelper.MARKET_COLUMN_CITY));
+        String plz      = cursor.getString(cursor.getColumnIndex(DbHelper.MARKET_COLUMN_PLZ));
+        long id         = cursor.getLong(cursor.getColumnIndex(DbHelper.MARKET_COLUMN_ID));
 
         return new Market(marketId, name, street, city, plz, id);
     }
@@ -112,7 +112,7 @@ public class MarketDataSource {
         List<Market> marketList = new ArrayList<>();
 
         // Get entire database
-        Cursor cursor = database.query(MarketDbHelper.TABLE_MARKET_FAVOURITES, columns,
+        Cursor cursor = database.query(DbHelper.TABLE_MARKET_FAVOURITES, columns,
                 null, null, null, null, null);
 
         cursor.moveToFirst();
@@ -140,8 +140,8 @@ public class MarketDataSource {
      */
     public boolean checkMarketInFavourites (Market m) {
         // Go to market in datbase
-        Cursor cursor = database.query(MarketDbHelper.TABLE_MARKET_FAVOURITES, columns,
-                MarketDbHelper.COLUMN_MARKET_ID + "=" + m.getMarketID(),
+        Cursor cursor = database.query(DbHelper.TABLE_MARKET_FAVOURITES, columns,
+                DbHelper.MARKET_COLUMN_MARKET_ID + "=" + m.getMarketID(),
                 null, null, null, null);
         cursor.moveToFirst();
 
