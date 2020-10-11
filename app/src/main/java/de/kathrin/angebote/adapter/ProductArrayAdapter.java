@@ -1,5 +1,6 @@
 package de.kathrin.angebote.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +27,7 @@ import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
  * Adapter to extract the Product data and show it in a list view
  * (used in the Notification Activity)
  */
-public class ProductArrayAdapter extends ArrayAdapter {
+public class ProductArrayAdapter extends ArrayAdapter<String> {
 
     private static final String LOG_TAG = PROJECT_NAME + ProductArrayAdapter.class.getSimpleName();
     private static final int LIST_LAYOUT = R.layout.product_list;
@@ -64,6 +65,7 @@ public class ProductArrayAdapter extends ArrayAdapter {
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
         // Create the view hierarchy defined in LIST_LAYOUT (one text view and the delete X)
+        @SuppressLint("ViewHolder")
         final View rowView = mLayoutInflater.inflate(LIST_LAYOUT, parent, false);
 
         // Extract the content at the current position (get current product name)

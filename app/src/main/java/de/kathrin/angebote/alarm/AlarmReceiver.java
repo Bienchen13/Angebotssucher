@@ -1,5 +1,6 @@
 package de.kathrin.angebote.alarm;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.database.MarketDataSource;
 import de.kathrin.angebote.database.ProductDataSource;
 import de.kathrin.angebote.models.Market;
@@ -88,12 +88,11 @@ public class AlarmReceiver extends BroadcastReceiver {
      *  for every market.)
      */
     private void checkForNewOffers () {
-        List<String> productList = new ArrayList<>();
 
         // Load all products of interest
         ProductDataSource productDataSource = new ProductDataSource(context);
         productDataSource.open();
-        productList.addAll(productDataSource.getAllProductsFromDatabase());
+        List<String> productList = productDataSource.getAllProductsFromDatabase();
         productDataSource.close();
 
         // Load all favourite markets
@@ -126,7 +125,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         StringBuilder content = new StringBuilder();
         for (Offer o: offers) {
-            content.append("- " + o.getTitle() + "\n");
+            content.append("- ")
+                    .append(o.getTitle())
+                    .append("\n");
         }
 
         // Show new notification
@@ -140,6 +141,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      3. Go through all products and the offers to find matching once
      4. Return a list with all offers that match the product list.
      ********************************************************************************************/
+    @SuppressLint("StaticFieldLeak")
     private class CheckOffersTask extends AsyncTask<List<String>, String, List<Offer>>{
         private Market market;
         private Context context;
@@ -159,8 +161,9 @@ public class AlarmReceiver extends BroadcastReceiver {
          * @param products  to compare with the offers in the market
          * @return  list of matching offers
          */
+        @SafeVarargs
         @Override
-        protected List<Offer> doInBackground(List<String>... products) {
+        protected final List<Offer> doInBackground(List<String>... products) {
 
             List<Offer> resultList = new ArrayList<>();
             OfferList offerList;

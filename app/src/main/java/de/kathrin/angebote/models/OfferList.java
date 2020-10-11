@@ -1,12 +1,12 @@
 package de.kathrin.angebote.models;
 
+import androidx.annotation.NonNull;
 import android.annotation.SuppressLint;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static de.kathrin.angebote.utlis.Strings.DATE_FORMAT_OFFER_LIST;
 
@@ -23,11 +23,6 @@ public class OfferList extends ArrayList<Offer> {
 
     public OfferList() {}
 
-    public OfferList(Date availableFrom, Date availableUntil, List<Offer> offerList) {
-        this.availableFrom = availableFrom;
-        this.availableUntil = availableUntil;
-    }
-
     // SETTER
 
     public void setAvailableFrom(Date availableFrom) {
@@ -39,10 +34,6 @@ public class OfferList extends ArrayList<Offer> {
     }
 
     // GETTER
-    public Date getAvailableFrom() {
-        return availableFrom;
-    }
-
     public String getAvailableFromFormatted () {
         return format.format(availableFrom);
     }
@@ -78,6 +69,7 @@ public class OfferList extends ArrayList<Offer> {
         return concat.toString();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Folgende Angebote sind vom " + format.format(availableFrom) +

@@ -1,6 +1,6 @@
 package de.kathrin.angebote.models;
 
-import java.util.Objects;
+import androidx.annotation.NonNull;
 
 /**
  * Every offer has a title, price, description and image.
@@ -36,6 +36,7 @@ public class Offer {
         return imageUrl;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return  title + ": " + price + "€\n(" + description + ")";

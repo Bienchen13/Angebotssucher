@@ -1,5 +1,6 @@
 package de.kathrin.angebote.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -34,7 +35,7 @@ import static de.kathrin.angebote.utlis.Strings.UNFAV_TAG;
  * (used in the Select Market Activity)
  */
 
-public class MarketArrayAdapter extends ArrayAdapter {
+public class MarketArrayAdapter extends ArrayAdapter<Market> {
 
     private static final String LOG_TAG = PROJECT_NAME + MarketArrayAdapter.class.getSimpleName();
     private static final int LIST_LAYOUT = R.layout.market_list;
@@ -79,6 +80,7 @@ public class MarketArrayAdapter extends ArrayAdapter {
     public View getView(int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
         // Create the view hierarchy defined in "R.layout.market_list" (one text view and the
         // favourite-market star image button)
+        @SuppressLint("ViewHolder")
         View rowView = mLayoutInflater.inflate(LIST_LAYOUT, parent, false);
 
         // Extract the content at the current position (get current market)

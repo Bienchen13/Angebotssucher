@@ -1,5 +1,6 @@
 package de.kathrin.angebote;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -93,7 +94,7 @@ public class SelectMarketActivity extends AppCompatActivity {
 
     }
 
-    /*************************************** OWN METHODS ****************************************/
+    // OWN METHODS
 
     /**
      * Start the market search on button click in a new {@link RequestMarketsTask} instance.
@@ -136,7 +137,8 @@ public class SelectMarketActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "Updating view");
 
         // Update Header with number of found markets
-        lu.MARKET_RESULT_HEADER_VIEW.setText(FOUND_MARKETS + marketList.size());
+        String header = FOUND_MARKETS + marketList.size();
+        lu.MARKET_RESULT_HEADER_VIEW.setText(header);
 
         // Update result market list
         resultMarketList.clear();
@@ -155,6 +157,7 @@ public class SelectMarketActivity extends AppCompatActivity {
     2. Checks for markets with a server request.
     3. Returns a list of all found markets.
      ********************************************************************************************/
+    @SuppressLint("StaticFieldLeak")
     private class RequestMarketsTask extends AsyncTask<String, String, List<Market>> {
 
         /**

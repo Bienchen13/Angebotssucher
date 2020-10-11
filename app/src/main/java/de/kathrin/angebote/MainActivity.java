@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -202,18 +203,17 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.menu_show_notifications:
-                Log.v(LOG_TAG, "Clicked on set notifications!");
 
-                // Switch to Notification Activity
-                Intent intent = new Intent(this, NotificationActivity.class);
-                startActivity(intent);
+        if (item.getItemId() == R.id.menu_show_notifications) {
+            Log.v(LOG_TAG, "Clicked on set notifications!");
 
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            // Switch to Notification Activity
+            Intent intent = new Intent(this, NotificationActivity.class);
+            startActivity(intent);
+
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -282,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Add on Touch Listener to close popup window easily
                 popupView.setOnTouchListener(new View.OnTouchListener() {
+                    @SuppressLint("ClickableViewAccessibility")
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         pw.dismiss();
@@ -326,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
      *     4. Returns a list of all requested offers.
      *
      */
+    @SuppressLint("StaticFieldLeak")
     private class RequestOffersTask extends AsyncTask<String, String, List<Offer>> {
 
         /**
@@ -417,7 +419,8 @@ public class MainActivity extends AppCompatActivity {
      * 4. Sets the image into the given imageView.
      *
      */
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+    private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        @SuppressLint("StaticFieldLeak")
         ImageView imageView;
 
         /**

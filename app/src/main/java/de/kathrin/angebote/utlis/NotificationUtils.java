@@ -9,14 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static de.kathrin.angebote.utlis.Strings.ALARM_FILE;
+import static de.kathrin.angebote.utlis.Strings.DATE_FORMAT_ALARM;
 import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 public class NotificationUtils {
 
     private static final String LOG_TAG = PROJECT_NAME + NotificationUtils.class.getSimpleName();
-
-    private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
-    private static final String ALARM_FILE = "alarm.txt";
 
     // PUBLIC FUNCTIONS
 
@@ -94,7 +93,7 @@ public class NotificationUtils {
         Calendar calendar = Calendar.getInstance();
 
         try {
-            Date date = new SimpleDateFormat(DATE_FORMAT).parse(dateString);
+            Date date = new SimpleDateFormat(DATE_FORMAT_ALARM).parse(dateString);
 
             if (date != null) {
                 calendar.setTime(date);
@@ -114,7 +113,7 @@ public class NotificationUtils {
      */
     @SuppressLint("SimpleDateFormat")
     private static String convertCalendarToString (Calendar calendar) {
-        return new SimpleDateFormat(DATE_FORMAT).format(calendar.getTime());
+        return new SimpleDateFormat(DATE_FORMAT_ALARM).format(calendar.getTime());
     }
 
 

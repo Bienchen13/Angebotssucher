@@ -1,12 +1,9 @@
 package de.kathrin.angebote.utlis;
 
 import android.app.Activity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import de.kathrin.angebote.R;
 

@@ -26,11 +26,7 @@ public class IOUtils {
 
     private static final String LOG_TAG = PROJECT_NAME + IOUtils.class.getSimpleName();
 
-    /*********************************************************************************************
-     *
-     *                               SERVER REQUESTS
-     *
-     * *******************************************************************************************/
+    //                  SERVER REQUESTS
 
     /**
      * Sends a request to the given URL and returns the response.
@@ -117,11 +113,7 @@ public class IOUtils {
     }
 
 
-    /**********************************************************************************************
-     *
-     *                               FILE ACCESS
-     *
-     * *******************************************************************************************/
+    //                      FILE ACCESS
 
     /**
      * Write a string into a file.

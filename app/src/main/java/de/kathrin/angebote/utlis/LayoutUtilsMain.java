@@ -54,11 +54,8 @@ public class LayoutUtilsMain {
     public TextView OFFER_POPUP_DESCRIPTION_VIEW;
     public ImageView OFFER_POPUP_IMAGE_VIEW;
 
-    private View popupView;
 
-    public void setPopupView(View view) {
-        this.popupView = view;
-
+    public void setPopupView(View popupView) {
         OFFER_POPUP_TITLE_VIEW          = popupView.findViewById(OFFER_POPUP_TITLE);
         OFFER_POPUP_DESCRIPTION_VIEW    = popupView.findViewById(OFFER_POPUP_DESCRIPTION);
         OFFER_POPUP_IMAGE_VIEW          = popupView.findViewById(OFFER_POPUP_IMAGE);

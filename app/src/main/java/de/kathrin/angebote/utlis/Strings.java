@@ -19,6 +19,10 @@ public class Strings {
     public static final String FAV_TAG = "fav";
     public static final String UNFAV_TAG = "unfav";
 
+    // Offer Array Adapter
+    public static final String PRICE_FORMAT = "%02.2f";
+    public static final String EURO = "€";
+
     // Alarm Handler
     public static final String ALARM_ACTION = "de.kathrin.angebote.notification";
 
@@ -47,6 +51,10 @@ public class Strings {
 
     // MarketUtils
     public static final String UTF8 = "UTF-8";
+
+    // NotificationUtils
+    public static final String DATE_FORMAT_ALARM = "dd-MM-yyyy HH:mm:ss";
+    public static final String ALARM_FILE = "alarm.txt";
 
 
 }

@@ -145,13 +145,10 @@ public class MarketDataSource {
                 DbHelper.MARKET_COLUMN_MARKET_ID + "=" + m.getMarketID(),
                 null, null, null, null);
         cursor.moveToFirst();
+        cursor.close();
 
         // There is no entry found, return false, else true
-        if (cursor.getCount() == 0) {
-            return false;
-        } else {
-            return true;
-        }
+        return cursor.getCount() != 0;
     }
 
 

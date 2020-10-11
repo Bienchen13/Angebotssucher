@@ -1,5 +1,7 @@
 package de.kathrin.angebote.models;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 /**
@@ -57,30 +59,11 @@ public class Market implements Serializable {
         return _id;
     }
 
-    public void setMarketID(String marketID) {
-        this.marketID = marketID;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setPlz(String plz) {
-        this.plz = plz;
-    }
-
-    public void set_id(long _id) {
-        this._id = _id;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         return name + "\n"

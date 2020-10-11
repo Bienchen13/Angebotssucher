@@ -1,5 +1,6 @@
 package de.kathrin.angebote.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,14 @@ import java.util.List;
 import de.kathrin.angebote.models.Offer;
 import de.kathrin.angebote.R;
 
+import static de.kathrin.angebote.utlis.Strings.EURO;
+import static de.kathrin.angebote.utlis.Strings.PRICE_FORMAT;
+
 /**
  * Adapter to show offers in a list view
  * (used in the Main Activity)
  */
-public class OfferArrayAdapter extends ArrayAdapter {
+public class OfferArrayAdapter extends ArrayAdapter<Offer> {
 
     private static final int LIST_LAYOUT = R.layout.offer_list;
 
@@ -51,6 +55,7 @@ public class OfferArrayAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         // Create view hierarchy defined in "R.layout.offer_list" (two text views)
+        @SuppressLint("ViewHolder")
         View rowView = mLayoutInflater.inflate(LIST_LAYOUT, parent, false);
 
         // Extract the content at the current position (get current offer)
@@ -62,7 +67,10 @@ public class OfferArrayAdapter extends ArrayAdapter {
 
         // Assign the title and price to the text views
         tvTitle.setText(currentOffer.getTitle());
-        tvPrice.setText(String.format("%02.2f", currentOffer.getPrice()) + "€");
+
+        @SuppressLint("DefaultLocale")
+        String price = String.format(PRICE_FORMAT, currentOffer.getPrice()) + EURO;
+        tvPrice.setText(price);
 
         return rowView;
     }
