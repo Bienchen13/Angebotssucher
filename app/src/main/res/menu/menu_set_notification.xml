@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/menu_show_notifications"
-        android:title="Benachrichtigungen einstellen"/>
+        android:title="@string/menu_set_notification"/>
 
 
 </menu>

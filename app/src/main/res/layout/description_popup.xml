@@ -22,7 +22,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_margin="@dimen/popup_margin"
-        android:text="Titel"
+        android:text="@string/popup_sample_title"
         android:textSize="@dimen/offer_text_font_size"
         android:textStyle="bold" />
 

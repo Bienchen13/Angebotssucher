@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Suchen Sie nach Angeboten."
+        android:text="@string/main_header"
         android:textAlignment="center"
         android:textSize="@dimen/default_font_size"
         android:textStyle="bold"
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:hint="Suchbegriff eingeben"
+            android:hint="@string/main_hint"
             android:layout_toLeftOf="@id/offer_search_button"
             android:textSize="@dimen/search_font_size" />
 
@@ -34,14 +34,14 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:layout_alignParentRight="true"
-            android:text="Suchen"
+            android:text="@string/main_button"
             android:textSize="@dimen/search_font_size" />
 
     </RelativeLayout>
 
     <TextView
         android:id="@+id/select_market"
-        android:hint="EDEKA"
+        android:hint="@string/main_market_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"

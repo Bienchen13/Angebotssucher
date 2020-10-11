@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_text_font_size"
-        android:text="Test"
+        android:text="@string/product_list_sample"
         android:layout_marginEnd="5dp"
         android:padding="5dp"/>
 
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/offer_text_font_size"
         android:layout_alignParentRight="true"
-        android:text="X"
+        android:text="@string/product_list_delete"
         android:layout_marginEnd="5dp"
         android:padding="5dp"/>
 
