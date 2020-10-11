@@ -87,6 +87,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      * (First load the markets from the market database, then start a {@link CheckOffersTask}
      *  for every market.)
      */
+    @SuppressWarnings("unchecked")
     private void checkForNewOffers () {
 
         // Load all products of interest
@@ -143,8 +144,8 @@ public class AlarmReceiver extends BroadcastReceiver {
      ********************************************************************************************/
     @SuppressLint("StaticFieldLeak")
     private class CheckOffersTask extends AsyncTask<List<String>, String, List<Offer>>{
-        private Market market;
-        private Context context;
+        private final Market market;
+        private final Context context;
 
         /**
          * Constructor, saves the current market

@@ -22,8 +22,8 @@ public class MarketDataSource {
     private static final String LOG_TAG = PROJECT_NAME + MarketDataSource.class.getSimpleName();
 
     private SQLiteDatabase database;
-    private DbHelper dbHelper;
-    private String[] columns = {
+    private final DbHelper dbHelper;
+    private final String[] columns = {
             DbHelper.MARKET_COLUMN_ID,
             DbHelper.MARKET_COLUMN_MARKET_ID,
             DbHelper.MARKET_COLUMN_NAME,

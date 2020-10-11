@@ -11,11 +11,11 @@ import java.io.Serializable;
  */
 public class Market implements Serializable {
 
-    private String marketID;
-    private String name;
-    private String street;
-    private String city;
-    private String plz;
+    private final String marketID;
+    private final String name;
+    private final String street;
+    private final String city;
+    private final String plz;
     private long _id;
 
     public Market(String marketID, String name, String street, String city, String plz) {
@@ -57,10 +57,6 @@ public class Market implements Serializable {
 
     public long get_id() {
         return _id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @NonNull

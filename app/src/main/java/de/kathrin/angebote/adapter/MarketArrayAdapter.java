@@ -42,10 +42,10 @@ public class MarketArrayAdapter extends ArrayAdapter<Market> {
     private static final int FAV_STAR = drawable.btn_star_big_on;
     private static final int UNFAV_STAR = drawable.btn_star_big_off;
 
-    private AppCompatActivity mParent;
-    private List<Market> mMarketList;
-    private LayoutInflater mLayoutInflater;
-    private MarketDataSource mDataSource;
+    private final AppCompatActivity mParent;
+    private final List<Market> mMarketList;
+    private final LayoutInflater mLayoutInflater;
+    private final MarketDataSource mDataSource;
 
     /**
      * Constructor for the MarketArrayAdapter

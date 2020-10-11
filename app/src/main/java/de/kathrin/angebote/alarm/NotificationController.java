@@ -28,7 +28,7 @@ public class NotificationController {
     private static final String CHANNEL_ID = "1";
 
     private static int notificationId = 0;
-    private Context context;
+    private final Context context;
 
     /**
      * Create Notification channel

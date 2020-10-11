@@ -27,8 +27,8 @@ public class OfferArrayAdapter extends ArrayAdapter<Offer> {
 
     private static final int LIST_LAYOUT = R.layout.offer_list;
 
-    private List<Offer> mOfferList;
-    private LayoutInflater mLayoutInflater;
+    private final List<Offer> mOfferList;
+    private final LayoutInflater mLayoutInflater;
 
     /**
      * Constructor for the OfferArrayAdapter

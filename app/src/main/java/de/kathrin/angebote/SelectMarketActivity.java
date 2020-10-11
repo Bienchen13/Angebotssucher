@@ -32,7 +32,7 @@ public class SelectMarketActivity extends AppCompatActivity {
     private static final String LOG_TAG = PROJECT_NAME + SelectMarketActivity.class.getSimpleName();
 
     // Used to show the markets
-    private List<Market> resultMarketList = new ArrayList<>();
+    private final List<Market> resultMarketList = new ArrayList<>();
     // Database with all favourite markets
     private MarketDataSource marketDataSource;
 

@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int RESULT_OK = 0;
 
     private OfferList allOffersList = null;
-    private List<Offer> resultOfferList = new ArrayList<>();
+    private final List<Offer> resultOfferList = new ArrayList<>();
     private Market selectedMarket = null;
 
     private LayoutUtilsMain lu;
@@ -421,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         @SuppressLint("StaticFieldLeak")
-        ImageView imageView;
+        final ImageView imageView;
 
         /**
          * Constructor, saving the needed image view.

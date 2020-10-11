@@ -32,9 +32,9 @@ public class ProductArrayAdapter extends ArrayAdapter<String> {
     private static final String LOG_TAG = PROJECT_NAME + ProductArrayAdapter.class.getSimpleName();
     private static final int LIST_LAYOUT = R.layout.product_list;
 
-    private List<String> mProductList;
-    private ProductDataSource mProductDataSource;
-    private LayoutInflater mLayoutInflater;
+    private final List<String> mProductList;
+    private final ProductDataSource mProductDataSource;
+    private final LayoutInflater mLayoutInflater;
 
     /**
      * Constructor for the ProductArrayAdapter

@@ -30,7 +30,7 @@ public class NotificationActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = PROJECT_NAME + NotificationActivity.class.getSimpleName();
 
-    private List<String> productList = new ArrayList<>();
+    private final List<String> productList = new ArrayList<>();
     private ProductDataSource productDataSource;
     private LayoutUtilsNotification lu;
 
