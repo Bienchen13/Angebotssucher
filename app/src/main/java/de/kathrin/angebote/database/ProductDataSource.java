@@ -70,13 +70,26 @@ public class ProductDataSource {
      */
     public void deleteProductFromNotificationDatabase (String product) {
 
-        // Todo: First do a select and then only delete the first occurrence
-
-        database.delete(DbHelper.TABLE_PRODUCT_NOTIFICATION,
+        // Get the first occurrence of the product
+        Cursor cursor = database.query(DbHelper.TABLE_PRODUCT_NOTIFICATION, columns,
                 DbHelper.PRODUCT_COLUMN_PRODUCT + "=\"" + product + "\"",
+                null, null, null, null);
+        cursor.moveToFirst();
+        int id = cursor.getInt(cursor.getColumnIndex(DbHelper.PRODUCT_COLUMN_ID));
+        cursor.close();
+
+        // Delete the product from the database
+        database.delete(DbHelper.TABLE_PRODUCT_NOTIFICATION,
+                DbHelper.PRODUCT_COLUMN_ID + "=" + id,
                 null);
 
-        Log.v(LOG_TAG, "Product "+ product + " deleted!");
+        // This does not work, if there are products more than once in the database.
+        // In this case all where deleted.
+        /*database.delete(DbHelper.TABLE_PRODUCT_NOTIFICATION,
+                DbHelper.PRODUCT_COLUMN_PRODUCT + "=\"" + product + "\"",
+                null);*/
+
+        Log.v(LOG_TAG, "Product "+ product + " - " + id + " deleted!");
     }
 
     /**
