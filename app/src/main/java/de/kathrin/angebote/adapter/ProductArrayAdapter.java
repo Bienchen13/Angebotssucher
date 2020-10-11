@@ -14,13 +14,13 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
-import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.R;
 import de.kathrin.angebote.database.ProductDataSource;
 
 import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_ITEM;
 import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_ITEM_DELETE;
 import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_LIST;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * Adapter to extract the Product data and show it in a list view
@@ -28,7 +28,7 @@ import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_LIST;
  */
 public class ProductArrayAdapter extends ArrayAdapter {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + ProductArrayAdapter.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + ProductArrayAdapter.class.getSimpleName();
     private static final int LIST_LAYOUT = R.layout.product_list;
 
     private List<String> mProductList;

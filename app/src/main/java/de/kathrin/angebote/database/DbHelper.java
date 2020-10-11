@@ -5,16 +5,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import de.kathrin.angebote.MainActivity;
+import static de.kathrin.angebote.utlis.Strings.DB_NAME;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * Helper Class to create the favourite-markets and the product-notification databases
  */
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + DbHelper.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + DbHelper.class.getSimpleName();
 
-    public static final String DB_NAME = "angebote.db";
     public static final int DB_VERSION = 1;
 
     // Set all column names for the market table
@@ -81,9 +81,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     /**
      * Not used
-     * @param db
-     * @param oldVersion
-     * @param newVersion
+     * @param db -
+     * @param oldVersion -
+     * @param newVersion -
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

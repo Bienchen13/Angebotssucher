@@ -4,9 +4,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,19 +15,20 @@ import java.util.List;
 import de.kathrin.angebote.adapter.MarketArrayAdapter;
 import de.kathrin.angebote.database.MarketDataSource;
 import de.kathrin.angebote.models.Market;
-import de.kathrin.angebote.utlis.LayoutUtilsMain;
 import de.kathrin.angebote.utlis.LayoutUtilsSelectMarket;
 import de.kathrin.angebote.utlis.MarketUtils;
+
+import static de.kathrin.angebote.utlis.Strings.FOUND_MARKETS;
+import static de.kathrin.angebote.utlis.Strings.NO_OFFERS_FOUND;
+import static de.kathrin.angebote.utlis.Strings.NO_SERVER_CONNECTION;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * Activity to change the selected market
  */
 public class SelectMarketActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + SelectMarketActivity.class.getSimpleName();
-
-    // For the intent used in the MarketArrayAdapter Class
-    public static final String EXTRA_MARKET = MainActivity.PROJECT_NAME + "EXTRA_MARKET";
+    private static final String LOG_TAG = PROJECT_NAME + SelectMarketActivity.class.getSimpleName();
 
     // Used to show the markets
     private List<Market> resultMarketList = new ArrayList<>();
@@ -138,7 +136,7 @@ public class SelectMarketActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "Updating view");
 
         // Update Header with number of found markets
-        lu.MARKET_RESULT_HEADER_VIEW.setText("Gefundene Märkte: " + marketList.size());
+        lu.MARKET_RESULT_HEADER_VIEW.setText(FOUND_MARKETS + marketList.size());
 
         // Update result market list
         resultMarketList.clear();
@@ -174,13 +172,12 @@ public class SelectMarketActivity extends AppCompatActivity {
             } catch (IOException e) {
                 Log.e(LOG_TAG, "IOException: " + e.getMessage());
                 e.printStackTrace();
-                publishProgress("Verbindung zum Server fehlgeschlagen. " +
-                        "Es konnten keine Märkte gefunden werden.");
+                publishProgress(NO_SERVER_CONNECTION);
                 return marketList;
             }
 
             if (marketList.isEmpty()) {
-                publishProgress("Keine Märkte zu Ihrer Anfrage gefunden");
+                publishProgress(NO_OFFERS_FOUND);
             }
 
             return marketList;

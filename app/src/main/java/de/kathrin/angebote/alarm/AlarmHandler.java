@@ -8,16 +8,17 @@ import android.util.Log;
 
 import java.util.Calendar;
 
-import de.kathrin.angebote.MainActivity;
+import static de.kathrin.angebote.utlis.Strings.ALARM_ACTION;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * Class to set and cancel the offer notifications
  */
 public class AlarmHandler {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + AlarmHandler.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + AlarmHandler.class.getSimpleName();
 
-    public static final String ALARM_ACTION = "de.kathrin.angebote.notification";
+
     public static final int REQUEST_CODE = 0;
 
     /**

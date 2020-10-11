@@ -9,11 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import de.kathrin.angebote.MainActivity;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 public class NotificationUtils {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + NotificationUtils.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + NotificationUtils.class.getSimpleName();
 
     private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
     private static final String ALARM_FILE = "alarm.txt";

@@ -13,13 +13,16 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.models.Market;
-import de.kathrin.angebote.models.OfferList;
+
+import static de.kathrin.angebote.utlis.Strings.DEFAULT_MARKET_FILE;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
+import static de.kathrin.angebote.utlis.Strings.URL_EDEKA_MARKETS;
+import static de.kathrin.angebote.utlis.Strings.UTF8;
 
 public class MarketUtils {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + MarketUtils.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + MarketUtils.class.getSimpleName();
 
     // PUBLIC FUNCTIONS
 
@@ -33,7 +36,7 @@ public class MarketUtils {
 
         try {
             // Handle umlauts
-            city = URLEncoder.encode(city, "UTF-8");
+            city = URLEncoder.encode(city, UTF8);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -50,7 +53,7 @@ public class MarketUtils {
                 "))&fl=marktID_tlc%2Cplz_tlc%2Cort_tlc%2Cstrasse_tlc%2Cname_tlc";
 
         // Request URL
-        String jsonString = IOUtils.requestFromServer(IOUtils.URL_EDEKA_MARKETS, "POST", data);
+        String jsonString = IOUtils.requestFromServer(URL_EDEKA_MARKETS, "POST", data);
         List<Market> marketList = null;
 
         if (jsonString != null) {
@@ -70,7 +73,7 @@ public class MarketUtils {
      */
     public static void saveMarketToFile (Context context, Market market) {
         String jsonString = createJSONStringFromMarket(market);
-        IOUtils.saveStringInFile(context, jsonString, IOUtils.DEFAULT_MARKET_FILE);
+        IOUtils.saveStringInFile(context, jsonString, DEFAULT_MARKET_FILE);
     }
 
     /**
@@ -81,9 +84,9 @@ public class MarketUtils {
     public static Market restoreMarketFromFile (Context context) {
         try {
             // Check if file exists
-            if (context.getFileStreamPath(IOUtils.DEFAULT_MARKET_FILE).exists()) {
+            if (context.getFileStreamPath(DEFAULT_MARKET_FILE).exists()) {
                 // Restore JSON from File
-                String jsonString = IOUtils.restoreStringFromFile(context, IOUtils.DEFAULT_MARKET_FILE);
+                String jsonString = IOUtils.restoreStringFromFile(context, DEFAULT_MARKET_FILE);
                 // Convert JSON to Market
                 return getMarketFromJSONString(new JSONObject(jsonString));
             }

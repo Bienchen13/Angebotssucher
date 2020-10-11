@@ -39,12 +39,16 @@ import de.kathrin.angebote.utlis.LayoutUtilsMain;
 import de.kathrin.angebote.utlis.MarketUtils;
 import de.kathrin.angebote.utlis.OfferUtils;
 
+import static de.kathrin.angebote.utlis.Strings.EXTRA_MARKET;
+import static de.kathrin.angebote.utlis.Strings.NO_MARKET_SELECTED;
+import static de.kathrin.angebote.utlis.Strings.NO_OFFERS_FOUND;
+import static de.kathrin.angebote.utlis.Strings.NO_SERVER_CONNECTION;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
+
 /**
  * Main Activity. Search for offers or go to the Select Market Activity.
  */
 public class MainActivity extends AppCompatActivity {
-
-    public static final String PROJECT_NAME = "Angebote.";
     private static final String LOG_TAG = PROJECT_NAME + MainActivity.class.getSimpleName();
 
     public static final int SELECT_MARKET_REQUEST = 1;
@@ -228,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 if (data != null) {
-                    selectedMarket = (Market) data.getSerializableExtra(SelectMarketActivity.EXTRA_MARKET);
+                    selectedMarket = (Market) data.getSerializableExtra(EXTRA_MARKET);
                     setSelectedMarket();
                 }
 
@@ -337,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
 
             // May happen when starting the app the first time.
             if (selectedMarket == null) {
-                publishProgress("Wählen Sie zu erst einen Markt aus!");
+                publishProgress(NO_MARKET_SELECTED);
                 return resultList;
             }
 
@@ -359,8 +363,7 @@ public class MainActivity extends AppCompatActivity {
                     allOffersList = OfferUtils.requestOffersFromServer(MainActivity.this, selectedMarket);
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "IOException: " + e.getMessage());
-                    publishProgress("Verbindung zum Server fehlgeschlagen. " +
-                            "Es konnten keine Angebote geladen werden.");
+                    publishProgress(NO_SERVER_CONNECTION);
                     return resultList;
                 }
             }
@@ -376,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (resultList.isEmpty()) {
-                publishProgress("Keine Angebote zu Ihrer Anfrage gefunden");
+                publishProgress(NO_OFFERS_FOUND);
             }
 
             return resultList;

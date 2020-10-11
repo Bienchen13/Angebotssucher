@@ -15,13 +15,16 @@ import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.R;
 
 import static de.kathrin.angebote.MainActivity.RESULT_OK;
+import static de.kathrin.angebote.utlis.Strings.CHANNEL_DESCRIPTION;
+import static de.kathrin.angebote.utlis.Strings.CHANNEL_NAME;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * From: https://developer.android.com/training/notify-user/build-notification
  * Create and display the notifications (and the channel).
  */
 public class NotificationController {
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + NotificationController.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + NotificationController.class.getSimpleName();
     private static final String CHANNEL_ID = "1";
 
     private static int notificationId = 0;
@@ -75,12 +78,13 @@ public class NotificationController {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Notification Channel";
-            String description = "Channel to publish the product notification.";
 
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription(CHANNEL_DESCRIPTION);
 
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this

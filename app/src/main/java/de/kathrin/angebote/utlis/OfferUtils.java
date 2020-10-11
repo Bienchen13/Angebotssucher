@@ -11,14 +11,17 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Date;
 
-import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.models.Market;
 import de.kathrin.angebote.models.Offer;
 import de.kathrin.angebote.models.OfferList;
 
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
+import static de.kathrin.angebote.utlis.Strings.TEXTFILE_ENDING;
+import static de.kathrin.angebote.utlis.Strings.URL_EDEKA_OFFERS;
+
 public class OfferUtils {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + OfferUtils.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + OfferUtils.class.getSimpleName();
 
     //      PUBLIC FUNCTIONS
 
@@ -31,7 +34,7 @@ public class OfferUtils {
         Log.v(LOG_TAG, "Request Offers from Server.");
 
         // Compose URL with market ID
-        String url = IOUtils.URL_EDEKA_OFFERS + "marketId=" + market.getMarketID() + "&limit=89899";
+        String url = URL_EDEKA_OFFERS + "marketId=" + market.getMarketID() + "&limit=89899";
 
         // Request URL
         String jsonString = IOUtils.requestFromServer(url, "GET", null);
@@ -161,7 +164,7 @@ public class OfferUtils {
      * @return      filename
      */
     private static String getOfferFilename (Market m) {
-        return m.getMarketID() + IOUtils.TEXTFILE_ENDING;
+        return m.getMarketID() + TEXTFILE_ENDING;
     }
 
 }

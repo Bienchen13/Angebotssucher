@@ -22,9 +22,12 @@ import de.kathrin.angebote.models.Market;
 import de.kathrin.angebote.R;
 import de.kathrin.angebote.database.MarketDataSource;
 
-import static de.kathrin.angebote.SelectMarketActivity.EXTRA_MARKET;
 import static de.kathrin.angebote.utlis.LayoutUtilsSelectMarket.MARKET_ITEM;
 import static de.kathrin.angebote.utlis.LayoutUtilsSelectMarket.MARKET_ITEM_STAR;
+import static de.kathrin.angebote.utlis.Strings.EXTRA_MARKET;
+import static de.kathrin.angebote.utlis.Strings.FAV_TAG;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
+import static de.kathrin.angebote.utlis.Strings.UNFAV_TAG;
 
 /**
  * Adapter to extract the Market data and show it in a list view
@@ -33,7 +36,7 @@ import static de.kathrin.angebote.utlis.LayoutUtilsSelectMarket.MARKET_ITEM_STAR
 
 public class MarketArrayAdapter extends ArrayAdapter {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + MarketArrayAdapter.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + MarketArrayAdapter.class.getSimpleName();
     private static final int LIST_LAYOUT = R.layout.market_list;
     private static final int FAV_STAR = drawable.btn_star_big_on;
     private static final int UNFAV_STAR = drawable.btn_star_big_off;
@@ -92,9 +95,9 @@ public class MarketArrayAdapter extends ArrayAdapter {
         // (If it is in the "favourite database")
         if (mDataSource.checkMarketInFavourites(currentMarket)) {
            favicon.setImageResource(FAV_STAR);
-           favicon.setTag("fav");
+           favicon.setTag(FAV_TAG);
        } else {
-           favicon.setTag("unfav");
+           favicon.setTag(UNFAV_TAG);
        }
 
         // Listen to add or delete favourite markets
@@ -102,15 +105,15 @@ public class MarketArrayAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
 
-                if (favicon.getTag().equals("unfav")) {
+                if (favicon.getTag().equals(UNFAV_TAG)) {
                     favicon.setImageResource(FAV_STAR);
-                    favicon.setTag("fav");
+                    favicon.setTag(FAV_TAG);
 
                     mDataSource.addMarketToFavourites(currentMarket);
 
                 } else {
                     favicon.setImageResource(UNFAV_STAR);
-                    favicon.setTag("unfav");
+                    favicon.setTag(UNFAV_TAG);
 
                     mDataSource.deleteMarketFromFavourites(currentMarket);
                 }

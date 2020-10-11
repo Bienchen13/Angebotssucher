@@ -2,41 +2,33 @@ package de.kathrin.angebote;
 
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import de.kathrin.angebote.adapter.ProductArrayAdapter;
 import de.kathrin.angebote.alarm.AlarmHandler;
 import de.kathrin.angebote.alarm.AlarmReceiver;
 import de.kathrin.angebote.alarm.BootReceiver;
-import de.kathrin.angebote.alarm.NotificationController;
-import de.kathrin.angebote.database.MarketDataSource;
+
 import de.kathrin.angebote.database.ProductDataSource;
-import de.kathrin.angebote.models.Market;
-import de.kathrin.angebote.models.Offer;
-import de.kathrin.angebote.models.OfferList;
-import de.kathrin.angebote.utlis.IOUtils;
 import de.kathrin.angebote.utlis.LayoutUtilsNotification;
 import de.kathrin.angebote.utlis.NotificationUtils;
-import de.kathrin.angebote.utlis.OfferUtils;
+
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * Activity to control the notifications
  */
 public class NotificationActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + NotificationActivity.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + NotificationActivity.class.getSimpleName();
 
     private List<String> productList = new ArrayList<>();
     private ProductDataSource productDataSource;

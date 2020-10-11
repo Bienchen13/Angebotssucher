@@ -1,10 +1,14 @@
 package de.kathrin.angebote.models;
 
+import android.annotation.SuppressLint;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static de.kathrin.angebote.utlis.Strings.DATE_FORMAT_OFFER_LIST;
 
 /**
  * Every OfferList has a period of validity and (of course) a list with all offers.
@@ -14,7 +18,8 @@ public class OfferList extends ArrayList<Offer> {
     private Date availableFrom;
     private Date availableUntil;
 
-    private final DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+    @SuppressLint("SimpleDateFormat")
+    private final DateFormat format = new SimpleDateFormat(DATE_FORMAT_OFFER_LIST);
 
     public OfferList() {}
 
@@ -59,12 +64,18 @@ public class OfferList extends ArrayList<Offer> {
     }
 
     public String getOffersInString () {
-        String concat = "";
+        StringBuilder concat = new StringBuilder();
         for (Offer o: this) {
-            concat += o.getTitle() + ": " + o.getPrice().toString() + "€ " +
-                    o.getDescription() + " " + o.getImageUrl() + "\n";
+            concat.append(o.getTitle())
+                    .append(": ")
+                    .append(o.getPrice().toString())
+                    .append("€ ")
+                    .append(o.getDescription())
+                    .append(" ")
+                    .append(o.getImageUrl())
+                    .append("\n");
         }
-        return concat;
+        return concat.toString();
     }
 
     @Override

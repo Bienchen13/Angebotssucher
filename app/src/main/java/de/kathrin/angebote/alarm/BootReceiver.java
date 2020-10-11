@@ -8,13 +8,12 @@ import java.util.Calendar;
 
 import de.kathrin.angebote.utlis.NotificationUtils;
 
+import static de.kathrin.angebote.utlis.Strings.BOOT_COMPLETE_ACTION;
+
 /**
  * Register the alarm after a reboot.
  */
 public class BootReceiver extends BroadcastReceiver {
-
-    // Notification from the OS
-    public static final String BOOT_COMPLETE_ACTION = "android.intent.action.BOOT_COMPLETED";
 
     /**
      * Set the alarmHandler new after a reboot

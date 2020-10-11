@@ -20,6 +20,7 @@ import de.kathrin.angebote.models.OfferList;
 import de.kathrin.angebote.utlis.NotificationUtils;
 import de.kathrin.angebote.utlis.OfferUtils;
 
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 import static java.lang.Thread.sleep;
 
 /**
@@ -27,7 +28,7 @@ import static java.lang.Thread.sleep;
  */
 public class AlarmReceiver extends BroadcastReceiver {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + AlarmReceiver.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + AlarmReceiver.class.getSimpleName();
     private boolean validInternetConnection = true;
     private Context context;
 

@@ -9,8 +9,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.kathrin.angebote.MainActivity;
 import de.kathrin.angebote.models.Market;
+
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * Handling the Market Data Source where all favourite markets are saved.
@@ -18,7 +19,7 @@ import de.kathrin.angebote.models.Market;
  */
 public class MarketDataSource {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + MarketDataSource.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + MarketDataSource.class.getSimpleName();
 
     private SQLiteDatabase database;
     private DbHelper dbHelper;

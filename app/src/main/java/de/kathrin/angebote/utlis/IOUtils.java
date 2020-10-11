@@ -17,23 +17,14 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import de.kathrin.angebote.MainActivity;
-import de.kathrin.angebote.models.Market;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * Utility class for handling server requests and file access
  */
 public class IOUtils {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + IOUtils.class.getSimpleName();
-
-    // Server request URLs
-    static final String URL_EDEKA_OFFERS = "https://www.edeka.de/eh/service/eh/offers?";
-    static final String URL_EDEKA_MARKETS = "https://www.edeka.de/search.xml";
-
-    // File Access Strings
-    static final String TEXTFILE_ENDING = ".txt";
-    static final String DEFAULT_MARKET_FILE = "default_market.txt";
+    private static final String LOG_TAG = PROJECT_NAME + IOUtils.class.getSimpleName();
 
     /*********************************************************************************************
      *
@@ -89,10 +80,6 @@ public class IOUtils {
             Log.e(LOG_TAG, "MalformedURLException: " + e.getMessage());
         } catch (ProtocolException e) {
             Log.e(LOG_TAG, "ProtocolException: " + e.getMessage());
-//        } catch (IOException e) {
-//            Log.e(LOG_TAG, "IOException: " + e.getMessage());
-//        } catch (Exception e) {
-//            Log.e(LOG_TAG, "Exception: " + e.getMessage());
         } finally {
             if (conn != null) {
                 conn.disconnect();

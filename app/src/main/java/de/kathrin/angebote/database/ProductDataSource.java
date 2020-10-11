@@ -9,7 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.kathrin.angebote.MainActivity;
+import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
 /**
  * Handling the Product Data Source where all product notifications are saved.
@@ -17,7 +17,7 @@ import de.kathrin.angebote.MainActivity;
  */
 public class ProductDataSource {
 
-    private static final String LOG_TAG = MainActivity.PROJECT_NAME + ProductDataSource.class.getSimpleName();
+    private static final String LOG_TAG = PROJECT_NAME + ProductDataSource.class.getSimpleName();
 
     private SQLiteDatabase database;
     private DbHelper dbHelper;
