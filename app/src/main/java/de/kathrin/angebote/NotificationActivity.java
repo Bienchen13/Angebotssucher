@@ -1,11 +1,14 @@
 package de.kathrin.angebote;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -85,8 +88,9 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     /**
-     * Add the elements in the text view to the list and to the database on button click
+     * Add the elements in the text view to the list and to the database on button or enter click
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initAddProductButton () {
 
         // Add a new product, when enter is clicked
@@ -101,26 +105,39 @@ public class NotificationActivity extends AppCompatActivity {
             }
         });
 
-        // AAdd a new product, when the add button is clicked
-        lu.PRODUCT_ADD_BUTTON_VIEW.setOnClickListener(new View.OnClickListener() {
+        // Add a new product, when the add button is clicked
+        final EditText editText = lu.PRODUCT_ADD_FIELD_VIEW;
+        editText.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                addProduct();
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                        addProduct();
+                        return true;
+                    }
+                }
+                return false;
             }
         });
     }
 
+    /**
+     * Add new product to list and database and reset the input field.
+     */
     private void addProduct () {
         // Get product from Text View and reset it
         String product = lu.PRODUCT_ADD_FIELD_VIEW.getText().toString();
         lu.PRODUCT_ADD_FIELD_VIEW.setText("");
 
-        // Add product to list and database
-        productList.add(product);
-        productDataSource.addProductToNotificationDatabase(product);
+        if (!product.equals("")) {
 
-        // Refresh the list view immediately
-        lu.PRODUCT_LIST_VIEW.invalidateViews();
+            // Add product to list and database
+            productList.add(product);
+            productDataSource.addProductToNotificationDatabase(product);
+
+            // Refresh the list view immediately
+            lu.PRODUCT_LIST_VIEW.invalidateViews();
+        }
     }
 
     /**

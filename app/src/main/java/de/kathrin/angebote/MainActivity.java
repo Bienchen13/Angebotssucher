@@ -117,8 +117,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Start the offer search on button click in a new {@link RequestOffersTask} instance.
+     * Start the offer search on button or enter click in a new {@link RequestOffersTask} instance.
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initOfferSearch() {
 
         // Start the search for offers, when enter is clicked
@@ -133,22 +134,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Start the search for offers, when the button was clicked.
-        lu.OFFER_SEARCH_BUTTON_VIEW.setOnClickListener(new View.OnClickListener() {
+        // Start the search for offers, when the arrow is clicked
+        final EditText editText = lu.OFFER_SEARCH_FIELD_VIEW;
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
-            public void onClick(View v) {
-                startSearch();
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                        startSearch();
+                        return true;
+                    }
+                }
+                return false;
             }
         });
+
     }
 
+    /**
+     * Get search item from text field and start the search in a new {@link RequestOffersTask}
+     * instance.
+     */
     private void startSearch() {
-        // Get search item from text field
-        String searchItem = lu.OFFER_SEARCH_FIELD_VIEW.getText().toString();
-
-        // Start the search
         RequestOffersTask offersTask = new RequestOffersTask();
-        offersTask.execute(searchItem);
+        offersTask.execute(lu.OFFER_SEARCH_FIELD_VIEW.getText().toString());
     }
 
     /**

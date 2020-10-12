@@ -16,31 +16,17 @@
         android:textStyle="bold"
         />
 
-    <RelativeLayout
+    <EditText
+        android:id="@+id/market_search_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/market_search_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:layout_toStartOf="@id/market_search_button"
-            android:hint="@string/select_market_hint"
-            android:textSize="@dimen/search_font_size"
-            android:importantForAutofill="no"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/market_search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:layout_alignParentEnd="true"
-            android:text="@string/select_market_button"
-            android:textSize="@dimen/search_font_size" />
-
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:hint="@string/select_market_hint"
+        android:textSize="@dimen/search_font_size"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:drawableEnd="@drawable/arrow_forward"
+        />
 
     <TextView
         android:id="@+id/market_select_header"

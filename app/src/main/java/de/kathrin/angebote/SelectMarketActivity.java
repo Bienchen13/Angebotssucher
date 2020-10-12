@@ -5,7 +5,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -98,8 +100,10 @@ public class SelectMarketActivity extends AppCompatActivity {
     // OWN METHODS
 
     /**
-     * Start the market search on button click in a new {@link RequestMarketsTask} instance.
+     * Start the market search on button or enter click in a new {@link RequestMarketsTask}
+     * instance.
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initMarketSearch() {
 
         // Start the search for markets, when enter is clicked
@@ -114,32 +118,38 @@ public class SelectMarketActivity extends AppCompatActivity {
             }
         });
 
-        // Start the search for markets, when the search button is clicked
-        lu.MARKET_SEARCH_BUTTON_VIEW.setOnClickListener(new View.OnClickListener() {
+        // Start the search for markets, when the arrow is clicked
+        final EditText editText = lu.MARKET_SEARCH_FIELD_VIEW;
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
-            public void onClick(View v) {
-                startSearch();
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                        startSearch();
+                        return true;
+                    }
+                }
+                return false;
             }
         });
     }
 
+    /**
+     * Get the requested city from the text view and start a new {@link RequestMarketsTask} to
+     * make the search
+     */
     private void startSearch() {
-        // Get the requested city from the text view
-        String requestedCity = lu.MARKET_SEARCH_FIELD_VIEW.getText().toString();
-
-        // Start a new RequestMarketsTask to make the search
-        new RequestMarketsTask().execute(requestedCity);
+        new RequestMarketsTask().execute(lu.MARKET_SEARCH_FIELD_VIEW.getText().toString());
     }
 
     /**
      * Set the {@link MarketArrayAdapter} to the list view element to display the markets correctly
      */
     private void bindAdapterToListView() {
-        MarketArrayAdapter marketArrayAdapter =
-                new MarketArrayAdapter(this, resultMarketList, marketDataSource, this);
-
-        // Add adapter to list view
-        lu.MARKET_RESULT_LIST_VIEW.setAdapter(marketArrayAdapter);
+        lu.MARKET_RESULT_LIST_VIEW.setAdapter(
+                new MarketArrayAdapter(this, resultMarketList, marketDataSource, this)
+        );
     }
 
     /**

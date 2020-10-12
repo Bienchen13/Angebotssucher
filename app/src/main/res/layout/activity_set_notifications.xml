@@ -26,31 +26,17 @@
         android:layout_marginBottom="10dp"
         />
 
-    <RelativeLayout
+    <EditText
+        android:id="@+id/product_add_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/product_add_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:layout_toStartOf="@id/product_add_button"
-            android:hint="@string/set_notification_hint"
-            android:textSize="@dimen/default_font_size"
-            android:importantForAutofill="no"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/product_add_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:layout_alignParentEnd="true"
-            android:text="@string/set_notification_button"
-            android:textSize="@dimen/default_font_size" />
-
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:hint="@string/set_notification_hint"
+        android:textSize="@dimen/default_font_size"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:drawableEnd="@drawable/add_button"
+        />
 
     <ListView
         android:id="@+id/product_notification_list"

@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,7 +21,6 @@ import de.kathrin.angebote.R;
 import de.kathrin.angebote.database.ProductDataSource;
 
 import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_ITEM;
-import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_ITEM_DELETE;
 import static de.kathrin.angebote.utlis.LayoutUtilsNotification.PRODUCT_LIST;
 import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
@@ -63,6 +64,7 @@ public class ProductArrayAdapter extends ArrayAdapter<String> {
 
     @NonNull
     @Override
+    @SuppressLint("ClickableViewAccessibility")
     public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
         // Create the view hierarchy defined in LIST_LAYOUT (one text view and the delete X)
         @SuppressLint("ViewHolder")
@@ -71,20 +73,29 @@ public class ProductArrayAdapter extends ArrayAdapter<String> {
         // Extract the content at the current position (get current product name)
         final String currentProduct = mProductList.get(position);
 
-        // Get the text view from the view hierarchy and assign the current product name to it
-        ((TextView)rowView.findViewById(PRODUCT_ITEM)).setText(currentProduct);
+        // Get the textView from the hierarchy
+        final TextView textView = rowView.findViewById(PRODUCT_ITEM);
 
-        // When clicking on the X the element is removed from the list view and the database
-        rowView.findViewById(PRODUCT_ITEM_DELETE).setOnClickListener(new View.OnClickListener() {
+        // Assign the current product name to it
+        textView.setText(currentProduct);
+
+        // Remove the product, when the X on the right is clicked
+        textView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                Log.v(LOG_TAG, "Clicked on the X.");
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
 
-                mProductList.remove(position);
-                mProductDataSource.deleteProductFromNotificationDatabase(currentProduct);
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if(event.getRawX() >= (textView.getRight() - textView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        mProductList.remove(position);
+                        mProductDataSource.deleteProductFromNotificationDatabase(currentProduct);
 
-                // Refreshes the list view immediately
-                ((ListView) parent.findViewById(PRODUCT_LIST)).invalidateViews();
+                        // Refreshes the list view immediately
+                        ((ListView) parent.findViewById(PRODUCT_LIST)).invalidateViews();
+                        return true;
+                    }
+                }
+                return false;
             }
         });
 
