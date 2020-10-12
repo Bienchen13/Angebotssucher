@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -100,22 +101,34 @@ public class SelectMarketActivity extends AppCompatActivity {
      * Start the market search on button click in a new {@link RequestMarketsTask} instance.
      */
     private void initMarketSearch() {
-        // Define On Click Button Reaction
-        View.OnClickListener onSearchButtonClickListener = new View.OnClickListener() {
+
+        // Start the search for markets, when enter is clicked
+        lu.MARKET_SEARCH_FIELD_VIEW.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
+                //If the keyEvent is a key-down event on the "enter" button
+                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    startSearch();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        // Start the search for markets, when the search button is clicked
+        lu.MARKET_SEARCH_BUTTON_VIEW.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v(LOG_TAG, "Search for Markets Button was clicked");
-
-                // Get the requested city from the text view
-                String requestedCity = lu.MARKET_SEARCH_FIELD_VIEW.getText().toString();
-
-                // Start a new RequestMarketsTask to make the search
-                new RequestMarketsTask().execute(requestedCity);
+                startSearch();
             }
-        };
+        });
+    }
 
-        // Add Reaction to Button
-        lu.MARKET_SEARCH_BUTTON_VIEW.setOnClickListener(onSearchButtonClickListener);
+    private void startSearch() {
+        // Get the requested city from the text view
+        String requestedCity = lu.MARKET_SEARCH_FIELD_VIEW.getText().toString();
+
+        // Start a new RequestMarketsTask to make the search
+        new RequestMarketsTask().execute(requestedCity);
     }
 
     /**

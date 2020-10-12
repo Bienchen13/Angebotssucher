@@ -13,12 +13,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -119,23 +121,34 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initOfferSearch() {
 
+        // Start the search for offers, when enter is clicked
+        lu.OFFER_SEARCH_FIELD_VIEW.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
+                //If the keyEvent is a key-down event on the "enter" button
+                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    startSearch();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         // Start the search for offers, when the button was clicked.
-        View.OnClickListener onSearchButtonClickListener = new View.OnClickListener() {
+        lu.OFFER_SEARCH_BUTTON_VIEW.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v(LOG_TAG, "Search for Offers Button was clicked");
-
-                // Get search item from text field
-                String searchItem = lu.OFFER_SEARCH_FIELD_VIEW.getText().toString();
-
-                // Start the search
-                RequestOffersTask offersTask = new RequestOffersTask();
-                offersTask.execute(searchItem);
+                startSearch();
             }
-        };
+        });
+    }
 
-        // Add On Click Reaction to Search Button
-        lu.OFFER_SEARCH_BUTTON_VIEW.setOnClickListener(onSearchButtonClickListener);
+    private void startSearch() {
+        // Get search item from text field
+        String searchItem = lu.OFFER_SEARCH_FIELD_VIEW.getText().toString();
+
+        // Start the search
+        RequestOffersTask offersTask = new RequestOffersTask();
+        offersTask.execute(searchItem);
     }
 
     /**
