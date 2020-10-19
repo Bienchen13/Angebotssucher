@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#E1F3D2"
+    android:background="@drawable/round_popup"
     >
 
     <ImageView

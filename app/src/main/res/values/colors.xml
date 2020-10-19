@@ -6,4 +6,6 @@
 
     <color name="colorRowBackground">#FEFEFE</color>
     <color name="colorDivider">#f7f7f7</color>
+    <!--<color name="colorPopup">#CAFBF6</color>-->
+    <color name="colorPopup">#E1F3D2</color>
 </resources>

@@ -36,9 +36,8 @@
         android:padding="@dimen/default_margin"
         android:textSize="@dimen/default_font_size"
         android:drawableEnd="@drawable/edit_pencil"
-        android:background="@color/colorRowBackground"
+        android:background="@drawable/rounded_edges"
         />
-
 
     <TextView
         android:id="@+id/offer_result_header"
