@@ -111,7 +111,7 @@ public class NotificationActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                    if(event.getRawX() + 50 >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
                         addProduct();
                         return true;
                     }
@@ -199,6 +199,11 @@ public class NotificationActivity extends AppCompatActivity {
         } else if (NotificationUtils.alarmIsSet(this)){
             // When file has alarm: good, do nothing
             Log.v(LOG_TAG, "Alarm is already set.");
+
+            // Cancel alarm and set it again...
+            AlarmHandler.cancelAlarm(this);
+            Calendar date = NotificationUtils.getAlarmDateFromFile(this);
+            AlarmHandler.setAlarm(this, date);
 
         } else {
             // Set alarm to next monday and update file

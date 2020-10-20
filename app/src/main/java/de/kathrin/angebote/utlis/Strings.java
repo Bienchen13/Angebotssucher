@@ -14,6 +14,7 @@ public class Strings {
     // Select Market Activity
     public static final String EXTRA_MARKET = PROJECT_NAME + "EXTRA_MARKET";
     public static final String FOUND_MARKETS = "Gefundene Märkte: ";
+    public static final String NO_MARKETS_FOUND = "Keine Märkte zu Ihrer Anfrage gefunden";
 
     // Market Array Adapter
     public static final String FAV_TAG = "fav";

@@ -32,5 +32,6 @@
 
     <string name="image_description">Product Image</string>
     <string name="image_star">Fav Star</string>
+    <string name="un_fav_tag">unfav</string>
 
 </resources>

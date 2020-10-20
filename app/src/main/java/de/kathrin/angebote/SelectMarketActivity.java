@@ -23,7 +23,7 @@ import de.kathrin.angebote.utlis.LayoutUtilsSelectMarket;
 import de.kathrin.angebote.utlis.MarketUtils;
 
 import static de.kathrin.angebote.utlis.Strings.FOUND_MARKETS;
-import static de.kathrin.angebote.utlis.Strings.NO_OFFERS_FOUND;
+import static de.kathrin.angebote.utlis.Strings.NO_MARKETS_FOUND;
 import static de.kathrin.angebote.utlis.Strings.NO_SERVER_CONNECTION;
 import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
@@ -125,7 +125,7 @@ public class SelectMarketActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                    if(event.getRawX() + 50 >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
                         startSearch();
                         return true;
                     }
@@ -203,7 +203,7 @@ public class SelectMarketActivity extends AppCompatActivity {
             }
 
             if (marketList.isEmpty()) {
-                publishProgress(NO_OFFERS_FOUND);
+                publishProgress(NO_MARKETS_FOUND);
             }
 
             return marketList;

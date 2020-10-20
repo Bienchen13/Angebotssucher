@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                    if(event.getRawX() + 50 >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
                         startSearch();
                         return true;
                     }
@@ -326,7 +326,8 @@ public class MainActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "Updating view");
 
         // Set Header with available dates
-        String headerText = "Gültig: " +
+        String headerText =
+                //"Gültig: " +
                 allOffersList.getAvailableFromFormatted() +
                 " - " +
                 allOffersList.getAvailableUntilFormatted();

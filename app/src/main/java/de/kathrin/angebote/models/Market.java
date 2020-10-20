@@ -63,6 +63,6 @@ public class Market implements Serializable {
     @Override
     public String toString() {
         return name + "\n"
-                + street + ", " + plz + " " + city + "\n";
+                + street + ", " + plz + " " + city;
     }
 }

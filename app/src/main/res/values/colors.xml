@@ -4,8 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="colorRowBackground">#FEFEFE</color>
-    <color name="colorDivider">#f7f7f7</color>
-    <!--<color name="colorPopup">#CAFBF6</color>-->
-    <color name="colorPopup">#E1F3D2</color>
+    <color name="colorBackground">#F0F0F0</color>
+    <color name="colorStarBackground">#00FFFFFF</color>
+
+    <color name="colorRowBackground">#F5F5F5</color>
+    <color name="colorPopup">#E0E0E0</color>
+    <color name="colorShadow">#BBBBBB</color>
 </resources>
