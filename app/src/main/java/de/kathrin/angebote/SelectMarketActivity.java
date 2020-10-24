@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +23,7 @@ import de.kathrin.angebote.utlis.LayoutUtilsSelectMarket;
 import de.kathrin.angebote.utlis.MarketUtils;
 
 import static de.kathrin.angebote.utlis.Strings.FOUND_MARKETS;
-import static de.kathrin.angebote.utlis.Strings.NO_OFFERS_FOUND;
+import static de.kathrin.angebote.utlis.Strings.NO_MARKETS_FOUND;
 import static de.kathrin.angebote.utlis.Strings.NO_SERVER_CONNECTION;
 import static de.kathrin.angebote.utlis.Strings.PROJECT_NAME;
 
@@ -97,36 +100,56 @@ public class SelectMarketActivity extends AppCompatActivity {
     // OWN METHODS
 
     /**
-     * Start the market search on button click in a new {@link RequestMarketsTask} instance.
+     * Start the market search on button or enter click in a new {@link RequestMarketsTask}
+     * instance.
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initMarketSearch() {
-        // Define On Click Button Reaction
-        View.OnClickListener onSearchButtonClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(LOG_TAG, "Search for Markets Button was clicked");
 
-                // Get the requested city from the text view
-                String requestedCity = lu.MARKET_SEARCH_FIELD_VIEW.getText().toString();
-
-                // Start a new RequestMarketsTask to make the search
-                new RequestMarketsTask().execute(requestedCity);
+        // Start the search for markets, when enter is clicked
+        lu.MARKET_SEARCH_FIELD_VIEW.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
+                //If the keyEvent is a key-down event on the "enter" button
+                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    startSearch();
+                    return true;
+                }
+                return false;
             }
-        };
+        });
 
-        // Add Reaction to Button
-        lu.MARKET_SEARCH_BUTTON_VIEW.setOnClickListener(onSearchButtonClickListener);
+        // Start the search for markets, when the arrow is clicked
+        final EditText editText = lu.MARKET_SEARCH_FIELD_VIEW;
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() + 50 >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                        startSearch();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    /**
+     * Get the requested city from the text view and start a new {@link RequestMarketsTask} to
+     * make the search
+     */
+    private void startSearch() {
+        new RequestMarketsTask().execute(lu.MARKET_SEARCH_FIELD_VIEW.getText().toString());
     }
 
     /**
      * Set the {@link MarketArrayAdapter} to the list view element to display the markets correctly
      */
     private void bindAdapterToListView() {
-        MarketArrayAdapter marketArrayAdapter =
-                new MarketArrayAdapter(this, resultMarketList, marketDataSource, this);
-
-        // Add adapter to list view
-        lu.MARKET_RESULT_LIST_VIEW.setAdapter(marketArrayAdapter);
+        lu.MARKET_RESULT_LIST_VIEW.setAdapter(
+                new MarketArrayAdapter(this, resultMarketList, marketDataSource, this)
+        );
     }
 
     /**
@@ -180,7 +203,7 @@ public class SelectMarketActivity extends AppCompatActivity {
             }
 
             if (marketList.isEmpty()) {
-                publishProgress(NO_OFFERS_FOUND);
+                publishProgress(NO_MARKETS_FOUND);
             }
 
             return marketList;

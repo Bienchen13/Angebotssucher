@@ -3,60 +3,63 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_margin="15dp"
-    android:background="@color/colorDivider"
+    android:background="@color/colorBackground"
     >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
+
+
         android:text="@string/select_market_header"
-        android:textSize="@dimen/default_font_size"
+        android:textAlignment="center"
+        android:textSize="@dimen/font_size_default"
         android:textStyle="bold"
+
+        android:layout_marginTop="@dimen/margin_border"
         />
 
-    <RelativeLayout
+    <EditText
+        android:id="@+id/market_search_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
 
-        <EditText
-            android:id="@+id/market_search_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:layout_toStartOf="@id/market_search_button"
-            android:hint="@string/select_market_hint"
-            android:textSize="@dimen/search_font_size"
-            android:importantForAutofill="no"
-            android:inputType="text" />
+        android:hint="@string/select_market_hint"
+        android:textSize="@dimen/font_size_default"
+        android:imeOptions="actionSearch"
+        android:importantForAutofill="no"
+        android:inputType="text"
 
-        <Button
-            android:id="@+id/market_search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:layout_alignParentEnd="true"
-            android:text="@string/select_market_button"
-            android:textSize="@dimen/search_font_size" />
+        android:layout_marginVertical="@dimen/margin_default"
+        android:layout_marginHorizontal="@dimen/margin_border"
+        android:paddingVertical="@dimen/padding_vertical"
+        android:paddingHorizontal="@dimen/padding_horizontal"
 
-    </RelativeLayout>
+        android:drawableEnd="@drawable/arrow_forward"
+        android:background="@drawable/search_fields"
+        />
 
     <TextView
         android:id="@+id/market_select_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
-        android:textSize="@dimen/default_font_size"
+
+        android:textSize="@dimen/font_size_default"
+
+        android:layout_marginVertical="@dimen/margin_default"
+        android:layout_marginHorizontal="@dimen/margin_border"
         />
 
     <ListView
         android:id="@+id/market_select_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/default_margin"
-        android:layout_marginStart="@dimen/default_margin"
-        android:divider="@color/colorDivider"
-        android:dividerHeight="@dimen/default_margin" />
+
+        android:divider="@color/colorBackground"
+        android:dividerHeight="@dimen/margin_default"
+
+        android:layout_marginVertical="@dimen/margin_default"
+        android:layout_marginHorizontal="@dimen/margin_border"
+        />
 
 </LinearLayout>

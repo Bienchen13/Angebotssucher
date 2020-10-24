@@ -13,12 +13,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -115,27 +117,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Start the offer search on button click in a new {@link RequestOffersTask} instance.
+     * Start the offer search on button or enter click in a new {@link RequestOffersTask} instance.
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initOfferSearch() {
 
-        // Start the search for offers, when the button was clicked.
-        View.OnClickListener onSearchButtonClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(LOG_TAG, "Search for Offers Button was clicked");
-
-                // Get search item from text field
-                String searchItem = lu.OFFER_SEARCH_FIELD_VIEW.getText().toString();
-
-                // Start the search
-                RequestOffersTask offersTask = new RequestOffersTask();
-                offersTask.execute(searchItem);
+        // Start the search for offers, when enter is clicked
+        lu.OFFER_SEARCH_FIELD_VIEW.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
+                //If the keyEvent is a key-down event on the "enter" button
+                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    startSearch();
+                    return true;
+                }
+                return false;
             }
-        };
+        });
 
-        // Add On Click Reaction to Search Button
-        lu.OFFER_SEARCH_BUTTON_VIEW.setOnClickListener(onSearchButtonClickListener);
+        // Start the search for offers, when the arrow is clicked
+        final EditText editText = lu.OFFER_SEARCH_FIELD_VIEW;
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() + 50 >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                        startSearch();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+    }
+
+    /**
+     * Get search item from text field and start the search in a new {@link RequestOffersTask}
+     * instance.
+     */
+    private void startSearch() {
+        RequestOffersTask offersTask = new RequestOffersTask();
+        offersTask.execute(lu.OFFER_SEARCH_FIELD_VIEW.getText().toString());
     }
 
     /**
@@ -303,7 +326,8 @@ public class MainActivity extends AppCompatActivity {
         Log.v(LOG_TAG, "Updating view");
 
         // Set Header with available dates
-        String headerText = "Gültig: " +
+        String headerText =
+                //"Gültig: " +
                 allOffersList.getAvailableFromFormatted() +
                 " - " +
                 allOffersList.getAvailableUntilFormatted();

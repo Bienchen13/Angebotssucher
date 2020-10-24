@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#E1F3D2"
+    android:background="@drawable/round_popup"
     >
 
     <ImageView
@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/popup_margin"
+        android:layout_margin="@dimen/margin_popup"
         android:contentDescription="@string/image_description" />
 
     <TextView
@@ -20,21 +20,26 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_margin="@dimen/popup_margin"
+
         android:text="@string/popup_sample_title"
-        android:textSize="@dimen/offer_text_font_size"
-        android:textStyle="bold" />
+        android:textSize="@dimen/font_size_default"
+        android:textStyle="bold"
+
+        android:layout_margin="@dimen/margin_popup"
+        />
 
     <TextView
         android:id="@+id/popup_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/offer_text_font_size"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginRight="@dimen/popup_margin"
-        android:layout_marginLeft="@dimen/popup_margin"
-        android:layout_marginBottom="@dimen/popup_margin"
-        android:text="@string/popup_sample_description" />
+
+        android:text="@string/popup_sample_description"
+        android:textSize="@dimen/font_size_default"
+
+        android:layout_marginHorizontal="@dimen/margin_popup"
+        android:layout_marginBottom="@dimen/margin_popup"
+         />
 
 </LinearLayout>

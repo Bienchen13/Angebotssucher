@@ -23,7 +23,6 @@ public class LayoutUtilsMain {
     public static final int OFFER_RESULT_LIST       = R.id.offer_result_list;
 
     public static final int OFFER_SEARCH_FIELD      = R.id.offer_search_field;
-    public static final int OFFER_SEARCH_BUTTON     = R.id.offer_search_button;
 
     public static final int MARKET_SELECT           = R.id.select_market;
 
@@ -36,7 +35,6 @@ public class LayoutUtilsMain {
     public final ListView OFFER_RESULT_LIST_VIEW;
 
     public final EditText OFFER_SEARCH_FIELD_VIEW;
-    public final Button   OFFER_SEARCH_BUTTON_VIEW;
 
     public LayoutUtilsMain(Activity activity) {
         MARKET_SELECT_VIEW        = activity.findViewById(MARKET_SELECT);
@@ -45,7 +43,6 @@ public class LayoutUtilsMain {
         OFFER_RESULT_LIST_VIEW    = activity.findViewById(OFFER_RESULT_LIST);
 
         OFFER_SEARCH_FIELD_VIEW   = activity.findViewById(OFFER_SEARCH_FIELD);
-        OFFER_SEARCH_BUTTON_VIEW  = activity.findViewById(OFFER_SEARCH_BUTTON);
     }
 
     // For the popup:

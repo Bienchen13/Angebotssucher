@@ -1,10 +1,14 @@
 package de.kathrin.angebote;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -84,28 +88,56 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     /**
-     * Add the elements in the text view to the list and to the database on button click
+     * Add the elements in the text view to the list and to the database on button or enter click
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initAddProductButton () {
-        View.OnClickListener onAddButtonClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                // Get product from Text View and reset it
-                String product = lu.PRODUCT_ADD_FIELD_VIEW.getText().toString();
-                lu.PRODUCT_ADD_FIELD_VIEW.setText("");
-
-                // Add product to list and database
-                productList.add(product);
-                productDataSource.addProductToNotificationDatabase(product);
-
-                // Refresh the list view immediately
-                lu.PRODUCT_LIST_VIEW.invalidateViews();
+        // Add a new product, when enter is clicked
+        lu.PRODUCT_ADD_FIELD_VIEW.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View view, int keyCode, KeyEvent keyevent) {
+                //If the keyEvent is a key-down event on the "enter" button
+                if ((keyevent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    addProduct();
+                    return true;
+                }
+                return false;
             }
-        };
+        });
 
-        // Add Reaction to Button
-        lu.PRODUCT_ADD_BUTTON_VIEW.setOnClickListener(onAddButtonClickListener);
+        // Add a new product, when the add button is clicked
+        final EditText editText = lu.PRODUCT_ADD_FIELD_VIEW;
+        editText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() + 50 >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                        addProduct();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    /**
+     * Add new product to list and database and reset the input field.
+     */
+    private void addProduct () {
+        // Get product from Text View and reset it
+        String product = lu.PRODUCT_ADD_FIELD_VIEW.getText().toString();
+        lu.PRODUCT_ADD_FIELD_VIEW.setText("");
+
+        if (!product.equals("")) {
+
+            // Add product to list and database
+            productList.add(product);
+            productDataSource.addProductToNotificationDatabase(product);
+
+            // Refresh the list view immediately
+            lu.PRODUCT_LIST_VIEW.invalidateViews();
+        }
     }
 
     /**
@@ -167,6 +199,11 @@ public class NotificationActivity extends AppCompatActivity {
         } else if (NotificationUtils.alarmIsSet(this)){
             // When file has alarm: good, do nothing
             Log.v(LOG_TAG, "Alarm is already set.");
+
+            // Cancel alarm and set it again...
+            AlarmHandler.cancelAlarm(this);
+            Calendar date = NotificationUtils.getAlarmDateFromFile(this);
+            AlarmHandler.setAlarm(this, date);
 
         } else {
             // Set alarm to next monday and update file

@@ -2,19 +2,19 @@
     <string name="app_name">Angebote</string>
 
     <string name="main_header">Suchen Sie nach Angeboten.</string>
-    <string name="main_hint">Suchbegriff eingeben</string>
+    <string name="main_hint">Suchbegriff</string>
     <string name="main_button">Suchen</string>
     <string name="main_market_hint">EDEKA</string>
 
     <string name="select_market_header">Wählen Sie Ihre Edeka-Filiale aus.</string>
-    <string name="select_market_hint">Ort eingeben</string>
+    <string name="select_market_hint">Ort</string>
     <string name="select_market_button">Suchen</string>
 
     <string name="set_notification_header">Stellen Sie Ihre Benachrichtigungen ein.</string>
     <string name="set_notification_explanation">Wenn eines der von Ihnen genannten Produkte in
         einem Ihrer Lieblingssupermärkten im Angebot ist, erhalten Sie automatisch eine
         Benachrichtigung von uns.</string>
-    <string name="set_notification_hint">Produkt eingeben</string>
+    <string name="set_notification_hint">Produkt</string>
     <string name="set_notification_button">+</string>
 
     <string name="popup_sample_title">Titel</string>
@@ -32,5 +32,6 @@
 
     <string name="image_description">Product Image</string>
     <string name="image_star">Fav Star</string>
+    <string name="un_fav_tag">unfav</string>
 
 </resources>

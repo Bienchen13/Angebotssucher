@@ -2,28 +2,34 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp"
-    android:background="@color/colorRowBackground"
-    android:padding="@dimen/row_padding">
+    android:layout_margin="@dimen/margin_border"
+    android:background="@drawable/text_fields"
+    android:padding="@dimen/padding_default"
+    >
 
     <TextView
         android:id="@+id/market_list_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/offer_text_font_size"
-        android:layout_marginEnd="5dp"
+
         android:text="@string/market_list_sample"
+        android:textSize="@dimen/font_size_default"
+
         android:layout_toStartOf="@+id/market_fav_icon"
         />
+    <!--         android:layout_marginEnd="@dimen/margin_small" -->
 
     <ImageButton
         android:id="@+id/market_fav_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:src="@android:drawable/btn_star_big_off"
-        android:tag="unfav"
+        android:tag="@string/un_fav_tag"
+        android:contentDescription="@string/image_star"
+
         android:layout_alignParentEnd="true"
-        android:background="#00ffffff"
-        android:contentDescription="@string/image_star" />
+        android:background="@color/colorStarBackground"
+        />
 
 </RelativeLayout>

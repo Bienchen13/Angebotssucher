@@ -2,29 +2,37 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="15dp"
-    android:background="@color/colorRowBackground"
-    android:padding="@dimen/row_padding">
+    android:layout_margin="@dimen/margin_border"
+    android:padding="@dimen/padding_default"
+    android:background="@drawable/text_fields"
+    >
 
     <!-- Title -->
     <TextView
         android:id="@+id/offer_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@+id/offer_item_price"
-        android:textSize="@dimen/offer_text_font_size"
+
         android:text="@string/offer_list_sample_title"
-        android:layout_marginEnd="5dp"
-        android:padding="5dp"/>
+        android:textSize="@dimen/font_size_default"
+        android:textStyle="bold"
+
+        android:layout_toStartOf="@+id/offer_item_price"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:padding="@dimen/padding_small"
+        />
 
     <!-- Price -->
     <TextView
         android:id="@+id/offer_item_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+
+        android:text="@string/offer_list_sample_price"
+        android:textSize="@dimen/font_size_default"
         android:textAlignment="center"
-        android:textSize="@dimen/offer_text_font_size"
-        android:text="@string/offer_list_sample_price" />
+
+        android:layout_alignParentEnd="true"
+        />
 
 </RelativeLayout>
