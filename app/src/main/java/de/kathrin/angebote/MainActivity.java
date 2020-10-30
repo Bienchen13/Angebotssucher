@@ -3,6 +3,7 @@ package de.kathrin.angebote;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -164,21 +166,75 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Switch to the Select Market Activity on button click.
      */
+    @SuppressLint("ClickableViewAccessibility")
     private void initMarketSelection() {
-        // Switch to the Select Market Activity, when button was clicked.
-        View.OnClickListener onSelectMarketClickListener = new View.OnClickListener() {
+
+        // Add action on click on the market name.
+        final TextView textView = lu.MARKET_SELECT_VIEW;
+        textView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
-            public void onClick(View v) {
-                Log.v(LOG_TAG, "Select Market Button was clicked");
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                Intent explicitIntent = new Intent(MainActivity.this, SelectMarketActivity.class);
-                startActivityForResult(explicitIntent, SELECT_MARKET_REQUEST);
+                    // Switch to the Select Market Activity, when the pencil is clicked.
+                    if (event.getRawX() + 50 >= (textView.getRight() - textView.getCompoundDrawables()[2].getBounds().width())) {
+                        Log.v(LOG_TAG, "Select Market Pencil was clicked");
+
+                        Intent explicitIntent = new Intent(MainActivity.this, SelectMarketActivity.class);
+                        startActivityForResult(explicitIntent, SELECT_MARKET_REQUEST);
+                    } else {
+
+                        // Otherwise show all information of the selected market
+                        Log.v(LOG_TAG, "Market Name was clicked");
+
+                        if (selectedMarket != null) {
+                            showWholeMarketName(textView);
+                        } else {
+                            Toast.makeText(getApplicationContext(), NO_MARKET_SELECTED, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    return true;
+                }
+                return false;
             }
-        };
+        });
+    }
 
-        // Add On Click Reaction to Select Market Button
-        lu.MARKET_SELECT_VIEW.setOnClickListener(onSelectMarketClickListener);
+    /**
+     * Create pop up with the whole market information.
+     * @param view  clicked view
+     */
+    private void showWholeMarketName(View view) {
+        // Set up the popup
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(LayoutUtilsMain.MARKET_POPUP, null);
+        lu.setMarketPopupView(popupView);
 
+        // Connect the elements from the popup view with the corresponding information
+        String market = selectedMarket.getName()+ "\n" +
+                selectedMarket.getStreet() + "\n" +
+                selectedMarket.getPlz() + " "  +
+                selectedMarket.getCity();
+
+        lu.MARKET_POPUP_CONTENT_VIEW.setText(market);
+
+        // Show the Popup Window
+        final PopupWindow pw = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                true);
+        pw.showAtLocation(view, Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, view.getBottom());
+
+        // Add on Touch Listener to close popup window easily
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                pw.dismiss();
+                return true;
+            }
+        });
     }
 
     /**

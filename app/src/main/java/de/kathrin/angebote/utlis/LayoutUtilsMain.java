@@ -2,7 +2,6 @@ package de.kathrin.angebote.utlis;
 
 import android.app.Activity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -26,6 +25,9 @@ public class LayoutUtilsMain {
 
     public static final int MARKET_SELECT           = R.id.select_market;
 
+    public static final int MARKET_POPUP            = R.layout.market_popup;
+    public static final int MARKET_POPUP_CONTENT    = R.id.market_popup_content;
+
 
     // To get also the views..
 
@@ -45,7 +47,7 @@ public class LayoutUtilsMain {
         OFFER_SEARCH_FIELD_VIEW   = activity.findViewById(OFFER_SEARCH_FIELD);
     }
 
-    // For the popup:
+    // For the offer popup:
 
     public TextView OFFER_POPUP_TITLE_VIEW;
     public TextView OFFER_POPUP_DESCRIPTION_VIEW;
@@ -58,6 +60,12 @@ public class LayoutUtilsMain {
         OFFER_POPUP_IMAGE_VIEW          = popupView.findViewById(OFFER_POPUP_IMAGE);
     }
 
+    // For the market popup:
 
+    public TextView MARKET_POPUP_CONTENT_VIEW;
+    public void setMarketPopupView(View popupView) {
+        MARKET_POPUP_CONTENT_VIEW          = popupView.findViewById(MARKET_POPUP_CONTENT);
+
+    }
 
 }

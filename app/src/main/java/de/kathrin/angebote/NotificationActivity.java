@@ -126,7 +126,7 @@ public class NotificationActivity extends AppCompatActivity {
      */
     private void addProduct () {
         // Get product from Text View and reset it
-        String product = lu.PRODUCT_ADD_FIELD_VIEW.getText().toString();
+        String product = lu.PRODUCT_ADD_FIELD_VIEW.getText().toString().trim();
         lu.PRODUCT_ADD_FIELD_VIEW.setText("");
 
         if (!product.equals("")) {

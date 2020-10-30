@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -30,7 +31,7 @@
         android:importantForAutofill="no"
 
         android:paddingVertical="@dimen/padding_vertical"
-        android:paddingHorizontal="@dimen/padding_horizontal"
+        android:paddingHorizontal="@dimen/padding_big"
         android:layout_marginVertical="@dimen/margin_default"
         android:layout_marginHorizontal="@dimen/margin_border"
 
@@ -46,13 +47,13 @@
         android:hint="@string/main_market_hint"
         android:textSize="@dimen/font_size_default"
 
-        android:drawableEnd="@drawable/edit_pencil"
+        app:drawableEndCompat="@drawable/edit_pencil"
         android:background="@drawable/market_select"
 
         android:padding="@dimen/padding_default"
         android:layout_marginVertical="@dimen/margin_default"
         android:layout_marginHorizontal="@dimen/margin_border"
-        />
+         />
 
     <TextView
         android:id="@+id/offer_result_header"
