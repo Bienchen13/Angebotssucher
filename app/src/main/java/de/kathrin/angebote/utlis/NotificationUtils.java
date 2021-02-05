@@ -37,6 +37,20 @@ public class NotificationUtils {
     }
 
     /**
+     * Create a Calendar instance having the next day, 9 o'clock as a date.
+     * @return  Calendar instance
+     */
+    public static Calendar getTomorrow () {
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.HOUR_OF_DAY, 9);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.add(Calendar.DAY_OF_YEAR, 1);
+        return date;
+
+    }
+
+    /**
      * Restore the alarm date from the file
      * @param context   current context
      * @return  Calender instance, date read from the file

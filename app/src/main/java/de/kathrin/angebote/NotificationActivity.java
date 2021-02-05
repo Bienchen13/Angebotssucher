@@ -206,11 +206,11 @@ public class NotificationActivity extends AppCompatActivity {
             AlarmHandler.setAlarm(this, date);
 
         } else {
-            // Set alarm to next monday and update file
-            Calendar nextMonday = NotificationUtils.getNextMonday();
-            AlarmHandler.setAlarm(this, nextMonday);
-            NotificationUtils.writeAlarmToFile(this, nextMonday);
-            Log.v(LOG_TAG, "Setting new alarm to " + nextMonday.getTime());
+            // Set alarm to next day and update file
+            Calendar date = NotificationUtils.getTomorrow();
+            AlarmHandler.setAlarm(this, date);
+            NotificationUtils.writeAlarmToFile(this, date);
+            Log.v(LOG_TAG, "Setting new alarm to " + date.getTime());
         }
     }
 }
