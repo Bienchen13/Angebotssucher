@@ -42,31 +42,28 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.v(LOG_TAG, "Alarm received.");
         this.context = context;
-
-        // Check if there are new offers and send notifications if there are
-        checkForNewOffers();
-
-        // Doing this ugly shit to reassure the check for offers task is done
-        // Because it is async otherwise there is no guarantee its done by now.
-        try {
-            // Sleep for 20 sec
-            sleep(20*1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // Only show notifications on monday
+        // -> check if today is monday and only check for new offers then
+        // if it's not monday, set an alarm to check again the next day
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DAY_OF_WEEK);
+        if (today != Calendar.MONDAY) {
+            setNewAlarm();
+        } else {
+            // Check if there are new offers and send notifications if there are
+            // Set the new alarm depending on the success of the search
+            checkForNewOffers(true);
         }
-
-        // Set the new alarm depending on the success of the search
-        setNewAlarm();
     }
 
     /**
-     * Set the next alarm. In one week if every thing was fine. In one hour if there was no
+     * Set the next alarm. Tomorrow if everything was fine. In one hour if there was no
      * internet connection
      */
     private void setNewAlarm() {
 
-        // Set Date on next Monday
-        Calendar date = NotificationUtils.getNextMonday();
+        // Set date for tomorrow
+        Calendar date = NotificationUtils.getTomorrow();
 
         // If there was no connection, change it to: in one hour
         if (!validInternetConnection) {
@@ -86,9 +83,10 @@ public class AlarmReceiver extends BroadcastReceiver {
      * Check if the products are on offer in the favourite markets.
      * (First load the markets from the market database, then start a {@link CheckOffersTask}
      *  for every market.)
+     * @param setNewAlarm boolean indicating whether to set an alarm after the check completes
      */
     @SuppressWarnings("unchecked")
-    private void checkForNewOffers () {
+    private void checkForNewOffers (boolean setNewAlarm) {
 
         // Load all products of interest
         ProductDataSource productDataSource = new ProductDataSource(context);
@@ -105,9 +103,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (!marketList.isEmpty()) {
 
             // Go through all markets and check for products on offer
+            int i = 0;
             for (Market m : marketList) {
                 Log.v(LOG_TAG, "Checking market: " + m);
-                new CheckOffersTask(context, m).execute(productList);
+                // Only set the alarm once, in the first iteration
+                boolean setAlarm = setNewAlarm && i==0;
+                new CheckOffersTask(context, m, setAlarm).execute(productList);
+                i++;
             }
         }
 
@@ -146,14 +148,17 @@ public class AlarmReceiver extends BroadcastReceiver {
     private class CheckOffersTask extends AsyncTask<List<String>, String, List<Offer>>{
         private final Market market;
         private final Context context;
+        private final boolean setAlarm;
 
         /**
          * Constructor, saves the current market
          * @param market    market which offers are compared later
+         * @param setAlarm  whether to set an alarm after the task completes
          */
-        public CheckOffersTask (Context context, Market market) {
+        public CheckOffersTask (Context context, Market market, boolean setAlarm) {
             this.context = context;
             this.market = market;
+            this.setAlarm = setAlarm;
         }
 
         /**
@@ -201,6 +206,9 @@ public class AlarmReceiver extends BroadcastReceiver {
          */
         @Override
         protected void onPostExecute(List<Offer> offers) {
+            if (this.setAlarm) {
+                setNewAlarm();
+            }
             if (!offers.isEmpty()) {
                 notifyAboutOffers(market, offers);
             }
